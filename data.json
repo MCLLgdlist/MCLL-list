@@ -17,7 +17,7 @@
     },
     {
       "id": 2,
-      "gdId": "N/A",
+      "gdId": "150030228",
       "title": "first ever mcll level",
       "creator": "capmind",
       "verifier": "elias37",
@@ -31,9 +31,9 @@
     }
   ],
   "players": [
-    { "id": 1, "name": "Merlinb", "completed": ["little layout"] },
-    { "id": 2, "name": "capmind", "completed": [] },
-    { "id": 3, "name": "elias37", "completed": ["first ever mcll level"] },
-    { "id": 4, "name": "kosu", "completed": ["little layout"] }
+    { "id": 1, "name": "Merlinb", "country": "", "completed": ["little layout"] },
+    { "id": 2, "name": "capmind", "country": "eg", "completed": [] },
+    { "id": 3, "name": "elias37", "country": "", "completed": ["first ever mcll level"] },
+    { "id": 4, "name": "kosu", "country": "", "completed": ["little layout"] }
   ]
 }
