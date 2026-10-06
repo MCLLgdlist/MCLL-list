@@ -2,43 +2,36 @@
   "levels": [
     {
       "id": 1,
-      "title": "first ever MCLL level",
+      "gdId": "150057322",
+      "title": "little layout",
+      "creator": "Merlinb",
+      "verifier": "Merlinb",
+      "song": "cycles",
+      "length": "N/A",
+      "youtubeId": "u9L25XWpFio",
+      "type": "main",
+      "records": [
+        { "player": "Merlinb", "percent": 100, "video": "https://youtu.be/u9L25XWpFio" }
+      ]
+    },
+    {
+      "id": 2,
+      "gdId": "N/A",
+      "title": "first ever mcll level",
       "creator": "capmind",
       "verifier": "elias37",
-      "song": "Stereo Madness",
-      "length": "Short",
-      "type": "main",
+      "song": "stereo madness",
+      "length": "short",
       "youtubeId": "vuZYrtR9V4o",
+      "type": "main",
       "records": [
         { "player": "elias37", "percent": 100, "video": "https://youtu.be/vuZYrtR9V4o" }
       ]
     }
   ],
   "players": [
-    { "id": 1, "name": "elias37", "completed": ["first ever MCLL level"] }
-  ]
-}
-{
-  "levels": [
-    {
-      "id": 150057322,
-      "title": "little layout",
-      "creator": "Merlinb",
-      "verifier": "Merlinb",
-      "song": "cycles",
-      "length": "Medium",
-      "type": "main",
-      "youtubeId": "",
-      "records": []
-    }
-  ],
-  "players": [
-    {
-      "id": 1,
-      "name": "Merlinb",
-      "completed": [
-        "little layout"
-      ]
-    }
+    { "id": 1, "name": "Merlinb", "completed": ["little layout"] },
+    { "id": 2, "name": "capmind", "completed": [] },
+    { "id": 3, "name": "elias37", "completed": ["first ever mcll level"] }
   ]
 }
