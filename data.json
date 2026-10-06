@@ -11,6 +11,7 @@
       "youtubeId": "u9L25XWpFio",
       "type": "main",
       "records": [
+        { "player": "ZXNN43", "percent": 100, "video": "https://youtu.be/p2vR2rcHaBw" },
         { "player": "kosu", "percent": 100, "video": "https://youtu.be/OIZCQnVQiKg" },
         { "player": "Merlinb", "percent": 100, "video": "https://youtu.be/u9L25XWpFio" }
       ]
@@ -34,6 +35,7 @@
     { "id": 1, "name": "Merlinb", "country": "", "completed": ["little layout"] },
     { "id": 2, "name": "capmind", "country": "eg", "completed": [] },
     { "id": 3, "name": "elias37", "country": "", "completed": ["first ever mcll level"] },
-    { "id": 4, "name": "kosu", "country": "", "completed": ["little layout"] }
+    { "id": 4, "name": "kosu", "country": "", "completed": ["little layout"] },
+    { "id": 5, "name": "ZXNN43", "country": "", "completed": ["little layout"] }
   ]
 }
