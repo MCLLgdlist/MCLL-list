@@ -18,3 +18,28 @@
     { "id": 1, "name": "elias37", "completed": ["first ever MCLL level"] }
   ]
 }
+{
+  "levels": [
+    {
+      "id": 150057322,
+      "title": "little layout",
+      "creator": "Merlinb",
+      "verifier": "Merlinb",
+      "song": "cycles",
+      "length": "Medium",
+      "type": "main",
+      "youtubeId": "",
+      "records": []
+    }
+  ],
+  "players": [
+    {
+      "id": 1,
+      "name": "Merlinb",
+      "completed": [
+        "little layout"
+      ]
+    }
+  ]
+}
+
