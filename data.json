@@ -1,0 +1,20 @@
+{
+  "levels": [
+    {
+      "id": 1,
+      "title": "first ever MCLL level",
+      "creator": "capmind",
+      "verifier": "elias37",
+      "song": "Stereo Madness",
+      "length": "Short",
+      "type": "main",
+      "youtubeId": "vuZYrtR9V4o",
+      "records": [
+        { "player": "elias37", "percent": 100, "video": "https://youtu.be/vuZYrtR9V4o" }
+      ]
+    }
+  ],
+  "players": [
+    { "id": 1, "name": "elias37", "completed": ["first ever MCLL level"] }
+  ]
+}
