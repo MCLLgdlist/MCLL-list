@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GD Demonstration List</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0f0d;
+      --card-bg: #141f16;
+      --text-primary: #ffffff;
+      --text-secondary: #a3b899;
+      --text-muted: #5e7059;
+      --accent-cyan: #00ffaa;
+      --border-color: #243828;
+      --card-hover: #1c2b1f;
+    }
+
+    [data-theme="light"] {
+      --bg-dark: #f0f4f1;
+      --card-bg: #ffffff;
+      --text-primary: #111827;
+      --text-secondary: #4b5563;
+      --text-muted: #9ca3af;
+      --accent-cyan: #00a870;
+      --border-color: #e5e7eb;
+      --card-hover: #f9fafb;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 50px;
+    }
+
+    header {
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: var(--accent-cyan);
+    }
+
+    .theme-toggle-btn {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-family: inherit;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px 15px;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 10px 18px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 6px;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+
+    .tab-btn.active {
+      background-color: var(--card-bg);
+      color: var(--accent-cyan);
+      border: 1px solid var(--border-color);
+    }
+
+    .sub-nav-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .sub-tab-btn {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 6px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 6px;
+      font-family: inherit;
+    }
+
+    .sub-tab-btn.active {
+      background-color: var(--accent-cyan);
+      color: #000;
+      border-color: var(--accent-cyan);
+    }
+
+    .stats-bar {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 12px 20px;
+      border-radius: 8px;
+      flex: 1;
+      text-align: center;
+    }
+
+    .stat-val {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--accent-cyan);
+    }
+
+    .stat-lbl {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .search-bar {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 12px 16px;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 15px;
+      font-family: inherit;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .card:hover {
+      background-color: var(--card-hover);
+      transform: translateY(-2px);
+    }
+
+    .card-thumb {
+      width: 120px;
+      height: 70px;
+      border-radius: 6px;
+      object-fit: cover;
+      background-color: #000;
+    }
+
+    .card-info {
+      flex: 1;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .card-sub {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .card-points {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--accent-cyan);
+    }
+
+    .view-panel {
+      display: none;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .btn-back {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--accent-cyan);
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      margin-bottom: 20px;
+      font-family: inherit;
+    }
+
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .info-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      background: rgba(0,0,0,0.2);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .roulette-box {
+      text-align: center;
+      padding: 40px 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+    }
+
+    .roulette-btn {
+      background: var(--accent-cyan);
+      color: #000;
+      border: none;
+      padding: 12px 24px;
+      font-size: 18px;
+      font-weight: 800;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 10px 5px;
+      font-family: inherit;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-container">
+      <div class="logo-title">GD Demonstration List</div>
+    </div>
+    <button class="theme-toggle-btn" id="theme-btn">🌙 Theme</button>
+  </header>
+
+  <div class="container">
+    <div class="stats-bar">
+      <div class="stat-box">
+        <div class="stat-val" id="stat-levels">0</div>
+        <div class="stat-lbl">Levels</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="stat-players">0</div>
+        <div class="stat-lbl">Players</div>
+      </div>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchMainTab('levels', event)">Levels</button>
+      <button class="tab-btn" onclick="switchMainTab('stats', event)">StatsViewer</button>
+      <button class="tab-btn" onclick="switchMainTab('rules', event)">Rules</button>
+      <button class="tab-btn" onclick="switchMainTab('roulette', event)">Roulette</button>
+    </div>
+
+    <div id="sub-levels-nav" class="sub-nav-tabs">
+      <button class="sub-tab-btn active" onclick="switchSubTab('main', event)">Main List</button>
+      <button class="sub-tab-btn" onclick="switchSubTab('legacy', event)">Legacy List</button>
+    </div>
+
+    <div id="search-controls" class="search-bar">
+      <input type="text" id="search-input" placeholder="Search level..." oninput="filterData()">
+    </div>
+
+    <div id="main-content">
+      <div id="list-container"></div>
+    </div>
+
+    <!-- LEVEL VIEW -->
+    <div id="level-view" class="view-panel">
+      <button class="btn-back" onclick="closeView()">← Back</button>
+      <h1 id="lvl-title" style="color: var(--accent-cyan); margin-bottom: 10px;"></h1>
+      <div id="lvl-details"></div>
+    </div>
+
+    <!-- STATS VIEW -->
+    <div id="stats-view" style="display: none;">
+      <div class="search-bar">
+        <input type="text" id="stats-search-input" placeholder="Search player..." oninput="renderLeaderboard()">
+      </div>
+      <div id="stats-result-container"></div>
+    </div>
+
+    <!-- PLAYER VIEW -->
+    <div id="player-view" class="view-panel">
+      <button class="btn-back" onclick="closeView()">← Back</button>
+      <h1 id="pl-name" style="color: var(--accent-cyan); margin-bottom: 10px;"></h1>
+      <div id="pl-details"></div>
+    </div>
+
+    <!-- RULES VIEW -->
+    <div id="rules-view" class="view-panel">
+      <h2 style="color: var(--accent-cyan); margin-bottom: 15px;">List Rules</h2>
+      <p style="color: var(--text-secondary); line-height: 1.6;">
+        1. Submissions must have a valid video record with raw footage or clicks audible.<br>
+        2. Hacks or cheats of any kind are strictly prohibited.<br>
+        3. Levels must be completed on the intended physics and version.
+      </p>
+    </div>
+
+    <!-- ROULETTE VIEW -->
+    <div id="roulette-view" style="display: none;">
+      <div class="roulette-box">
+        <h2 style="margin-bottom: 15px;">Level Roulette</h2>
+        <div id="roulette-target-text" style="font-size: 20px; color: var(--text-secondary); margin-bottom: 20px;">
+          Click "Start" to begin your challenge!
+        </div>
+        <button id="btn-start" class="roulette-btn" onclick="startRoulette()">Start</button>
+        <button id="btn-next" class="roulette-btn" onclick="nextRoulette()" style="display: none;">Done!</button>
+        <button id="btn-giveup" class="roulette-btn" onclick="giveupRoulette()" style="display: none; background: #ff4444; color: #fff;">Give Up</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    let levelsData = [];
+    let playersData = [];
+    let currentMainTab = 'levels';
+    let currentSubTab = 'main';
+
+    async function loadData() {
+      try {
+        const res = await fetch('./data.json?v=' + Date.now());
+        const data = await res.json();
+        levelsData = data.levels || [];
+        playersData = data.players || [];
+        init();
+      } catch (err) {
+        console.error("Błąd podczas ładowania danych data.json:", err);
+      }
+    }
+
+    function calculatePoints(position) {
+      if (position < 1) return 500;
+      if (position > 100) return 0;
+      return Math.round(500 - (position - 1) * (499 / 99));
+    }
+
+    function recalculatePlayerPoints() {
+      return playersData.map(player => {
+        let totalPoints = 0;
+        const completedLevels = player.completed || [];
+        
+        completedLevels.forEach(lvlTitle => {
+          const index = levelsData.findIndex(l => l.title.toLowerCase() === lvlTitle.toLowerCase());
+          if (index !== -1) {
+            totalPoints += calculatePoints(index + 1);
+          }
+        });
+
+        const createdLevels = levelsData
+          .filter(l => l.creator && l.creator.toLowerCase() === player.name.toLowerCase())
+          .map(l => l.title);
+
+        const verifiedLevels = levelsData
+          .filter(l => l.verifier && l.verifier.toLowerCase() === player.name.toLowerCase())
+          .map(l => l.title);
+
+        return { 
+          ...player, 
+          points: totalPoints,
+          created: createdLevels,
+          verified: verifiedLevels,
+          beated: completedLevels
+        };
+      }).sort((a, b) => b.points - a.points);
+    }
+
+    function init() {
+      document.getElementById('stat-levels').innerText = levelsData.length;
+      document.getElementById('stat-players').innerText = playersData.length;
+      filterData();
+    }
+
+    function switchMainTab(tab, ev) {
+      currentMainTab = tab;
+      document.querySelectorAll('.nav-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
+      if (ev && ev.target) ev.target.classList.add('active');
+
+      document.getElementById('main-content').style.display = 'none';
+      document.getElementById('sub-levels-nav').style.display = 'none';
+      document.getElementById('rules-view').style.display = 'none';
+      document.getElementById('stats-view').style.display = 'none';
+      document.getElementById('roulette-view').style.display = 'none';
+      document.getElementById('level-view').style.display = 'none';
+      document.getElementById('player-view').style.display = 'none';
+
+      if (tab === 'levels') {
+        document.getElementById('sub-levels-nav').style.display = 'flex';
+        document.getElementById('main-content').style.display = 'block';
+        document.getElementById('search-controls').style.display = 'flex';
+        filterData();
+      } else if (tab === 'stats') {
+        document.getElementById('stats-view').style.display = 'block';
+        renderLeaderboard();
+      } else if (tab === 'rules') {
+        document.getElementById('rules-view').style.display = 'block';
+      } else if (tab === 'roulette') {
+        document.getElementById('roulette-view').style.display = 'block';
+      }
+    }
+
+    function switchSubTab(subTab, ev) {
+      currentSubTab = subTab;
+      document.querySelectorAll('.sub-nav-tabs .sub-tab-btn').forEach(btn => btn.classList.remove('active'));
+      if (ev && ev.target) ev.target.classList.add('active');
+      filterData();
+    }
+
+    function renderLevels(list) {
+      const container = document.getElementById('list-container');
+      container.innerHTML = '';
+      if (list.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No levels on ${currentSubTab === 'main' ? 'Main List' : 'Legacy List'} yet.</div>`;
+        return;
+      }
+      list.forEach((lvl) => {
+        const globalRank = levelsData.findIndex(l => l.id === lvl.id) + 1;
+        const points = calculatePoints(globalRank);
+        const thumbUrl = lvl.youtubeId 
+          ? `https://img.youtube.com/vi/${lvl.youtubeId}/mqdefault.jpg` 
+          : 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="148" height="92" viewBox="0 0 148 92"%3E%3Crect width="100%25" height="100%25" fill="%23141f16"/%3E%3C/svg%3E';
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.onclick = () => openLevelView(lvl.id);
+        card.innerHTML = `
+          <img class="card-thumb" src="${thumbUrl}" alt="${lvl.title} thumbnail" loading="lazy">
+          <div class="card-info">
+            <div class="card-title">#${globalRank} - ${lvl.title}</div>
+            <div class="card-sub">by <strong>${lvl.creator}</strong></div>
+          </div>
+          <div class="card-points">+${points} PTS</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function openLevelView(id) {
+      const lvlIndex = levelsData.findIndex(l => l.id === id);
+      if (lvlIndex === -1) return;
+      
+      const lvl = levelsData[lvlIndex];
+      const points = calculatePoints(lvlIndex + 1);
+
+      document.getElementById('main-content').style.display = 'none';
+      document.getElementById('sub-levels-nav').style.display = 'none';
+      document.getElementById('level-view').style.display = 'block';
+
+      document.getElementById('lvl-title').innerText = lvl.title;
+      
+      let recordsHtml = lvl.records && lvl.records.length > 0 
+        ? lvl.records.map(r => `<div style="padding: 6px 0;"><strong style="color:var(--accent-cyan);">${r.player}</strong> - ${r.percent}% (${r.video ? `<a href="${r.video}" target="_blank" style="color:var(--text-secondary);">Proof</a>` : 'No link'})</div>`).join('')
+        : '<div style="color: var(--text-muted);">No records yet.</div>';
+
+      document.getElementById('lvl-details').innerHTML = `
+        <div class="info-meta">
+          <div><strong>Created by:</strong> ${lvl.creator}</div>
+          <div><strong>Verified by:</strong> ${lvl.verifier}</div>
+          <div><strong>Song:</strong> ${lvl.song}</div>
+          <div><strong>Length:</strong> ${lvl.length}</div>
+          <div><strong>Points Awarded:</strong> <span style="color:var(--accent-cyan); font-weight:800;">${points} PTS</span></div>
+        </div>
+
+        ${lvl.youtubeId ? `
+          <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/${lvl.youtubeId}" frameborder="0" allowfullscreen></iframe>
+          </div>
+        ` : ''}
+
+        <h3 style="color: var(--accent-cyan); margin-top: 20px;">Records (${lvl.records ? lvl.records.length : 0})</h3>
+        <div class="info-meta">${recordsHtml}</div>
+      `;
+    }
+
+    function renderLeaderboard() {
+      const query = document.getElementById('stats-search-input').value.toLowerCase().trim();
+      const container = document.getElementById('stats-result-container');
+      const rankedPlayers = recalculatePlayerPoints();
+
+      const matched = rankedPlayers.filter(p => p.name.toLowerCase().includes(query));
+
+      if (matched.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">No players found.</div>';
+        return;
+      }
+
+      container.innerHTML = matched.map((p) => {
+        const rank = rankedPlayers.findIndex(item => item.id === p.id) + 1;
+        return `
+          <div class="card player-card" onclick="openPlayerView(${p.id})">
+            <div class="card-info">
+              <div class="card-title">#${rank} - ${p.name}</div>
+              <div class="card-sub">
+                created: <strong>${p.created.length}</strong> | 
+                verified: <strong>${p.verified.length}</strong> | 
+                beated: <strong>${p.beated.length}</strong>
+              </div>
+            </div>
+            <div class="card-points">${p.points} PTS</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openPlayerView(id) {
+      const updatedPlayers = recalculatePlayerPoints();
+      const p = updatedPlayers.find(item => item.id === id);
+      if (!p) return;
+
+      const rank = updatedPlayers.findIndex(item => item.id === p.id) + 1;
+
+      document.getElementById('stats-view').style.display = 'none';
+      document.getElementById('player-view').style.display = 'block';
+
+      document.getElementById('pl-name').innerText = `#${rank} - ${p.name}`;
+      document.getElementById('pl-details').innerHTML = `
+        <div class="info-meta">
+          <div><strong>Rank:</strong> #${rank}</div>
+          <div><strong>Total Points:</strong> <span style="color:var(--accent-cyan); font-weight:800;">${p.points} PTS</span></div>
+        </div>
+
+        <h3 style="color: var(--accent-cyan); margin-top: 20px; font-weight: 700;">created: (${p.created.length})</h3>
+        <div class="info-meta">
+          ${p.created.length > 0 
+            ? p.created.map(lvl => `<div>• ${lvl}</div>`).join('') 
+            : '<div style="color: var(--text-muted);">None</div>'}
+        </div>
+
+        <h3 style="color: var(--accent-cyan); margin-top: 20px; font-weight: 700;">verified: (${p.verified.length})</h3>
+        <div class="info-meta">
+          ${p.verified.length > 0 
+            ? p.verified.map(lvl => `<div>• ${lvl}</div>`).join('') 
+            : '<div style="color: var(--text-muted);">None</div>'}
+        </div>
+
+        <h3 style="color: var(--accent-cyan); margin-top: 20px; font-weight: 700;">beated: (${p.beated.length})</h3>
+        <div class="info-meta">
+          ${p.beated.length > 0 
+            ? p.beated.map(lvl => `<div>• ${lvl}</div>`).join('') 
+            : '<div style="color: var(--text-muted);">None</div>'}
+        </div>
+      `;
+    }
+
+    function filterData() {
+      const searchEl = document.getElementById('search-input');
+      const query = searchEl ? searchEl.value.toLowerCase() : '';
+      if (currentMainTab === 'levels') {
+        const filtered = levelsData.filter(lvl => 
+          (lvl.type === currentSubTab || (!lvl.type && currentSubTab === 'main')) && lvl.title.toLowerCase().includes(query)
+        );
+        renderLevels(filtered);
+      }
+    }
+
+    function closeView() {
+      document.getElementById('level-view').style.display = 'none';
+      document.getElementById('player-view').style.display = 'none';
+      
+      if (currentMainTab === 'levels') {
+        document.getElementById('main-content').style.display = 'block';
+        document.getElementById('sub-levels-nav').style.display = 'flex';
+      } else if (currentMainTab === 'stats') {
+        document.getElementById('stats-view').style.display = 'block';
+      }
+    }
+
+    document.getElementById('theme-btn').addEventListener('click', () => {
+      const isLight = document.body.getAttribute('data-theme') === 'light';
+      if (isLight) {
+        document.body.removeAttribute('data-theme');
+        document.getElementById('theme-btn').innerText = '🌙 Theme';
+      } else {
+        document.body.setAttribute('data-theme', 'light');
+        document.getElementById('theme-btn').innerText = '☀️ Theme';
+      }
+    });
+
+    let currentPercent = 0;
+
+    function startRoulette() {
+      if (levelsData.length === 0) {
+        document.getElementById('roulette-target-text').innerText = 'Add levels to the list first!';
+        return;
+      }
+      currentPercent = 1;
+      document.getElementById('btn-start').style.display = 'none';
+      document.getElementById('btn-next').style.display = 'inline-block';
+      document.getElementById('btn-giveup').style.display = 'inline-block';
+      generateRouletteTarget();
+    }
+
+    function generateRouletteTarget() {
+      const randomLvl = levelsData[Math.floor(Math.random() * levelsData.length)];
+      document.getElementById('roulette-target-text').innerHTML = 
+        `Get <span style="color: var(--accent-cyan); font-size: 24px; font-weight: 900; margin: 0 4px;">${currentPercent}%</span> on <strong style="color: var(--text-primary); margin-left: 6px;">${randomLvl.title}</strong>`;
+      
+      document.getElementById('btn-next').innerText = `Done! (${currentPercent + 1}%)`;
+    }
+
+    function nextRoulette() {
+      if (currentPercent >= 100) {
+        document.getElementById('roulette-target-text').innerText = '🎉 Congratulations! You completed 100% on the Roulette!';
+        resetRouletteUI();
+        return;
+      }
+      currentPercent++;
+      generateRouletteTarget();
+    }
+
+    function giveupRoulette() {
+      const score = currentPercent - 1;
+      document.getElementById('roulette-target-text').innerText = `Game Over! You reached ${score}% in this Roulette run.`;
+      resetRouletteUI();
+    }
+
+    function resetRouletteUI() {
+      document.getElementById('btn-start').style.display = 'inline-block';
+      document.getElementById('btn-next').style.display = 'none';
+      document.getElementById('btn-giveup').style.display = 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', loadData);
+  </script>
+</body>
+</html>
