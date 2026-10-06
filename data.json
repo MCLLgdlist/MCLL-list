@@ -1,6 +1,20 @@
 {
   "levels": [
     {
+      "id": 3,
+      "gdId": "N/A",
+      "title": "kosu level",
+      "creator": "kosu",
+      "verifier": "kosu",
+      "song": "unknown",
+      "length": "N/A",
+      "youtubeId": "OIZCQnVQiKg",
+      "type": "main",
+      "records": [
+        { "player": "kosu", "percent": 100, "video": "https://youtu.be/OIZCQnVQiKg" }
+      ]
+    },
+    {
       "id": 1,
       "gdId": "150057322",
       "title": "little layout",
@@ -32,6 +46,7 @@
   "players": [
     { "id": 1, "name": "Merlinb", "completed": ["little layout"] },
     { "id": 2, "name": "capmind", "completed": [] },
-    { "id": 3, "name": "elias37", "completed": ["first ever mcll level"] }
+    { "id": 3, "name": "elias37", "completed": ["first ever mcll level"] },
+    { "id": 4, "name": "kosu", "completed": ["kosu level"] }
   ]
 }
