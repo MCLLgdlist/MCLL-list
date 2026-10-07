@@ -14,6 +14,7 @@
         { "date": "2026-10-07", "type": "added", "text": "unleashed moc was added as #1" }
       ],
       "records": [
+        { "player": "ZXNN43", "percent": 100, "video": "https://medal.tv/games/imported-clips/clips/nG6pm53hoCFAZbE0l/spok?invite=cr-MSxZMjAsNzQxNjYxMDU0LA" },
         { "player": "Merlinb", "percent": 100, "video": "https://youtu.be/t6MVkTQyDeM?si=VVPLwA9P32eyHyR-" },
         { "player": "elias37", "percent": 100, "video": "https://youtu.be/vJotqg2z1ms?is=VNSe634P7EA_FenS" }
       ]
@@ -33,6 +34,7 @@
         { "date": "2026-10-07", "type": "moved", "text": "The Light at the End was moved down to #2" }
       ],
       "records": [
+        { "player": "ZXNN43", "percent": 100, "video": "https://medal.tv/games/imported-clips/clips/nG6nOHPvM_DlTIMQP/spok?invite=cr-MSxZQmEsNzQxNjYxMDU0LA" },
         { "player": "Merlinb", "percent": 100, "video": "https://youtu.be/XDGLpQiX9RI?si=l-N_LRDgKF70jYf-" }
       ]
     },
@@ -85,7 +87,7 @@
     { "id": 2, "name": "capmind", "country": "eg", "completed": [] },
     { "id": 3, "name": "elias37", "country": "", "completed": ["first ever mcll level", "unleashed moc"] },
     { "id": 4, "name": "kosu", "country": "", "completed": ["little layout"] },
-    { "id": 5, "name": "ZXNN43", "country": "", "completed": ["little layout"] },
+    { "id": 5, "name": "ZXNN43", "country": "", "completed": ["little layout", "The Light at the End", "unleashed moc"] },
     { "id": 6, "name": "Hershey420", "country": "", "completed": ["little layout", "first ever mcll level"] }
   ]
 }
