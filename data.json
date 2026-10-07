@@ -11,6 +11,7 @@
       "youtubeId": "u9L25XWpFio",
       "type": "main",
       "records": [
+        { "player": "Hershey420", "percent": 100, "video": "https://medal.tv/games/geometry-dash/clips/nFMNMPZsvnrmyHIrt?invite=cr-MSx6VnosODQ4ODY1NDQ2" },
         { "player": "ZXNN43", "percent": 100, "video": "https://youtu.be/p2vR2rcHaBw" },
         { "player": "kosu", "percent": 100, "video": "https://youtu.be/OIZCQnVQiKg" },
         { "player": "Merlinb", "percent": 100, "video": "https://youtu.be/u9L25XWpFio" }
@@ -27,6 +28,7 @@
       "youtubeId": "vuZYrtR9V4o",
       "type": "main",
       "records": [
+        { "player": "Hershey420", "percent": 100, "video": "https://medal.tv/games/geometry-dash/clips/nFMKLuJBXtvWB1kY-?invite=cr-MSxGYmcsODQ4ODY1NDQ2" },
         { "player": "elias37", "percent": 100, "video": "https://youtu.be/vuZYrtR9V4o" }
       ]
     }
@@ -36,6 +38,7 @@
     { "id": 2, "name": "capmind", "country": "eg", "completed": [] },
     { "id": 3, "name": "elias37", "country": "", "completed": ["first ever mcll level"] },
     { "id": 4, "name": "kosu", "country": "", "completed": ["little layout"] },
-    { "id": 5, "name": "ZXNN43", "country": "", "completed": ["little layout"] }
+    { "id": 5, "name": "ZXNN43", "country": "", "completed": ["little layout"] },
+    { "id": 6, "name": "Hershey420", "country": "", "completed": ["little layout", "first ever mcll level"] }
   ]
 }
