@@ -66,9 +66,9 @@
   "players": [
     { "id": 1, "name": "Merlinb", "country": "", "completed": ["little layout", "The Light at the End", "unleashed moc", "first ever mcll level"] },
     { "id": 2, "name": "capmind", "country": "eg", "completed": [] },
-    { "id": 3, "name": "elias37", "country": "", "completed": ["first ever mcll level", "unleased moc"] },
+    { "id": 3, "name": "elias37", "country": "", "completed": ["first ever mcll level", "unleashed moc"] },
     { "id": 4, "name": "kosu", "country": "", "completed": ["little layout"] },
     { "id": 5, "name": "ZXNN43", "country": "", "completed": ["little layout"] },
     { "id": 6, "name": "Hershey420", "country": "", "completed": ["little layout", "first ever mcll level"] }
   ]
-    }
+}
