@@ -2,6 +2,20 @@
   "levels": [
     {
       "id": 1,
+      "gdId": "150097158",
+      "title": "The Light at the End",
+      "creator": "Merlinb",
+      "verifier": "Merlinb",
+      "song": "Silence Stream",
+      "length": "short",
+      "youtubeId": "XDGLpQiX9RI",
+      "type": "main",
+      "records": [
+        { "player": "Merlinb", "percent": 100, "video": "https://youtu.be/XDGLpQiX9RI?si=l-N_LRDgKF70jYf-" }
+      ]
+    },
+    {
+      "id": 2,
       "gdId": "150057322",
       "title": "little layout",
       "creator": "Merlinb",
@@ -18,7 +32,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": 3,
       "gdId": "150030228",
       "title": "first ever mcll level",
       "creator": "capmind",
@@ -34,11 +48,11 @@
     }
   ],
   "players": [
-    { "id": 1, "name": "Merlinb", "country": "", "completed": ["little layout"] },
+    { "id": 1, "name": "Merlinb", "country": "", "completed": ["little layout", "The Light at the End"] },
     { "id": 2, "name": "capmind", "country": "eg", "completed": [] },
     { "id": 3, "name": "elias37", "country": "", "completed": ["first ever mcll level"] },
     { "id": 4, "name": "kosu", "country": "", "completed": ["little layout"] },
     { "id": 5, "name": "ZXNN43", "country": "", "completed": ["little layout"] },
     { "id": 6, "name": "Hershey420", "country": "", "completed": ["little layout", "first ever mcll level"] }
   ]
-}
+        }
