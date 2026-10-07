@@ -14,7 +14,8 @@
         { "date": "2026-10-07", "type": "added", "text": "the popo was added as #1" }
       ],
       "records": [
-        { "player": "szymipek", "percent": 100, "video": "https://www.youtube.com/watch?v=M4secsCQh9w" }
+        { "player": "szymipek", "percent": 100, "video": "https://www.youtube.com/watch?v=M4secsCQh9w" },
+        { "player": "ZXNN43", "percent": 100, "video": "https://medal.tv/games/imported-clips/clips/nG8oDFtxNUZakk2t8/spok?invite=cr-MSxLdkMsNzQxNjYxMDU0LA" }
       ]
     },
     {
@@ -126,8 +127,8 @@
     { "id": 2, "name": "capmind", "country": "eg", "completed": [] },
     { "id": 3, "name": "elias37", "country": "ch", "completed": ["first ever mcll level", "unleashed moc", "amethiiiist", "The Light at the End"] },
     { "id": 4, "name": "kosu", "country": "us", "completed": ["little layout"] },
-    { "id": 5, "name": "ZXNN43", "country": "us", "completed": ["little layout", "The Light at the End", "unleashed moc"] },
+    { "id": 5, "name": "ZXNN43", "country": "us", "completed": ["little layout", "The Light at the End", "unleashed moc", "the popo"] },
     { "id": 6, "name": "Hershey420", "country": "", "completed": ["little layout", "first ever mcll level"] },
     { "id": 7, "name": "szymipek", "country": "pl", "completed": ["the popo"] }
   ]
-    }
+        }
