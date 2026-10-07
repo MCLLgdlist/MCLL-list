@@ -1,7 +1,7 @@
 {
   "levels": [
     {
-      "id": 5,
+      "id": 6,
       "gdId": "150117298",
       "title": "the popo",
       "creator": "szymipek",
@@ -15,6 +15,23 @@
       ],
       "records": [
         { "player": "szymipek", "percent": 100, "video": "https://www.youtube.com/watch?v=M4secsCQh9w" }
+      ]
+    },
+    {
+      "id": 5,
+      "gdId": "1501127126",
+      "title": "amethiiiist",
+      "creator": "elias37",
+      "verifier": "elias37",
+      "song": "ricochet love",
+      "length": "tiny",
+      "youtubeId": "usz4InMe6GM",
+      "type": "main",
+      "history": [
+        { "date": "2026-10-07", "type": "added", "text": "amethiiiist was added as #2" }
+      ],
+      "records": [
+        { "player": "elias37", "percent": 100, "video": "https://youtu.be/usz4InMe6GM?is=oCbua9oT4tA-mZ_M" }
       ]
     },
     {
@@ -106,10 +123,10 @@
   "players": [
     { "id": 1, "name": "Merlinb", "country": "", "completed": ["little layout", "The Light at the End", "unleashed moc", "first ever mcll level"] },
     { "id": 2, "name": "capmind", "country": "eg", "completed": [] },
-    { "id": 3, "name": "elias37", "country": "", "completed": ["first ever mcll level", "unleashed moc"] },
-    { "id": 4, "name": "kosu", "country": "", "completed": ["little layout"] },
+    { "id": 3, "name": "elias37", "country": "ch", "completed": ["first ever mcll level", "unleashed moc", "amethiiiist"] },
+    { "id": 4, "name": "kosu", "country": "us", "completed": ["little layout"] },
     { "id": 5, "name": "ZXNN43", "country": "us", "completed": ["little layout", "The Light at the End", "unleashed moc"] },
     { "id": 6, "name": "Hershey420", "country": "", "completed": ["little layout", "first ever mcll level"] },
     { "id": 7, "name": "szymipek", "country": "pl", "completed": ["the popo"] }
   ]
-}
+        }
