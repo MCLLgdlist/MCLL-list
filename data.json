@@ -71,7 +71,8 @@
       ],
       "records": [
         { "player": "ZXNN43", "percent": 100, "video": "https://medal.tv/games/imported-clips/clips/nG6nOHPvM_DlTIMQP/spok?invite=cr-MSxZQmEsNzQxNjYxMDU0LA" },
-        { "player": "Merlinb", "percent": 100, "video": "https://youtu.be/XDGLpQiX9RI?si=l-N_LRDgKF70jYf-" }
+        { "player": "Merlinb", "percent": 100, "video": "https://youtu.be/XDGLpQiX9RI?si=l-N_LRDgKF70jYf-" },
+        { "player": "elias37", "percent": 100, "video": "https://youtu.be/G9Ii-QsmNc4?is=vlBZ3gZebpaAouZd" }
       ]
     },
     {
@@ -123,10 +124,10 @@
   "players": [
     { "id": 1, "name": "Merlinb", "country": "", "completed": ["little layout", "The Light at the End", "unleashed moc", "first ever mcll level"] },
     { "id": 2, "name": "capmind", "country": "eg", "completed": [] },
-    { "id": 3, "name": "elias37", "country": "ch", "completed": ["first ever mcll level", "unleashed moc", "amethiiiist"] },
+    { "id": 3, "name": "elias37", "country": "ch", "completed": ["first ever mcll level", "unleashed moc", "amethiiiist", "The Light at the End"] },
     { "id": 4, "name": "kosu", "country": "us", "completed": ["little layout"] },
     { "id": 5, "name": "ZXNN43", "country": "us", "completed": ["little layout", "The Light at the End", "unleashed moc"] },
     { "id": 6, "name": "Hershey420", "country": "", "completed": ["little layout", "first ever mcll level"] },
     { "id": 7, "name": "szymipek", "country": "pl", "completed": ["the popo"] }
   ]
-        }
+    }
