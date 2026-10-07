@@ -10,6 +10,9 @@
       "length": "short",
       "youtubeId": "vJotqg2z1ms",
       "type": "main",
+      "history": [
+        { "date": "2026-10-07", "type": "added", "text": "unleashed moc was added as #1" }
+      ],
       "records": [
         { "player": "Merlinb", "percent": 100, "video": "https://youtu.be/t6MVkTQyDeM?si=VVPLwA9P32eyHyR-" },
         { "player": "elias37", "percent": 100, "video": "https://youtu.be/vJotqg2z1ms?is=VNSe634P7EA_FenS" }
@@ -25,6 +28,10 @@
       "length": "short",
       "youtubeId": "XDGLpQiX9RI",
       "type": "main",
+      "history": [
+        { "date": "2026-10-06", "type": "added", "text": "The Light at the End was added as #1" },
+        { "date": "2026-10-07", "type": "moved", "text": "The Light at the End was moved down to #2" }
+      ],
       "records": [
         { "player": "Merlinb", "percent": 100, "video": "https://youtu.be/XDGLpQiX9RI?si=l-N_LRDgKF70jYf-" }
       ]
@@ -39,6 +46,10 @@
       "length": "N/A",
       "youtubeId": "u9L25XWpFio",
       "type": "main",
+      "history": [
+        { "date": "2026-09-26", "type": "added", "text": "little layout was added as #2" },
+        { "date": "2026-10-06", "type": "moved", "text": "little layout was moved down to #3" }
+      ],
       "records": [
         { "player": "Hershey420", "percent": 100, "video": "https://medal.tv/games/geometry-dash/clips/nFMNMPZsvnrmyHIrt?invite=cr-MSx6VnosODQ4ODY1NDQ2" },
         { "player": "ZXNN43", "percent": 100, "video": "https://youtu.be/p2vR2rcHaBw" },
@@ -56,6 +67,12 @@
       "length": "short",
       "youtubeId": "vuZYrtR9V4o",
       "type": "main",
+      "history": [
+        { "date": "2026-09-25", "type": "added", "text": "first ever mcll level was added as #1" },
+        { "date": "2026-09-26", "type": "moved", "text": "first ever mcll level was moved down to #2" },
+        { "date": "2026-10-06", "type": "moved", "text": "first ever mcll level was moved down to #3" },
+        { "date": "2026-10-07", "type": "moved", "text": "first ever mcll level was moved down to #4" }
+      ],
       "records": [
         { "player": "Merlinb", "percent": 100, "video": "https://youtu.be/st6T7ZFz9D8?si=n2gWQDlOWXkSm__a" },
         { "player": "Hershey420", "percent": 100, "video": "https://medal.tv/games/geometry-dash/clips/nFMKLuJBXtvWB1kY-?invite=cr-MSxGYmcsODQ4ODY1NDQ2" },
