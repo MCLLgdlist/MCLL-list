@@ -78,6 +78,17 @@
     gap: 8px;
   }
 
+  .auth-top-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--accent-cyan);
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
   .discord-btn {
     display: inline-flex;
     align-items: center;
@@ -188,7 +199,7 @@
     background: var(--badge-bg);
   }
 
-  .rules-box, .roulette-box, .stats-box {
+  .rules-box, .roulette-box, .stats-box, .submit-box, .admin-box {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: 14px;
@@ -199,7 +210,7 @@
 
   .controls { display: flex; gap: 10px; margin-bottom: 20px; flex-direction: column; }
 
-  input, select {
+  input, select, textarea {
     background: var(--input-bg);
     color: var(--text-primary);
     border: 1px solid var(--card-border);
@@ -208,7 +219,10 @@
     font-size: 14px;
     outline: none;
     width: 100%;
+    margin-bottom: 12px;
   }
+
+  textarea { resize: vertical; min-height: 80px; }
 
   .pointercrate-card {
     display: block !important;
@@ -365,8 +379,8 @@
     font-family: monospace;
   }
 
-  .btn-roulette {
-    padding: 12px 20px;
+  .btn-action, .btn-roulette {
+    padding: 10px 18px;
     font-size: 14px;
     font-weight: 800;
     border-radius: 10px;
@@ -374,10 +388,48 @@
     cursor: pointer;
     transition: opacity 0.2s;
   }
-  .btn-roulette:hover { opacity: 0.9; }
-  .btn-start { background: var(--accent-cyan); color: #0c140e; }
-  .btn-next { background: var(--success-color); color: #fff; }
-  .btn-giveup { background: var(--danger-color); color: #fff; }
+  .btn-action:hover, .btn-roulette:hover { opacity: 0.9; }
+  .btn-primary { background: var(--accent-cyan); color: #0c140e; width: 100%; }
+  .btn-success { background: var(--success-color); color: #fff; }
+  .btn-danger { background: var(--danger-color); color: #fff; }
+
+  /* Modal Auth & Submissions */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  .modal-content {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 24px;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+  }
+  .close-modal {
+    position: absolute;
+    top: 12px; right: 14px;
+    background: none; border: none;
+    color: var(--text-muted);
+    font-size: 20px; cursor: pointer;
+  }
+
+  .submission-item {
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
+    padding: 14px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
   footer { text-align: center; color: var(--text-muted); font-size: 12px; padding: 30px 16px; }
   </style>
@@ -385,6 +437,7 @@
 <body>
   <header>
     <div class="header-actions">
+      <button class="auth-top-btn" id="auth-top-btn" onclick="openAuthModal()">Log In / Register</button>
       <a href="https://discord.gg/4a6qdgvCN" target="_blank" class="discord-btn" title="Join Discord">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36">
           <path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.91-72.15ZM42.45 65.69c-6.22 0-11.33-5.71-11.33-12.73s5-12.72 11.33-12.72c6.38 0 11.45 5.76 11.33 12.72 0 7.02-4.95 12.73-11.33 12.73Zm42.24 0c-6.22 0-11.33-5.71-11.33-12.73s5-12.72 11.33-12.72c6.37 0 11.44 5.76 11.33 12.72 0 7.02-4.96 12.73-11.33 12.73Z"/>
@@ -401,7 +454,7 @@
   </header>
 
   <div class="wrap">
-    <nav class="nav-tabs">
+    <nav class="nav-tabs" id="main-nav-tabs">
       <button class="tab-btn active" onclick="switchMainTab('levels', event)">Levels</button>
       <button class="tab-btn" onclick="switchMainTab('stats', event)">Stats</button>
       <button class="tab-btn" onclick="switchMainTab('rules', event)">Rules</button>
@@ -413,6 +466,7 @@
       <button class="sub-tab-btn" onclick="switchSubTab('legacy', event)">Legacy List</button>
     </div>
 
+    <!-- Rules View -->
     <div class="rules-box" id="rules-view">
       <h2 style="color: var(--accent-cyan); margin-top:0;">List Rules</h2>
       <ul style="padding-left: 18px; line-height: 1.6;">
@@ -424,6 +478,7 @@
       </ul>
     </div>
 
+    <!-- Stats View -->
     <div class="stats-box" id="stats-view">
       <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 16px;">Player Leaderboard</h2>
       <div style="display: flex; gap: 10px; flex-direction: column; margin-bottom: 16px;">
@@ -435,6 +490,7 @@
       <div id="stats-result-container"></div>
     </div>
 
+    <!-- Roulette View -->
     <div class="roulette-box" id="roulette-view" style="text-align: center;">
       <h2 style="color: var(--accent-cyan); margin-top:0;">Level Roulette</h2>
       <div id="roulette-target-text" style="font-size: 22px; font-weight: 800; margin: 20px 0; min-height: 50px; display: flex; align-items: center; justify-content: center;">
@@ -445,6 +501,70 @@
         <button class="btn-roulette btn-next" id="btn-next" style="display:none;" onclick="nextRoulette()">Done! (+1%)</button>
         <button class="btn-roulette btn-giveup" id="btn-giveup" style="display:none;" onclick="giveupRoulette()">Give Up</button>
       </div>
+    </div>
+
+    <!-- Submit View -->
+    <div class="submit-box" id="submit-view">
+      <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 16px;">Submissions</h2>
+      <div class="sub-nav-tabs" style="margin-bottom: 16px;">
+        <button class="sub-tab-btn active" id="sub-tab-record" onclick="switchSubmitSubTab('record')">Submit Record</button>
+        <button class="sub-tab-btn" id="sub-tab-level" onclick="switchSubmitSubTab('level')">Submit Level</button>
+      </div>
+      
+      <!-- Submit Record Form -->
+      <form id="record-form" onsubmit="handleRecordSubmit(event)">
+        <label style="font-size: 13px; color: var(--text-secondary);">Level:</label>
+        <select id="rec-level-select" required></select>
+
+        <label style="font-size: 13px; color: var(--text-secondary);">Completion Video:</label>
+        <input type="url" id="rec-video" placeholder="https://youtube.com/..." required>
+
+        <label style="font-size: 13px; color: var(--text-secondary);">Raw Video (Optional):</label>
+        <input type="url" id="rec-raw" placeholder="Google Drive, Dropbox, Mega, etc.">
+
+        <label style="font-size: 13px; color: var(--text-secondary);">Notes (Optional):</label>
+        <textarea id="rec-notes" placeholder="Refresh rate / Hz, audio details, etc."></textarea>
+
+        <button type="submit" class="btn-action btn-primary">Submit Record</button>
+      </form>
+
+      <!-- Submit Level Form -->
+      <form id="level-form" class="hidden" onsubmit="handleLevelSubmit(event)" style="display:none;">
+        <label style="font-size: 13px; color: var(--text-secondary);">Level name:</label>
+        <input type="text" id="lvl-name" required>
+
+        <label style="font-size: 13px; color: var(--text-secondary);">Creator:</label>
+        <input type="text" id="lvl-creator" required>
+
+        <label style="font-size: 13px; color: var(--text-secondary);">Verifier:</label>
+        <input type="text" id="lvl-verifier" required>
+
+        <label style="font-size: 13px; color: var(--text-secondary);">Verification video link:</label>
+        <input type="url" id="lvl-video" required>
+
+        <label style="font-size: 13px; color: var(--text-secondary);">Song:</label>
+        <input type="text" id="lvl-song" required>
+
+        <label style="font-size: 13px; color: var(--text-secondary);">Id:</label>
+        <input type="text" id="lvl-id" required>
+
+        <label style="font-size: 13px; color: var(--text-secondary);">Length:</label>
+        <select id="lvl-length">
+          <option value="tiny">Tiny</option>
+          <option value="short">Short</option>
+          <option value="medium">Medium</option>
+          <option value="long">Long</option>
+          <option value="N/A">N/A</option>
+        </select>
+
+        <button type="submit" class="btn-action btn-primary">Submit Level</button>
+      </form>
+    </div>
+
+    <!-- Admin Panel View -->
+    <div class="admin-box" id="admin-view">
+      <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 16px;">Admin Panel - Pending Submissions</h2>
+      <div id="admin-pending-container"></div>
     </div>
 
     <main id="main-content">
@@ -467,6 +587,37 @@
     </div>
   </div>
 
+  <!-- Auth Modal (Login / Register) -->
+  <div class="modal" id="auth-modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeAuthModal()">&times;</button>
+      <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <button class="sub-tab-btn active" id="modal-tab-login" onclick="switchAuthMode('login')" style="flex:1;">Log In</button>
+        <button class="sub-tab-btn" id="modal-tab-register" onclick="switchAuthMode('register')" style="flex:1;">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="modal-login-form" onsubmit="handleLogin(event)">
+        <label style="font-size: 13px; color: var(--text-secondary);">login name:</label>
+        <input type="text" id="login-username" required>
+        <label style="font-size: 13px; color: var(--text-secondary);">password:</label>
+        <input type="password" id="login-password" required>
+        <button type="submit" class="btn-action btn-primary" style="margin-top: 10px;">Log In</button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="modal-register-form" class="hidden" onsubmit="handleRegister(event)" style="display:none;">
+        <label style="font-size: 13px; color: var(--text-secondary);">Register name:</label>
+        <input type="text" id="reg-username" required>
+        <label style="font-size: 13px; color: var(--text-secondary);">password:</label>
+        <input type="password" id="reg-password" required>
+        <label style="font-size: 13px; color: var(--text-secondary);">country (code e.g. pl, us, ch):</label>
+        <input type="text" id="reg-country" maxlength="2">
+        <button type="submit" class="btn-action btn-primary" style="margin-top: 10px;">Register</button>
+      </form>
+    </div>
+  </div>
+
   <footer>
     &copy; 2026 MCLL List. All rights reserved.
   </footer>
@@ -474,7 +625,73 @@
   <script>
     const defaultLevels = [
       {
+        id: 6,
+        gdId: "150117298",
+        title: "the popo",
+        creator: "szymipek",
+        verifier: "szymipek",
+        song: "the popo",
+        length: "short",
+        youtubeId: "M4secsCQh9w",
+        type: "main",
+        records: [
+          { player: "szymipek", percent: 100, video: "https://www.youtube.com/watch?v=M4secsCQh9w" },
+          { player: "ZXNN43", percent: 100, video: "https://medal.tv/games/imported-clips/clips/nG8oDFtxNUZakk2t8/spok?invite=cr-MSxLdkMsNzQxNjYxMDU0LA" },
+          { player: "Okad8m", percent: 100, video: "https://youtu.be/zdF3gB_iseg" }
+        ]
+      },
+      {
+        id: 5,
+        gdId: "150117126",
+        title: "amethiiiist",
+        creator: "elias37",
+        verifier: "elias37",
+        song: "ricochet love",
+        length: "tiny",
+        youtubeId: "usz4InMe6GM",
+        type: "main",
+        records: [
+          { player: "elias37", percent: 100, video: "https://youtu.be/usz4InMe6GM?is=oCbua9oT4tA-mZ_M" },
+          { player: "ZXNN43", percent: 100, video: "https://medal.tv/games/imported-clips/clips/nG8BEWG4huRSwE5VU/spok?invite=cr-MSxvMGEsNzQxNjYxMDU0LA" },
+          { player: "Okad8m", percent: 100, video: "https://youtu.be/zdF3gB_iseg" }
+        ]
+      },
+      {
         id: 1,
+        gdId: "150084513",
+        title: "unleashed moc",
+        creator: "elias37",
+        verifier: "elias37",
+        song: "kocmoc unleashed",
+        length: "short",
+        youtubeId: "vJotqg2z1ms",
+        type: "main",
+        records: [
+          { player: "ZXNN43", percent: 100, video: "https://medal.tv/games/imported-clips/clips/nG6pm53hoCFAZbE0l/spok?invite=cr-MSxZMjAsNzQxNjYxMDU0LA" },
+          { player: "Merlinb", percent: 100, video: "https://youtu.be/t6MVkTQyDeM?si=VVPLwA9P32eyHyR-" },
+          { player: "elias37", percent: 100, video: "https://youtu.be/vJotqg2z1ms?is=VNSe634P7EA_FenS" },
+          { player: "Okad8m", percent: 100, video: "https://youtu.be/zdF3gB_iseg" }
+        ]
+      },
+      {
+        id: 2,
+        gdId: "150097158",
+        title: "The Light at the End",
+        creator: "Merlinb",
+        verifier: "Merlinb",
+        song: "Silence Stream",
+        length: "short",
+        youtubeId: "XDGLpQiX9RI",
+        type: "main",
+        records: [
+          { player: "ZXNN43", percent: 100, video: "https://medal.tv/games/imported-clips/clips/nG6nOHPvM_DlTIMQP/spok?invite=cr-MSxZQmEsNzQxNjYxMDU0LA" },
+          { player: "Merlinb", percent: 100, video: "https://youtu.be/XDGLpQiX9RI?si=l-N_LRDgKF70jYf-" },
+          { player: "elias37", percent: 100, video: "https://youtu.be/G9Ii-QsmNc4?is=vlBZ3gZebpaAouZd" },
+          { player: "Okad8m", percent: 100, video: "https://youtu.be/zdF3gB_iseg" }
+        ]
+      },
+      {
+        id: 3,
         gdId: "150057322",
         title: "little layout",
         creator: "Merlinb",
@@ -484,12 +701,16 @@
         youtubeId: "u9L25XWpFio",
         type: "main",
         records: [
-          { player: "Merlinb", percent: 100, video: "https://youtu.be/u9L25XWpFio" }
+          { player: "Hershey420", percent: 100, video: "https://medal.tv/games/geometry-dash/clips/nFMNMPZsvnrmyHIrt?invite=cr-MSx6VnosODQ4ODY1NDQ2" },
+          { player: "ZXNN43", percent: 100, video: "https://youtu.be/p2vR2rcHaBw" },
+          { player: "kosu", percent: 100, video: "https://youtu.be/OIZCQnVQiKg" },
+          { player: "Merlinb", percent: 100, video: "https://youtu.be/u9L25XWpFio" },
+          { player: "Okad8m", percent: 100, video: "https://youtu.be/zdF3gB_iseg" }
         ]
       },
       {
-        id: 2,
-        gdId: "N/A",
+        id: 4,
+        gdId: "150030228",
         title: "first ever mcll level",
         creator: "capmind",
         verifier: "elias37",
@@ -498,33 +719,49 @@
         youtubeId: "vuZYrtR9V4o",
         type: "main",
         records: [
-          { player: "elias37", percent: 100, video: "https://youtu.be/vuZYrtR9V4o" }
+          { player: "Merlinb", percent: 100, video: "https://youtu.be/st6T7ZFz9D8?si=n2gWQDlOWXkSm__a" },
+          { player: "Hershey420", percent: 100, video: "https://medal.tv/games/geometry-dash/clips/nFMKLuJBXtvWB1kY-?invite=cr-MSxGYmcsODQ4ODY1NDQ2" },
+          { player: "elias37", percent: 100, video: "https://youtu.be/vuZYrtR9V4o" },
+          { player: "Okad8m", percent: 100, video: "https://youtu.be/zdF3gB_iseg" },
+          { player: "ZXNN43", percent: 100, video: "https://medal.tv/games/imported-clips/clips/nGa7G96X72bScViWd/spok?invite=cr-MSwyZ2ksNzQxNjYxMDU0LA" }
         ]
       }
     ];
 
     const defaultPlayers = [
-      { id: 1, name: "Merlinb", country: "", completed: ["little layout"] },
+      { id: 1, name: "Merlinb", country: "", completed: ["little layout", "The Light at the End", "unleashed moc", "first ever mcll level"] },
       { id: 2, name: "capmind", country: "eg", completed: [] },
-      { id: 3, name: "elias37", country: "", completed: ["first ever mcll level"] }
+      { id: 3, name: "elias37", country: "ch", completed: ["first ever mcll level", "unleashed moc", "amethiiiist", "The Light at the End"] },
+      { id: 4, name: "kosu", country: "us", completed: ["little layout"] },
+      { id: 5, name: "ZXNN43", country: "us", completed: ["little layout", "The Light at the End", "unleashed moc", "the popo", "amethiiiist", "first ever mcll level"] },
+      { id: 6, name: "Hershey420", country: "", completed: ["little layout", "first ever mcll level"] },
+      { id: 7, name: "szymipek", country: "pl", completed: ["the popo"] },
+      { id: 8, name: "Okad8m", country: "us", completed: ["the popo", "amethiiiist", "unleashed moc", "The Light at the End", "little layout", "first ever mcll level"] }
     ];
 
-    // Słownik podstawowych kodów krajów dla ładniejszych nazw w selectie (można rozszerzyć)
+    const defaultUsers = [
+      { name: 'admin', pass: 'admin', country: 'us', isAdmin: true },
+      { name: 'Merlinb', pass: 'password', country: '', isAdmin: false },
+      { name: 'capmind', pass: 'password', country: 'eg', isAdmin: false },
+      { name: 'elias37', pass: 'password', country: 'ch', isAdmin: false },
+      { name: 'kosu', pass: 'password', country: 'us', isAdmin: false },
+      { name: 'ZXNN43', pass: 'password', country: 'us', isAdmin: false },
+      { name: 'Hershey420', pass: 'password', country: '', isAdmin: false },
+      { name: 'szymipek', pass: 'password', country: 'pl', isAdmin: false },
+      { name: 'Okad8m', pass: 'password', country: 'us', isAdmin: false }
+    ];
+
     const countryNames = {
-      eg: "Egypt",
-      us: "United States",
-      pl: "Poland",
-      gb: "United Kingdom",
-      fr: "France",
-      de: "Germany",
-      ru: "Russia",
-      br: "Brazil",
-      es: "Spain",
-      ca: "Canada"
+      eg: "Egypt", us: "United States", pl: "Poland", gb: "United Kingdom",
+      fr: "France", de: "Germany", ru: "Russia", br: "Brazil", es: "Spain", ca: "Canada", ch: "Switzerland"
     };
 
     let levelsData = [];
     let playersData = [];
+    let usersData = JSON.parse(localStorage.getItem('mcll_users')) || defaultUsers;
+    let pendingSubmissions = JSON.parse(localStorage.getItem('mcll_pending')) || [];
+    let currentUser = JSON.parse(localStorage.getItem('mcll_current_user')) || null;
+
     let currentMainTab = 'levels';
     let currentSubTab = 'main';
 
@@ -542,6 +779,13 @@
       }
     }
 
+    function saveData() {
+      localStorage.setItem('mcll_users', JSON.stringify(usersData));
+      localStorage.setItem('mcll_pending', JSON.stringify(pendingSubmissions));
+      localStorage.setItem('mcll_current_user', JSON.stringify(currentUser));
+      localStorage.setItem('mcll_players', JSON.stringify(playersData));
+    }
+
     function calculatePoints(position) {
       if (position < 1) return 500;
       if (position > 100) return 0;
@@ -551,7 +795,6 @@
     function recalculatePlayerPoints() {
       const computed = playersData.map(player => {
         let totalPoints = 0;
-
         const completedLevels = player.completed || [];
         completedLevels.forEach(lvlTitle => {
           const index = levelsData.findIndex(l => l.title && l.title.toLowerCase() === lvlTitle.toLowerCase());
@@ -584,17 +827,15 @@
       document.getElementById('stat-levels').innerText = levelsData.length;
       document.getElementById('stat-players').innerText = playersData.length;
       populateCountryFilter();
+      populateRecordLevelSelect();
+      updateAuthUI();
       filterData();
     }
 
     function populateCountryFilter() {
       const select = document.getElementById('country-filter-select');
-      // Zachowaj pierwszą opcję "All Countries"
       select.innerHTML = '<option value="">All Countries</option>';
-
-      // Zbierz unikalne kraje z listy graczy
       const countries = [...new Set(playersData.map(p => p.country ? p.country.toLowerCase() : '').filter(c => c !== ''))];
-      
       countries.sort().forEach(code => {
         const name = countryNames[code] ? countryNames[code] : code.toUpperCase();
         const option = document.createElement('option');
@@ -604,16 +845,296 @@
       });
     }
 
+    function populateRecordLevelSelect() {
+      const select = document.getElementById('rec-level-select');
+      select.innerHTML = '';
+      levelsData.forEach(lvl => {
+        const opt = document.createElement('option');
+        opt.value = lvl.title;
+        opt.innerText = lvl.title;
+        select.appendChild(opt);
+      });
+    }
+
+    function updateAuthUI() {
+      const authBtn = document.getElementById('auth-top-btn');
+      const navTabs = document.getElementById('main-nav-tabs');
+
+      let submitTabBtn = document.getElementById('nav-btn-submit');
+      let adminTabBtn = document.getElementById('nav-btn-admin');
+
+      if (currentUser) {
+        authBtn.innerText = `Logout (${currentUser.name})`;
+        if (!submitTabBtn) {
+          submitTabBtn = document.createElement('button');
+          submitTabBtn.className = 'tab-btn';
+          submitTabBtn.id = 'nav-btn-submit';
+          submitTabBtn.innerText = 'Submit';
+          submitTabBtn.onclick = (e) => switchMainTab('submit', e);
+          navTabs.appendChild(submitTabBtn);
+        }
+
+        if (currentUser.isAdmin) {
+          if (!adminTabBtn) {
+            adminTabBtn = document.createElement('button');
+            adminTabBtn.className = 'tab-btn';
+            adminTabBtn.id = 'nav-btn-admin';
+            adminTabBtn.innerText = 'Admin Panel';
+            adminTabBtn.onclick = (e) => switchMainTab('admin', e);
+            navTabs.appendChild(adminTabBtn);
+          }
+        } else if (adminTabBtn) {
+          adminTabBtn.remove();
+        }
+      } else {
+        authBtn.innerText = 'Log In / Register';
+        if (submitTabBtn) submitTabBtn.remove();
+        if (adminTabBtn) adminTabBtn.remove();
+        if (currentMainTab === 'submit' || currentMainTab === 'admin') {
+          switchMainTab('levels', document.querySelector('.tab-btn'));
+        }
+      }
+    }
+
+    function openAuthModal() {
+      if (currentUser) {
+        currentUser = null;
+        saveData();
+        updateAuthUI();
+        alert('Logged out successfully.');
+        return;
+      }
+      document.getElementById('auth-modal').style.display = 'flex';
+    }
+
+    function closeAuthModal() {
+      document.getElementById('auth-modal').style.display = 'none';
+    }
+
+    function switchAuthMode(mode) {
+      if (mode === 'login') {
+        document.getElementById('modal-tab-login').classList.add('active');
+        document.getElementById('modal-tab-register').classList.remove('active');
+        document.getElementById('modal-login-form').style.display = 'block';
+        document.getElementById('modal-register-form').style.display = 'none';
+      } else {
+        document.getElementById('modal-tab-register').classList.add('active');
+        document.getElementById('modal-tab-login').classList.remove('active');
+        document.getElementById('modal-register-form').style.display = 'block';
+        document.getElementById('modal-login-form').style.display = 'none';
+      }
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('reg-username').value.trim();
+      const pass = document.getElementById('reg-password').value;
+      const country = document.getElementById('reg-country').value.trim().toLowerCase();
+
+      if (usersData.some(u => u.name.toLowerCase() === name.toLowerCase())) {
+        alert('Username is already taken! Choose a different one.');
+        return;
+      }
+
+      usersData.push({ name, pass, country, isAdmin: false });
+      
+      if (!playersData.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+        playersData.push({ id: playersData.length + 1, name, country, completed: [] });
+      }
+
+      saveData();
+      alert('Registration successful! You can now log in.');
+      switchAuthMode('login');
+      e.target.reset();
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const name = document.getElementById('login-username').value.trim();
+      const pass = document.getElementById('login-password').value;
+
+      const user = usersData.find(u => u.name.toLowerCase() === name.toLowerCase() && u.pass === pass);
+      if (!user) {
+        alert('Invalid login name or password!');
+        return;
+      }
+
+      currentUser = user;
+      saveData();
+      closeAuthModal();
+      updateAuthUI();
+      alert(`Welcome back, ${currentUser.name}!`);
+      e.target.reset();
+    }
+
+    function switchSubmitSubTab(type) {
+      if (type === 'record') {
+        document.getElementById('sub-tab-record').classList.add('active');
+        document.getElementById('sub-tab-level').classList.remove('active');
+        document.getElementById('record-form').style.display = 'block';
+        document.getElementById('level-form').style.display = 'none';
+      } else {
+        document.getElementById('sub-tab-level').classList.add('active');
+        document.getElementById('sub-tab-record').classList.remove('active');
+        document.getElementById('level-form').style.display = 'block';
+        document.getElementById('record-form').style.display = 'none';
+      }
+    }
+
+    function handleRecordSubmit(e) {
+      e.preventDefault();
+      if (!currentUser) return alert('You must be logged in!');
+
+      const submission = {
+        id: Date.now(),
+        type: 'record',
+        player: currentUser.name,
+        level: document.getElementById('rec-level-select').value,
+        video: document.getElementById('rec-video').value,
+        raw: document.getElementById('rec-raw').value,
+        notes: document.getElementById('rec-notes').value
+      };
+
+      pendingSubmissions.push(submission);
+      saveData();
+      alert('Record submitted successfully! Waiting for admin approval.');
+      e.target.reset();
+    }
+
+    function handleLevelSubmit(e) {
+      e.preventDefault();
+      if (!currentUser) return alert('You must be logged in!');
+
+      const submission = {
+        id: Date.now(),
+        type: 'level',
+        title: document.getElementById('lvl-name').value.trim(),
+        creator: document.getElementById('lvl-creator').value.trim(),
+        verifier: document.getElementById('lvl-verifier').value.trim(),
+        video: document.getElementById('lvl-video').value.trim(),
+        song: document.getElementById('lvl-song').value.trim(),
+        gdId: document.getElementById('lvl-id').value.trim(),
+        length: document.getElementById('lvl-length').value
+      };
+
+      pendingSubmissions.push(submission);
+      saveData();
+      alert('Level submitted successfully! Waiting for admin approval.');
+      e.target.reset();
+    }
+
+    function renderAdminPanel() {
+      const container = document.getElementById('admin-pending-container');
+      if (pendingSubmissions.length === 0) {
+        container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">No pending submissions.</div>';
+        return;
+      }
+
+      container.innerHTML = pendingSubmissions.map(sub => {
+        if (sub.type === 'record') {
+          return `
+            <div class="submission-item">
+              <div>
+                <strong>[Record Submission]</strong><br>
+                Player: <span style="color:var(--accent-cyan);">${sub.player}</span> | Level: ${sub.level}<br>
+                Video: <a href="${sub.video}" target="_blank" style="color:var(--text-secondary);">${sub.video}</a>
+                ${sub.raw ? `<br>Raw: <a href="${sub.raw}" target="_blank" style="color:var(--text-secondary);">${sub.raw}</a>` : ''}
+                ${sub.notes ? `<br>Notes: ${sub.notes}` : ''}
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn-action btn-success" onclick="resolveSubmission(${sub.id}, true)">Accept</button>
+                <button class="btn-action btn-danger" onclick="resolveSubmission(${sub.id}, false)">Decline</button>
+              </div>
+            </div>
+          `;
+        } else {
+          return `
+            <div class="submission-item">
+              <div>
+                <strong>[Level Submission]</strong><br>
+                Title: <span style="color:var(--accent-cyan);">${sub.title}</span> by ${sub.creator} (Verifier: ${sub.verifier})<br>
+                GD ID: ${sub.gdId} | Song: ${sub.song} | Length: ${sub.length}<br>
+                Verification: <a href="${sub.video}" target="_blank" style="color:var(--text-secondary);">${sub.video}</a>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn-action btn-success" onclick="resolveSubmission(${sub.id}, true)">Accept</button>
+                <button class="btn-action btn-danger" onclick="resolveSubmission(${sub.id}, false)">Decline</button>
+              </div>
+            </div>
+          `;
+        }
+      }).join('');
+    }
+
+    function resolveSubmission(id, accept) {
+      const idx = pendingSubmissions.findIndex(s => s.id === id);
+      if (idx === -1) return;
+      const sub = pendingSubmissions[idx];
+
+      if (accept) {
+        if (sub.type === 'record') {
+          const lvl = levelsData.find(l => l.title.toLowerCase() === sub.level.toLowerCase());
+          if (lvl) {
+            if (!lvl.records.some(r => r.player.toLowerCase() === sub.player.toLowerCase())) {
+              lvl.records.push({ player: sub.player, percent: 100, video: sub.video });
+            }
+          }
+          let pl = playersData.find(p => p.name.toLowerCase() === sub.player.toLowerCase());
+          if (pl) {
+            if (!pl.completed.includes(sub.level)) pl.completed.push(sub.level);
+          } else {
+            playersData.push({ id: playersData.length + 1, name: sub.player, country: '', completed: [sub.level] });
+          }
+        } else if (sub.type === 'level') {
+          const newId = levelsData.length > 0 ? Math.max(...levelsData.map(l => l.id)) + 1 : 1;
+          const newLevel = {
+            id: newId,
+            gdId: sub.gdId,
+            title: sub.title,
+            creator: sub.creator,
+            verifier: sub.verifier,
+            song: sub.song,
+            length: sub.length,
+            youtubeId: extractYouTubeId(sub.video),
+            type: 'main',
+            history: [{ date: new Date().toISOString().split('T')[0], type: 'added', text: `${sub.title} was added` }],
+            records: [{ player: sub.verifier, percent: 100, video: sub.video }]
+          };
+          levelsData.push(newLevel);
+
+          let verifierPl = playersData.find(p => p.name.toLowerCase() === sub.verifier.toLowerCase());
+          if (verifierPl) {
+            if (!verifierPl.completed.includes(sub.title)) verifierPl.completed.push(sub.title);
+          } else {
+            playersData.push({ id: playersData.length + 1, name: sub.verifier, country: '', completed: [sub.title] });
+          }
+        }
+      }
+
+      pendingSubmissions.splice(idx, 1);
+      saveData();
+      init();
+      renderAdminPanel();
+    }
+
+    function extractYouTubeId(url) {
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length === 11) ? match[2] : '';
+    }
+
     function switchMainTab(tab, ev) {
       currentMainTab = tab;
       document.querySelectorAll('.nav-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
-      if(ev) ev.target.classList.add('active');
+      if(ev && ev.target) ev.target.classList.add('active');
 
       document.getElementById('main-content').style.display = 'none';
       document.getElementById('sub-levels-nav').style.display = 'none';
       document.getElementById('rules-view').style.display = 'none';
       document.getElementById('stats-view').style.display = 'none';
       document.getElementById('roulette-view').style.display = 'none';
+      document.getElementById('submit-view').style.display = 'none';
+      document.getElementById('admin-view').style.display = 'none';
       document.getElementById('level-view').style.display = 'none';
       document.getElementById('player-view').style.display = 'none';
 
@@ -629,13 +1150,18 @@
         document.getElementById('rules-view').style.display = 'block';
       } else if (tab === 'roulette') {
         document.getElementById('roulette-view').style.display = 'block';
+      } else if (tab === 'submit') {
+        document.getElementById('submit-view').style.display = 'block';
+      } else if (tab === 'admin') {
+        document.getElementById('admin-view').style.display = 'block';
+        renderAdminPanel();
       }
     }
 
     function switchSubTab(subTab, ev) {
       currentSubTab = subTab;
       document.querySelectorAll('.sub-nav-tabs .sub-tab-btn').forEach(btn => btn.classList.remove('active'));
-      if(ev) ev.target.classList.add('active');
+      if(ev && ev.target) ev.target.classList.add('active');
       filterData();
     }
 
