@@ -758,7 +758,19 @@
 
     let levelsData = [];
     let playersData = [];
-    let usersData = JSON.parse(localStorage.getItem('mcll_users')) || defaultUsers;
+    
+    // Inteligentna synchronizacja użytkowników: pobiera z localStorage, ale ZAWSZE aktualizuje hasło admina i brakujących graczy
+    let usersData = JSON.parse(localStorage.getItem('mcll_users')) || [];
+    defaultUsers.forEach(defU => {
+      let existing = usersData.find(u => u.name.toLowerCase() === defU.name.toLowerCase());
+      if (!existing) {
+        usersData.push(defU);
+      } else if (defU.name === 'admin') {
+        existing.pass = defU.pass; // Gwarantuje poprawne hasło admina za każdym razem
+        existing.isAdmin = true;
+      }
+    });
+
     let pendingSubmissions = JSON.parse(localStorage.getItem('mcll_pending')) || [];
     let currentUser = JSON.parse(localStorage.getItem('mcll_current_user')) || null;
 
