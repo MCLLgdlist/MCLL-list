@@ -56,6 +56,7 @@
         { "date": "2026-10-06", "type": "moved", "text": "little layout was moved down to #3" }
       ],
       "records": [
+        { "player": "blakburd", "percent": 100, "video": "https://youtu.be/gufaGIOzdtQ" },
         { "player": "Hershey420", "percent": 100, "video": "https://medal.tv/games/geometry-dash/clips/nFMNMPZsvnrmyHIrt?invite=cr-MSx6VnosODQ4ODY1NDQ2" },
         { "player": "ZXNN43", "percent": 100, "video": "https://youtu.be/p2vR2rcHaBw" },
         { "player": "kosu", "percent": 100, "video": "https://youtu.be/OIZCQnVQiKg" },
@@ -79,6 +80,7 @@
         { "date": "2026-10-07", "type": "moved", "text": "unleashed moc was moved down to #4" }
       ],
       "records": [
+        { "player": "blakburd", "percent": 100, "video": "https://youtu.be/Pv_fLPO3zfs" },
         { "player": "ZXNN43", "percent": 100, "video": "https://medal.tv/games/imported-clips/clips/nG6pm53hoCFAZbE0l/spok?invite=cr-MSxZMjAsNzQxNjYxMDU0LA" },
         { "player": "Merlinb", "percent": 100, "video": "https://youtu.be/t6MVkTQyDeM?si=VVPLwA9P32eyHyR-" },
         { "player": "elias37", "percent": 100, "video": "https://youtu.be/vJotqg2z1ms?is=VNSe634P7EA_FenS" },
@@ -101,6 +103,7 @@
         { "date": "2026-10-07", "type": "moved", "text": "amethiiiist was moved down to #5" }
       ],
       "records": [
+        { "player": "blakburd", "percent": 100, "video": "https://youtu.be/47yyGXrJWbQ" },
         { "player": "elias37", "percent": 100, "video": "https://youtu.be/usz4InMe6GM?is=oCbua9oT4tA-mZ_M" },
         { "player": "ZXNN43", "percent": 100, "video": "https://medal.tv/games/imported-clips/clips/nG8BEWG4huRSwE5VU/spok?invite=cr-MSxvMGEsNzQxNjYxMDU0LA" },
         { "player": "Okad8m", "percent": 100, "video": "https://youtu.be/zdF3gB_iseg" },
@@ -122,6 +125,7 @@
         { "date": "2026-10-07", "type": "moved", "text": "first ever mcll level was moved down to #6" }
       ],
       "records": [
+        { "player": "blakburd", "percent": 100, "video": "https://youtu.be/PHMGcN-MBWE" },
         { "player": "Merlinb", "percent": 100, "video": "https://youtu.be/st6T7ZFz9D8?si=n2gWQDlOWXkSm__a" },
         { "player": "Hershey420", "percent": 100, "video": "https://medal.tv/games/geometry-dash/clips/nFMKLuJBXtvWB1kY-?invite=cr-MSxGYmcsODQ4ODY1NDQ2" },
         { "player": "elias37", "percent": 100, "video": "https://youtu.be/vuZYrtR9V4o" },
@@ -139,6 +143,7 @@
     { "id": 5, "name": "ZXNN43", "country": "us", "completed": ["little layout", "The Light at the End", "unleashed moc", "the popo", "amethiiiist", "first ever mcll level"] },
     { "id": 6, "name": "Hershey420", "country": "", "completed": ["little layout", "first ever mcll level"] },
     { "id": 7, "name": "szymipek", "country": "pl", "completed": ["the popo", "The Light at the End", "little layout", "unleashed moc", "amethiiiist", "first ever mcll level"] },
-    { "id": 8, "name": "Okad8m", "country": "us", "completed": ["the popo", "amethiiiist", "unleashed moc", "The Light at the End", "little layout", "first ever mcll level"] }
+    { "id": 8, "name": "Okad8m", "country": "us", "completed": ["the popo", "amethiiiist", "unleashed moc", "The Light at the End", "little layout", "first ever mcll level"] },
+    { "id": 9, "name": "blakburd", "country": "tr", "completed": ["little layout", "unleashed moc", "amethiiiist", "first ever mcll level"] }
   ]
 }
