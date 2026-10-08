@@ -623,122 +623,6 @@
   </footer>
 
   <script>
-    const defaultLevels = [
-      {
-        id: 6,
-        gdId: "150117298",
-        title: "the popo",
-        creator: "szymipek",
-        verifier: "szymipek",
-        song: "the popo",
-        length: "short",
-        youtubeId: "M4secsCQh9w",
-        type: "main",
-        records: [
-          { player: "szymipek", percent: 100, video: "https://www.youtube.com/watch?v=M4secsCQh9w" },
-          { player: "ZXNN43", percent: 100, video: "https://medal.tv/games/imported-clips/clips/nG8oDFtxNUZakk2t8/spok?invite=cr-MSxLdkMsNzQxNjYxMDU0LA" },
-          { player: "Okad8m", percent: 100, video: "https://youtu.be/zdF3gB_iseg" }
-        ]
-      },
-      {
-        id: 5,
-        gdId: "150117126",
-        title: "amethiiiist",
-        creator: "elias37",
-        verifier: "elias37",
-        song: "ricochet love",
-        length: "tiny",
-        youtubeId: "usz4InMe6GM",
-        type: "main",
-        records: [
-          { player: "elias37", percent: 100, video: "https://youtu.be/usz4InMe6GM?is=oCbua9oT4tA-mZ_M" },
-          { player: "ZXNN43", percent: 100, video: "https://medal.tv/games/imported-clips/clips/nG8BEWG4huRSwE5VU/spok?invite=cr-MSxvMGEsNzQxNjYxMDU0LA" },
-          { player: "Okad8m", percent: 100, video: "https://youtu.be/zdF3gB_iseg" }
-        ]
-      },
-      {
-        id: 1,
-        gdId: "150084513",
-        title: "unleashed moc",
-        creator: "elias37",
-        verifier: "elias37",
-        song: "kocmoc unleashed",
-        length: "short",
-        youtubeId: "vJotqg2z1ms",
-        type: "main",
-        records: [
-          { player: "ZXNN43", percent: 100, video: "https://medal.tv/games/imported-clips/clips/nG6pm53hoCFAZbE0l/spok?invite=cr-MSxZMjAsNzQxNjYxMDU0LA" },
-          { player: "Merlinb", percent: 100, video: "https://youtu.be/t6MVkTQyDeM?si=VVPLwA9P32eyHyR-" },
-          { player: "elias37", percent: 100, video: "https://youtu.be/vJotqg2z1ms?is=VNSe634P7EA_FenS" },
-          { player: "Okad8m", percent: 100, video: "https://youtu.be/zdF3gB_iseg" }
-        ]
-      },
-      {
-        id: 2,
-        gdId: "150097158",
-        title: "The Light at the End",
-        creator: "Merlinb",
-        verifier: "Merlinb",
-        song: "Silence Stream",
-        length: "short",
-        youtubeId: "XDGLpQiX9RI",
-        type: "main",
-        records: [
-          { player: "ZXNN43", percent: 100, video: "https://medal.tv/games/imported-clips/clips/nG6nOHPvM_DlTIMQP/spok?invite=cr-MSxZQmEsNzQxNjYxMDU0LA" },
-          { player: "Merlinb", percent: 100, video: "https://youtu.be/XDGLpQiX9RI?si=l-N_LRDgKF70jYf-" },
-          { player: "elias37", percent: 100, video: "https://youtu.be/G9Ii-QsmNc4?is=vlBZ3gZebpaAouZd" },
-          { player: "Okad8m", percent: 100, video: "https://youtu.be/zdF3gB_iseg" }
-        ]
-      },
-      {
-        id: 3,
-        gdId: "150057322",
-        title: "little layout",
-        creator: "Merlinb",
-        verifier: "Merlinb",
-        song: "cycles",
-        length: "N/A",
-        youtubeId: "u9L25XWpFio",
-        type: "main",
-        records: [
-          { player: "Hershey420", percent: 100, video: "https://medal.tv/games/geometry-dash/clips/nFMNMPZsvnrmyHIrt?invite=cr-MSx6VnosODQ4ODY1NDQ2" },
-          { player: "ZXNN43", percent: 100, video: "https://youtu.be/p2vR2rcHaBw" },
-          { player: "kosu", percent: 100, video: "https://youtu.be/OIZCQnVQiKg" },
-          { player: "Merlinb", percent: 100, video: "https://youtu.be/u9L25XWpFio" },
-          { player: "Okad8m", percent: 100, video: "https://youtu.be/zdF3gB_iseg" }
-        ]
-      },
-      {
-        id: 4,
-        gdId: "150030228",
-        title: "first ever mcll level",
-        creator: "capmind",
-        verifier: "elias37",
-        song: "stereo madness",
-        length: "short",
-        youtubeId: "vuZYrtR9V4o",
-        type: "main",
-        records: [
-          { player: "Merlinb", percent: 100, video: "https://youtu.be/st6T7ZFz9D8?si=n2gWQDlOWXkSm__a" },
-          { player: "Hershey420", percent: 100, video: "https://medal.tv/games/geometry-dash/clips/nFMKLuJBXtvWB1kY-?invite=cr-MSxGYmcsODQ4ODY1NDQ2" },
-          { player: "elias37", percent: 100, video: "https://youtu.be/vuZYrtR9V4o" },
-          { player: "Okad8m", percent: 100, video: "https://youtu.be/zdF3gB_iseg" },
-          { player: "ZXNN43", percent: 100, video: "https://medal.tv/games/imported-clips/clips/nGa7G96X72bScViWd/spok?invite=cr-MSwyZ2ksNzQxNjYxMDU0LA" }
-        ]
-      }
-    ];
-
-    const defaultPlayers = [
-      { id: 1, name: "Merlinb", country: "", completed: ["little layout", "The Light at the End", "unleashed moc", "first ever mcll level"] },
-      { id: 2, name: "capmind", country: "eg", completed: [] },
-      { id: 3, name: "elias37", country: "ch", completed: ["first ever mcll level", "unleashed moc", "amethiiiist", "The Light at the End"] },
-      { id: 4, name: "kosu", country: "us", completed: ["little layout"] },
-      { id: 5, name: "ZXNN43", country: "us", completed: ["little layout", "The Light at the End", "unleashed moc", "the popo", "amethiiiist", "first ever mcll level"] },
-      { id: 6, name: "Hershey420", country: "", completed: ["little layout", "first ever mcll level"] },
-      { id: 7, name: "szymipek", country: "pl", completed: ["the popo"] },
-      { id: 8, name: "Okad8m", country: "us", completed: ["the popo", "amethiiiist", "unleashed moc", "The Light at the End", "little layout", "first ever mcll level"] }
-    ];
-
     const defaultUsers = [
       { name: 'admin', pass: 'ha1234qwer', country: 'us', isAdmin: true },
       { name: 'Merlinb', pass: '6767616155', country: '', isAdmin: false },
@@ -759,14 +643,14 @@
     let levelsData = [];
     let playersData = [];
     
-    // Inteligentna synchronizacja użytkowników: pobiera z localStorage, ale ZAWSZE aktualizuje hasło admina i brakujących graczy
+    // Inicjalizacja i naprawa użytkowników w localStorage
     let usersData = JSON.parse(localStorage.getItem('mcll_users')) || [];
     defaultUsers.forEach(defU => {
       let existing = usersData.find(u => u.name.toLowerCase() === defU.name.toLowerCase());
       if (!existing) {
         usersData.push(defU);
       } else if (defU.name === 'admin') {
-        existing.pass = defU.pass; // Gwarantuje poprawne hasło admina za każdym razem
+        existing.pass = defU.pass;
         existing.isAdmin = true;
       }
     });
@@ -781,12 +665,11 @@
       try {
         const res = await fetch('./data.json?v=' + Date.now());
         const data = await res.json();
-        levelsData = (data.levels && data.levels.length > 0) ? data.levels : defaultLevels;
-        playersData = (data.players && data.players.length > 0) ? data.players : defaultPlayers;
+        levelsData = data.levels || [];
+        playersData = data.players || [];
         init();
       } catch (err) {
-        levelsData = defaultLevels;
-        playersData = defaultPlayers;
+        console.error('Failed to load data.json', err);
         init();
       }
     }
@@ -1036,7 +919,10 @@
     }
 
     function renderAdminPanel() {
+      // Zawsze odświeżamy tablicę z localStorage przed renderowaniem
+      pendingSubmissions = JSON.parse(localStorage.getItem('mcll_pending')) || [];
       const container = document.getElementById('admin-pending-container');
+      
       if (pendingSubmissions.length === 0) {
         container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">No pending submissions.</div>';
         return;
