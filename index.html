@@ -601,13 +601,14 @@
     </div>
   </div>
 
-  <!-- Auth Modal (Login / Register) -->
+  <!-- Auth Modal (Login / Register / Change Password) -->
   <div class="modal" id="auth-modal">
     <div class="modal-content">
       <button class="close-modal" onclick="closeAuthModal()">&times;</button>
-      <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-        <button class="sub-tab-btn active" id="modal-tab-login" onclick="switchAuthMode('login')" style="flex:1;">Log In</button>
-        <button class="sub-tab-btn" id="modal-tab-register" onclick="switchAuthMode('register')" style="flex:1;">Register</button>
+      <div style="display: flex; gap: 6px; margin-bottom: 20px;">
+        <button class="sub-tab-btn active" id="modal-tab-login" onclick="switchAuthMode('login')" style="flex:1; font-size:11px; padding:6px 2px;">Log In</button>
+        <button class="sub-tab-btn" id="modal-tab-register" onclick="switchAuthMode('register')" style="flex:1; font-size:11px; padding:6px 2px;">Register</button>
+        <button class="sub-tab-btn" id="modal-tab-password" onclick="switchAuthMode('password')" style="flex:1; font-size:11px; padding:6px 2px;">Change Pass</button>
       </div>
 
       <!-- Login Form -->
@@ -628,6 +629,17 @@
         <label style="font-size: 13px; color: var(--text-secondary);">country (code e.g. pl, us, ch):</label>
         <input type="text" id="reg-country" maxlength="2">
         <button type="submit" class="btn-action btn-primary" style="margin-top: 10px;">Register</button>
+      </form>
+
+      <!-- Change Password Form -->
+      <form id="modal-password-form" class="hidden" onsubmit="handleChangePassword(event)" style="display:none;">
+        <label style="font-size: 13px; color: var(--text-secondary);">username:</label>
+        <input type="text" id="pass-username" required>
+        <label style="font-size: 13px; color: var(--text-secondary);">old password:</label>
+        <input type="password" id="pass-old" required>
+        <label style="font-size: 13px; color: var(--text-secondary);">new password:</label>
+        <input type="password" id="pass-new" required>
+        <button type="submit" class="btn-action btn-primary" style="margin-top: 10px;">Change Password</button>
       </form>
     </div>
   </div>
@@ -851,16 +863,22 @@
     }
 
     function switchAuthMode(mode) {
+      document.getElementById('modal-tab-login').classList.remove('active');
+      document.getElementById('modal-tab-register').classList.remove('active');
+      document.getElementById('modal-tab-password').classList.remove('active');
+      document.getElementById('modal-login-form').style.display = 'none';
+      document.getElementById('modal-register-form').style.display = 'none';
+      document.getElementById('modal-password-form').style.display = 'none';
+
       if (mode === 'login') {
         document.getElementById('modal-tab-login').classList.add('active');
-        document.getElementById('modal-tab-register').classList.remove('active');
         document.getElementById('modal-login-form').style.display = 'block';
-        document.getElementById('modal-register-form').style.display = 'none';
-      } else {
+      } else if (mode === 'register') {
         document.getElementById('modal-tab-register').classList.add('active');
-        document.getElementById('modal-tab-login').classList.remove('active');
         document.getElementById('modal-register-form').style.display = 'block';
-        document.getElementById('modal-login-form').style.display = 'none';
+      } else if (mode === 'password') {
+        document.getElementById('modal-tab-password').classList.add('active');
+        document.getElementById('modal-password-form').style.display = 'block';
       }
     }
 
@@ -903,6 +921,25 @@
       closeAuthModal();
       updateAuthUI();
       alert(`Welcome back, ${currentUser.name}!`);
+      e.target.reset();
+    }
+
+    function handleChangePassword(e) {
+      e.preventDefault();
+      const name = document.getElementById('pass-username').value.trim();
+      const oldPass = document.getElementById('pass-old').value;
+      const newPass = document.getElementById('pass-new').value;
+
+      const user = usersData.find(u => u.name.toLowerCase() === name.toLowerCase() && u.pass === oldPass);
+      if (!user) {
+        alert('Incorrect username or old password!');
+        return;
+      }
+
+      user.pass = newPass;
+      saveData();
+      alert('Password changed successfully! You can now log in with your new password.');
+      switchAuthMode('login');
       e.target.reset();
     }
 
