@@ -17,7 +17,7 @@
         { "player": "szymipek", "percent": 100, "video": "https://www.youtube.com/watch?v=M4secsCQh9w" },
         { "player": "ZXNN43", "percent": 100, "video": "https://medal.tv/games/imported-clips/clips/nG8oDFtxNUZakk2t8/spok?invite=cr-MSxLdkMsNzQxNjYxMDU0LA" },
         { "player": "Okad8m", "percent": 100, "video": "https://youtu.be/zdF3gB_iseg" },
-        { "player": "Hershey", "percent": 100, "video": "https://medal.tv/games/imported-clips/clips/nGBCrvr3IGkeLv72g?invite=cr-MSx6Qj6sODQ4ODY1NDQ2" }
+        { "player": "Hershey420", "percent": 100, "video": "https://medal.tv/games/imported-clips/clips/nGBCrvr3IGkeLv72g?invite=cr-MSx6Qj6sODQ4ODY1NDQ2" }
       ]
     },
     {
@@ -41,7 +41,7 @@
         { "player": "elias37", "percent": 100, "video": "https://youtu.be/G9Ii-QsmNc4?is=vlBZ3gZebpaAouZd" },
         { "player": "Okad8m", "percent": 100, "video": "https://youtu.be/zdF3gB_iseg" },
         { "player": "szymipek", "percent": 100, "video": "https://www.youtube.com/watch?v=ZWcA_gaQPgs" },
-        { "player": "Hershey", "percent": 100, "video": "https://medal.tv/games/imported-clips/clips/nGBhtsBd1_rHafCl6?invite=cr-MSx6MXMsODQ4ODY1NDQ2" }
+        { "player": "Hershey420", "percent": 100, "video": "https://medal.tv/games/imported-clips/clips/nGBhtsBd1_rHafCl6?invite=cr-MSx6MXMsODQ4ODY1NDQ2" }
       ]
     },
     {
@@ -88,7 +88,8 @@
         { "player": "Merlinb", "percent": 100, "video": "https://youtu.be/t6MVkTQyDeM?si=VVPLwA9P32eyHyR-" },
         { "player": "elias37", "percent": 100, "video": "https://youtu.be/vJotqg2z1ms?is=VNSe634P7EA_FenS" },
         { "player": "Okad8m", "percent": 100, "video": "https://youtu.be/zdF3gB_iseg" },
-        { "player": "szymipek", "percent": 100, "video": "https://www.youtube.com/watch?v=ZWcA_gaQPgs" }
+        { "player": "szymipek", "percent": 100, "video": "https://www.youtube.com/watch?v=ZWcA_gaQPgs" },
+        { "player": "Hershey420", "percent": 100, "video": "https://medal.tv/games/geometry-dash/clips/nFMKLuJBXtvWB1kY-" }
       ]
     },
     {
@@ -111,7 +112,7 @@
         { "player": "ZXNN43", "percent": 100, "video": "https://medal.tv/games/imported-clips/clips/nG8BEWG4huRSwE5VU/spok?invite=cr-MSxvMGEsNzQxNjYxMDU0LA" },
         { "player": "Okad8m", "percent": 100, "video": "https://youtu.be/zdF3gB_iseg" },
         { "player": "szymipek", "percent": 100, "video": "https://www.youtube.com/watch?v=ZWcA_gaQPgs" },
-        { "player": "Hershey", "percent": 100, "video": "https://medal.tv/games/imported-clips/clips/nGBcEQAKliHdpP4uS?invite=cr-MSxIWTUsODQ4ODY1NDQ2" }
+        { "player": "Hershey420", "percent": 100, "video": "https://medal.tv/games/imported-clips/clips/nGBcEQAKliHdpP4uS?invite=cr-MSxIWTUsODQ4ODY1NDQ2" }
       ]
     },
     {
@@ -145,9 +146,9 @@
     { "id": 3, "name": "elias37", "country": "ch", "completed": ["first ever mcll level", "unleashed moc", "amethiiiist", "The Light at the End"] },
     { "id": 4, "name": "kosu", "country": "us", "completed": ["little layout"] },
     { "id": 5, "name": "ZXNN43", "country": "us", "completed": ["little layout", "The Light at the End", "unleashed moc", "the popo", "amethiiiist", "first ever mcll level"] },
-    { "id": 6, "name": "Hershey420", "country": "", "completed": ["little layout", "first ever mcll level", "amethiiiist", "The Light at the End", "the popo"] },
+    { "id": 6, "name": "Hershey420", "country": "", "completed": ["little layout", "first ever mcll level", "amethiiiist", "The Light at the End", "the popo", "unleashed moc"] },
     { "id": 7, "name": "szymipek", "country": "pl", "completed": ["the popo", "The Light at the End", "little layout", "unleashed moc", "amethiiiist", "first ever mcll level"] },
     { "id": 8, "name": "Okad8m", "country": "us", "completed": ["the popo", "amethiiiist", "unleashed moc", "The Light at the End", "little layout", "first ever mcll level"] },
     { "id": 9, "name": "blakburd", "country": "tr", "completed": ["The Light at the End", "little layout", "unleashed moc", "amethiiiist", "first ever mcll level"] }
   ]
-}
+        }
