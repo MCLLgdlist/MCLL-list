@@ -450,7 +450,9 @@
       <div class="stat-item">Levels: <span id="stat-levels">0</span></div>
       <div class="stat-item">Players: <span id="stat-players">0</span></div>
     </div>
-  </header>  <div class="wrap">
+  </header>
+
+  <div class="wrap">
     <nav class="nav-tabs" id="main-nav-tabs">
       <button class="tab-btn active" onclick="switchMainTab('levels', event)">Levels</button>
       <button class="tab-btn" onclick="switchMainTab('stats', event)">Stats</button>
@@ -617,7 +619,9 @@
 
   <footer>
     &copy; 2026 MCLL List. All rights reserved.
-  </footer>  <script>
+  </footer>
+
+  <script>
     const NPOINT_URL = 'https://api.npoint.io/2a62ce7078414fa7cab3';
 
     const defaultUsers = [
@@ -1040,14 +1044,12 @@
 
       levelsData.splice(targetPos - 1, 0, newLevel);
 
-      let verifierPl = playersData.find(p => p.name && p.name.toLowerCase() === sub.verifier.toLowerCase());
+      let verifierPl = playersData.find(p => p.name.toLowerCase() === sub.verifier.toLowerCase());
       if (verifierPl) {
         if (!verifierPl.completed) verifierPl.completed = [];
-        if (!verifierPl.completed.some(t => t.toLowerCase() === sub.title.toLowerCase())) {
-          verifierPl.completed.push(sub.title);
-        }
+        if (!verifierPl.completed.includes(sub.title)) verifierPl.completed.push(sub.title);
       } else {
-        playersData.push({ id: playersData.length > 0 ? Math.max(...playersData.map(p => p.id || 0)) + 1 : 1, name: sub.verifier, country: '', completed: [sub.title] });
+        playersData.push({ id: playersData.length + 1, name: sub.verifier, country: '', completed: [sub.title] });
       }
 
       pendingSubmissions.splice(idx, 1);
@@ -1071,24 +1073,16 @@
               lvl.records.push({ player: sub.player, percent: 100, video: sub.video });
             } else {
               existingRecord.video = sub.video;
-              existingRecord.percent = 100;
             }
           }
-
-          let pl = playersData.find(p => p.name && p.name.toLowerCase() === sub.player.toLowerCase());
+          let pl = playersData.find(p => p.name.toLowerCase() === sub.player.toLowerCase());
           if (pl) {
             if (!pl.completed) pl.completed = [];
-            const alreadyCompleted = pl.completed.some(title => title.toLowerCase() === sub.level.toLowerCase());
-            if (!alreadyCompleted) {
+            if (!pl.completed.some(title => title.toLowerCase() === sub.level.toLowerCase())) {
               pl.completed.push(sub.level);
             }
           } else {
-            playersData.push({ 
-              id: playersData.length > 0 ? Math.max(...playersData.map(p => p.id || 0)) + 1 : 1, 
-              name: sub.player, 
-              country: '', 
-              completed: [sub.level] 
-            });
+            playersData.push({ id: playersData.length + 1, name: sub.player, country: '', completed: [sub.level] });
           }
         }
       }
@@ -1125,4 +1119,266 @@
         document.getElementById('main-content').style.display = 'block';
         document.getElementById('search-controls').style.display = 'flex';
         filterData();
-      } el
+      } else if (tab === 'stats') {
+        document.getElementById('stats-view').style.display = 'block';
+        renderLeaderboard();
+      } else if (tab === 'rules') {
+        document.getElementById('rules-view').style.display = 'block';
+      } else if (tab === 'roulette') {
+        document.getElementById('roulette-view').style.display = 'block';
+      } else if (tab === 'submit') {
+        document.getElementById('submit-view').style.display = 'block';
+      } else if (tab === 'admin') {
+        document.getElementById('admin-view').style.display = 'block';
+        renderAdminPanel();
+      }
+    }
+
+    function switchSubTab(subTab, ev) {
+      currentSubTab = subTab;
+      document.querySelectorAll('.sub-nav-tabs .sub-tab-btn').forEach(btn => btn.classList.remove('active'));
+      if(ev && ev.target) ev.target.classList.add('active');
+      filterData();
+    }
+
+    function renderLevels(list) {
+      const container = document.getElementById('list-container');
+      container.innerHTML = '';
+      if(list.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No levels found.</div>`;
+        return;
+      }
+      list.forEach((lvl) => {
+        const globalRank = levelsData.findIndex(l => l.id === lvl.id) + 1;
+        const maxPoints = calculatePoints(globalRank);
+        const minPoints = (maxPoints * 0.1).toFixed(2);
+        const maxPointsFormatted = maxPoints.toFixed(2);
+
+        const thumbUrl = lvl.youtubeId 
+          ? `https://img.youtube.com/vi/${lvl.youtubeId}/mqdefault.jpg` 
+          : 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="150" viewBox="0 0 300 150"%3E%3Crect width="100%25" height="100%25" fill="%23222"/%3E%3C/svg%3E';
+
+        const card = document.createElement('div');
+        card.className = 'pointercrate-card';
+        card.onclick = () => openLevelView(lvl.id);
+        card.innerHTML = `
+          <div class="pointercrate-thumb-wrapper">
+            <img class="pointercrate-thumb" src="${thumbUrl}" alt="${lvl.title}">
+            <div class="pointercrate-overlay"></div>
+          </div>
+          <div class="pointercrate-content">
+            <div class="pointercrate-title">#${globalRank} – ${lvl.title}</div>
+            <div class="pointercrate-publisher">published by <strong>${lvl.creator || 'Unknown'}</strong></div>
+            <div class="pointercrate-points">${minPoints} (10%) — ${maxPointsFormatted} (100%) points</div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function openLevelView(id) {
+      const lvlIndex = levelsData.findIndex(l => l.id === id);
+      if(lvlIndex === -1) return;
+      
+      const lvl = levelsData[lvlIndex];
+      const points = calculatePoints(lvlIndex + 1);
+
+      document.getElementById('main-content').style.display = 'none';
+      document.getElementById('sub-levels-nav').style.display = 'none';
+      document.getElementById('level-view').style.display = 'block';
+
+      document.getElementById('lvl-title').innerText = lvl.title;
+      
+      let recordsHtml = lvl.records && lvl.records.length > 0 
+        ? lvl.records.map(r => `<div style="padding: 6px 0;"><strong style="color:var(--accent-cyan);">${r.player}</strong> - ${r.percent}% (${r.video ? `<a href="${r.video}" target="_blank" style="color:var(--text-secondary);">Proof</a>` : 'No link'})</div>`).join('')
+        : '<div style="color: var(--text-muted);">No records yet.</div>';
+
+      let historyHtml = '';
+      if (lvl.history && lvl.history.length > 0) {
+        historyHtml = `
+          <h3 style="color: var(--accent-cyan); margin-top: 20px;">History</h3>
+          <div class="history-section">
+            ${lvl.history.map(h => `
+              <div class="history-item">
+                <span class="history-date">${h.date}</span>
+                <span>${h.text}</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      document.getElementById('lvl-details').innerHTML = `
+        <div class="info-meta">
+          <div><strong>GD ID:</strong> ${lvl.gdId || 'N/A'}</div>
+          <div><strong>Created by:</strong> ${lvl.creator || 'N/A'}</div>
+          <div><strong>Verified by:</strong> ${lvl.verifier || 'N/A'}</div>
+          <div><strong>Song:</strong> ${lvl.song || 'N/A'}</div>
+          <div><strong>Length:</strong> ${lvl.length || 'N/A'}</div>
+          <div><strong>Points Awarded:</strong> <span style="color:var(--accent-cyan); font-weight:800;">${points} PTS</span></div>
+        </div>
+
+        ${lvl.youtubeId ? `
+          <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/${lvl.youtubeId}" frameborder="0" allowfullscreen></iframe>
+          </div>
+        ` : ''}
+
+        <h3 style="color: var(--accent-cyan); margin-top: 20px;">Records (${lvl.records ? lvl.records.length : 0})</h3>
+        <div class="info-meta">${recordsHtml}</div>
+
+        ${historyHtml}
+      `;
+    }
+
+    function renderLeaderboard() {
+      const query = document.getElementById('stats-search-input').value.toLowerCase().trim();
+      const selectedCountry = document.getElementById('country-filter-select').value;
+      const container = document.getElementById('stats-result-container');
+      const ranked = recalculatePlayerPoints();
+
+      const matched = ranked.filter(p => {
+        const matchesName = p.name.toLowerCase().includes(query);
+        const pCountry = p.country ? p.country.toLowerCase() : '';
+        const matchesCountry = !selectedCountry || pCountry === selectedCountry;
+        return matchesName && matchesCountry;
+      });
+
+      if (matched.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">No players found.</div>';
+        return;
+      }
+
+      container.innerHTML = matched.map((p) => {
+        const rank = ranked.findIndex(item => item.id === p.id) + 1;
+        const flagHtml = p.country 
+          ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country.toLowerCase()}.png" alt="${p.country}">` 
+          : '';
+
+        return `
+          <div class="card player-card" onclick="openPlayerView(${p.id})">
+            <div class="card-info">
+              <div class="card-title">#${rank} - ${flagHtml} ${p.name}</div>
+              <div class="card-sub">
+                created: <strong>${p.created.length}</strong> | 
+                verified: <strong>${p.verified.length}</strong> | 
+                beated: <strong>${p.beated.length}</strong>
+              </div>
+            </div>
+            <div class="card-points">${p.points} PTS</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openPlayerView(id) {
+      const ranked = recalculatePlayerPoints();
+      const p = ranked.find(item => item.id === id);
+      if (!p) return;
+
+      const rank = ranked.findIndex(item => item.id === p.id) + 1;
+      const flagHtml = p.country 
+        ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country.toLowerCase()}.png" alt="${p.country}">` 
+        : '';
+
+      document.getElementById('stats-view').style.display = 'none';
+      document.getElementById('player-view').style.display = 'block';
+
+      document.getElementById('pl-name').innerHTML = `#${rank} - ${flagHtml} ${p.name}`;
+      document.getElementById('pl-details').innerHTML = `
+        <div class="info-meta">
+          <div><strong>Rank:</strong> #${rank}</div>
+          <div><strong>Total Points:</strong> <span style="color:var(--accent-cyan); font-weight:800;">${p.points} PTS</span></div>
+        </div>
+
+        <h3 style="color: var(--accent-cyan); margin-top: 20px;">created (${p.created.length})</h3>
+        <div class="info-meta">
+          ${p.created.length > 0 ? p.created.map(l => `<div>• ${l}</div>`).join('') : '<div style="color: var(--text-muted);">None</div>'}
+        </div>
+
+        <h3 style="color: var(--accent-cyan); margin-top: 20px;">verified (${p.verified.length})</h3>
+        <div class="info-meta">
+          ${p.verified.length > 0 ? p.verified.map(l => `<div>• ${l}</div>`).join('') : '<div style="color: var(--text-muted);">None</div>'}
+        </div>
+
+        <h3 style="color: var(--accent-cyan); margin-top: 20px;">beated (${p.beated.length})</h3>
+        <div class="info-meta">
+          ${p.beated.length > 0 ? p.beated.map(l => `<div>• ${l}</div>`).join('') : '<div style="color: var(--text-muted);">None</div>'}
+        </div>
+      `;
+    }
+
+    function filterData() {
+      const query = document.getElementById('search-input').value.toLowerCase().trim();
+      const filtered = levelsData.filter(lvl => 
+        (lvl.type === currentSubTab || (!lvl.type && currentSubTab === 'main')) &&
+        (!query || (lvl.title && lvl.title.toLowerCase().includes(query)))
+      );
+      renderLevels(filtered);
+    }
+
+    function closeView() {
+      document.getElementById('level-view').style.display = 'none';
+      document.getElementById('player-view').style.display = 'none';
+
+      if (currentMainTab === 'levels') {
+        document.getElementById('main-content').style.display = 'block';
+        document.getElementById('sub-levels-nav').style.display = 'flex';
+      } else if (currentMainTab === 'stats') {
+        document.getElementById('stats-view').style.display = 'block';
+      }
+    }
+
+    document.getElementById('theme-btn').addEventListener('click', () => {
+      const isLight = document.body.getAttribute('data-theme') === 'light';
+      if (isLight) {
+        document.body.removeAttribute('data-theme');
+        document.getElementById('theme-btn').innerText = '🌙 Theme';
+      } else {
+        document.body.setAttribute('data-theme', 'light');
+        document.getElementById('theme-btn').innerText = '☀️ Theme';
+      }
+    });
+
+    let currentPercent = 0;
+    function startRoulette() {
+      if (levelsData.length === 0) return;
+      currentPercent = 1;
+      document.getElementById('btn-start').style.display = 'none';
+      document.getElementById('btn-next').style.display = 'inline-block';
+      document.getElementById('btn-giveup').style.display = 'inline-block';
+      generateRouletteTarget();
+    }
+
+    function generateRouletteTarget() {
+      const randomLvl = levelsData[Math.floor(Math.random() * levelsData.length)];
+      document.getElementById('roulette-target-text').innerHTML = 
+        `Get <span style="color: var(--accent-cyan); font-size: 26px; margin: 0 6px;">${currentPercent}%</span> on <strong>${randomLvl.title}</strong>`;
+      document.getElementById('btn-next').innerText = `Done! (${currentPercent + 1}%)`;
+    }
+
+    function nextRoulette() {
+      if (currentPercent >= 100) {
+        document.getElementById('roulette-target-text').innerText = '🎉 Challenge Completed!';
+        resetRouletteUI();
+        return;
+      }
+      currentPercent++;
+      generateRouletteTarget();
+    }
+
+    function giveupRoulette() {
+      document.getElementById('roulette-target-text').innerText = `Game Over at ${currentPercent - 1}%`;
+      resetRouletteUI();
+    }
+
+    function resetRouletteUI() {
+      document.getElementById('btn-start').style.display = 'inline-block';
+      document.getElementById('btn-next').style.display = 'none';
+      document.getElementById('btn-giveup').style.display = 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', loadData);
+  </script>
+</body>
+</html>
