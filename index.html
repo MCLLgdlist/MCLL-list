@@ -562,8 +562,23 @@
 
     <!-- Admin Panel View -->
     <div class="admin-box" id="admin-view">
-      <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 16px;">Admin Panel - Pending Submissions</h2>
-      <div id="admin-pending-container"></div>
+      <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 16px;">Admin Panel</h2>
+      <div class="sub-nav-tabs" style="margin-bottom: 16px;">
+        <button class="sub-tab-btn active" id="admin-tab-sub" onclick="switchAdminTab('sub')">Pending Submissions</button>
+        <button class="sub-tab-btn" id="admin-tab-manage" onclick="switchAdminTab('manage')">Manage List & Players</button>
+      </div>
+
+      <div id="admin-sub-section">
+        <div id="admin-pending-container"></div>
+      </div>
+
+      <div id="admin-manage-section" style="display:none;">
+        <h3 style="color:var(--accent-cyan);">Manage Levels (Move / Remove)</h3>
+        <div id="admin-levels-manage-container"></div>
+
+        <h3 style="color:var(--accent-cyan); margin-top:24px;">Manage Players (Remove)</h3>
+        <div id="admin-players-manage-container"></div>
+      </div>
     </div>
 
     <main id="main-content">
@@ -684,9 +699,7 @@
         console.error('Failed to load data from cloud', err);
       }
 
-      // Automatyczne czyszczenie starego duplikatu "Hershey"
       playersData = playersData.filter(p => p.name.toLowerCase() !== 'hershey');
-
       init();
     }
 
@@ -742,7 +755,7 @@
           points: totalPoints,
           created: createdLevels,
           verified: verifiedLevels,
-          beated: completedLevels
+          completed: completedLevels
         };
       });
 
@@ -907,6 +920,21 @@
       }
     }
 
+    function switchAdminTab(tab) {
+      if (tab === 'sub') {
+        document.getElementById('admin-tab-sub').classList.add('active');
+        document.getElementById('admin-tab-manage').classList.remove('active');
+        document.getElementById('admin-sub-section').style.display = 'block';
+        document.getElementById('admin-manage-section').style.display = 'none';
+      } else {
+        document.getElementById('admin-tab-manage').classList.add('active');
+        document.getElementById('admin-tab-sub').classList.remove('active');
+        document.getElementById('admin-manage-section').style.display = 'block';
+        document.getElementById('admin-sub-section').style.display = 'none';
+        renderAdminManageSection();
+      }
+    }
+
     async function handleRecordSubmit(e) {
       e.preventDefault();
       if (!currentUser) return alert('You must be logged in!');
@@ -1009,6 +1037,67 @@
       }).join('');
     }
 
+    function renderAdminManageSection() {
+      const lvlContainer = document.getElementById('admin-levels-manage-container');
+      lvlContainer.innerHTML = levelsData.map((lvl, idx) => `
+        <div class="submission-item" style="flex-wrap: wrap; gap: 10px;">
+          <div><strong>#${idx + 1} - ${lvl.title}</strong></div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <select id="move-pos-${lvl.id}" style="width: 70px; margin: 0; padding: 6px;">
+              ${levelsData.map((_, i) => `<option value="${i + 1}" ${i === idx ? 'selected' : ''}>#${i + 1}</option>`).join('')}
+            </select>
+            <button class="btn-action btn-success" onclick="adminMoveLevel(${lvl.id})" style="padding: 6px 12px; font-size: 12px;">Move</button>
+            <button class="btn-action btn-danger" onclick="adminDeleteLevel(${lvl.id})" style="padding: 6px 12px; font-size: 12px;">Delete</button>
+          </div>
+        </div>
+      `).join('');
+
+      const plContainer = document.getElementById('admin-players-manage-container');
+      plContainer.innerHTML = playersData.map(p => `
+        <div class="submission-item">
+          <div><strong>${p.name}</strong></div>
+          <button class="btn-action btn-danger" onclick="adminDeletePlayer(${p.id})" style="padding: 6px 12px; font-size: 12px;">Delete Player</button>
+        </div>
+      `).join('');
+    }
+
+    async function adminMoveLevel(id) {
+      const select = document.getElementById(`move-pos-${id}`);
+      const newPos = parseInt(select.value) - 1;
+      const oldIdx = levelsData.findIndex(l => l.id === id);
+      if (oldIdx === -1) return;
+
+      const [movedLvl] = levelsData.splice(oldIdx, 1);
+      levelsData.splice(newPos, 0, movedLvl);
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      if (!movedLvl.history) movedLvl.history = [];
+      movedLvl.history.push({ date: todayStr, type: 'moved', text: `${movedLvl.title} was moved to #${newPos + 1}` });
+
+      await saveCloudData();
+      init();
+      renderAdminManageSection();
+      alert('Level position updated!');
+    }
+
+    async function adminDeleteLevel(id) {
+      if (!confirm('Are you sure you want to delete this level?')) return;
+      levelsData = levelsData.filter(l => l.id !== id);
+      await saveCloudData();
+      init();
+      renderAdminManageSection();
+      alert('Level deleted successfully!');
+    }
+
+    async function adminDeletePlayer(id) {
+      if (!confirm('Are you sure you want to delete this player?')) return;
+      playersData = playersData.filter(p => p.id !== id);
+      await saveCloudData();
+      init();
+      renderAdminManageSection();
+      alert('Player deleted successfully!');
+    }
+
     async function resolveLevelSubmission(id) {
       const idx = pendingSubmissions.findIndex(s => s.id === id);
       if (idx === -1) return;
@@ -1019,16 +1108,6 @@
       targetPos = Math.max(1, Math.min(targetPos, levelsData.length + 1));
 
       const todayStr = new Date().toISOString().split('T')[0];
-
-      for (let i = targetPos - 1; i < levelsData.length; i++) {
-        const newRank = i + 2;
-        if (!levelsData[i].history) levelsData[i].history = [];
-        levelsData[i].history.push({
-          date: todayStr,
-          type: 'moved',
-          text: `${levelsData[i].title} was moved down to #${newRank}`
-        });
-      }
 
       const newId = levelsData.length > 0 ? Math.max(...levelsData.map(l => l.id)) + 1 : 1;
       const newLevel = {
@@ -1275,7 +1354,7 @@
               <div class="card-sub">
                 created: <strong>${p.created.length}</strong> | 
                 verified: <strong>${p.verified.length}</strong> | 
-                beated: <strong>${p.beated.length}</strong>
+                completed: <strong>${p.completed.length}</strong>
               </div>
             </div>
             <div class="card-points">${p.points} PTS</div>
@@ -1314,9 +1393,9 @@
           ${p.verified.length > 0 ? p.verified.map(l => `<div>• ${l}</div>`).join('') : '<div style="color: var(--text-muted);">None</div>'}
         </div>
 
-        <h3 style="color: var(--accent-cyan); margin-top: 20px;">beated (${p.beated.length})</h3>
+        <h3 style="color: var(--accent-cyan); margin-top: 20px;">completed (${p.completed.length})</h3>
         <div class="info-meta">
-          ${p.beated.length > 0 ? p.beated.map(l => `<div>• ${l}</div>`).join('') : '<div style="color: var(--text-muted);">None</div>'}
+          ${p.completed.length > 0 ? p.completed.map(l => `<div>• ${l}</div>`).join('') : '<div style="color: var(--text-muted);">None</div>'}
         </div>
       `;
     }
