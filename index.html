@@ -684,6 +684,9 @@
         console.error('Failed to load data from cloud', err);
       }
 
+      // Automatyczne czyszczenie starego duplikatu "Hershey"
+      playersData = playersData.filter(p => p.name.toLowerCase() !== 'hershey');
+
       init();
     }
 
@@ -1044,12 +1047,14 @@
 
       levelsData.splice(targetPos - 1, 0, newLevel);
 
-      let verifierPl = playersData.find(p => p.name.toLowerCase() === sub.verifier.toLowerCase());
+      let verifierPl = playersData.find(p => p.name && p.name.toLowerCase() === sub.verifier.toLowerCase());
       if (verifierPl) {
         if (!verifierPl.completed) verifierPl.completed = [];
-        if (!verifierPl.completed.includes(sub.title)) verifierPl.completed.push(sub.title);
+        if (!verifierPl.completed.some(t => t.toLowerCase() === sub.title.toLowerCase())) {
+          verifierPl.completed.push(sub.title);
+        }
       } else {
-        playersData.push({ id: playersData.length + 1, name: sub.verifier, country: '', completed: [sub.title] });
+        playersData.push({ id: playersData.length > 0 ? Math.max(...playersData.map(p => p.id || 0)) + 1 : 1, name: sub.verifier, country: '', completed: [sub.title] });
       }
 
       pendingSubmissions.splice(idx, 1);
@@ -1073,16 +1078,24 @@
               lvl.records.push({ player: sub.player, percent: 100, video: sub.video });
             } else {
               existingRecord.video = sub.video;
+              existingRecord.percent = 100;
             }
           }
-          let pl = playersData.find(p => p.name.toLowerCase() === sub.player.toLowerCase());
+
+          let pl = playersData.find(p => p.name && p.name.toLowerCase() === sub.player.toLowerCase());
           if (pl) {
             if (!pl.completed) pl.completed = [];
-            if (!pl.completed.some(title => title.toLowerCase() === sub.level.toLowerCase())) {
+            const alreadyCompleted = pl.completed.some(title => title.toLowerCase() === sub.level.toLowerCase());
+            if (!alreadyCompleted) {
               pl.completed.push(sub.level);
             }
           } else {
-            playersData.push({ id: playersData.length + 1, name: sub.player, country: '', completed: [sub.level] });
+            playersData.push({ 
+              id: playersData.length > 0 ? Math.max(...playersData.map(p => p.id || 0)) + 1 : 1, 
+              name: sub.player, 
+              country: '', 
+              completed: [sub.level] 
+            });
           }
         }
       }
