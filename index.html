@@ -1006,7 +1006,6 @@
 
       const todayStr = new Date().toISOString().split('T')[0];
 
-      // Przesuń istniejące poziomy w dół i zaktualizuj ich historię
       for (let i = targetPos - 1; i < levelsData.length; i++) {
         const newRank = i + 2;
         if (!levelsData[i].history) levelsData[i].history = [];
@@ -1032,12 +1031,11 @@
         records: [{ player: sub.verifier, percent: 100, video: sub.video }]
       };
 
-      // Wstawienie poziomu w wybrane miejsce
       levelsData.splice(targetPos - 1, 0, newLevel);
 
-      // Automatyczne dodanie poziomu do ukończonych przez weryfikatora
       let verifierPl = playersData.find(p => p.name.toLowerCase() === sub.verifier.toLowerCase());
       if (verifierPl) {
+        if (!verifierPl.completed) verifierPl.completed = [];
         if (!verifierPl.completed.includes(sub.title)) verifierPl.completed.push(sub.title);
       } else {
         playersData.push({ id: playersData.length + 1, name: sub.verifier, country: '', completed: [sub.title] });
@@ -1056,15 +1054,22 @@
 
       if (accept) {
         if (sub.type === 'record') {
-          const lvl = levelsData.find(l => l.title.toLowerCase() === sub.level.toLowerCase());
+          const lvl = levelsData.find(l => l.title && l.title.toLowerCase() === sub.level.toLowerCase());
           if (lvl) {
-            if (!lvl.records.some(r => r.player.toLowerCase() === sub.player.toLowerCase())) {
+            if (!lvl.records) lvl.records = [];
+            const existingRecord = lvl.records.find(r => r.player.toLowerCase() === sub.player.toLowerCase());
+            if (!existingRecord) {
               lvl.records.push({ player: sub.player, percent: 100, video: sub.video });
+            } else {
+              existingRecord.video = sub.video;
             }
           }
           let pl = playersData.find(p => p.name.toLowerCase() === sub.player.toLowerCase());
           if (pl) {
-            if (!pl.completed.includes(sub.level)) pl.completed.push(sub.level);
+            if (!pl.completed) pl.completed = [];
+            if (!pl.completed.some(title => title.toLowerCase() === sub.level.toLowerCase())) {
+              pl.completed.push(sub.level);
+            }
           } else {
             playersData.push({ id: playersData.length + 1, name: sub.player, country: '', completed: [sub.level] });
           }
