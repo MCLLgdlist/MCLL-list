@@ -674,23 +674,32 @@
         const subRes = await fetch(NPOINT_URL + '?v=' + Date.now());
         const subData = await subRes.json();
         pendingSubmissions = subData.zgloszenia || [];
+        if (subData.levels && subData.levels.length > 0) {
+          levelsData = subData.levels;
+        }
+        if (subData.players && subData.players.length > 0) {
+          playersData = subData.players;
+        }
       } catch (err) {
-        console.error('Failed to load pending submissions from cloud', err);
-        pendingSubmissions = [];
+        console.error('Failed to load data from cloud', err);
       }
 
       init();
     }
 
-    async function saveCloudSubmissions() {
+    async function saveCloudData() {
       try {
         await fetch(NPOINT_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ zgloszenia: pendingSubmissions })
+          body: JSON.stringify({ 
+            levels: levelsData,
+            players: playersData,
+            zgloszenia: pendingSubmissions 
+          })
         });
       } catch (err) {
-        console.error('Failed to save submissions to cloud', err);
+        console.error('Failed to save data to cloud', err);
       }
     }
 
@@ -910,7 +919,7 @@
       };
 
       pendingSubmissions.push(submission);
-      await saveCloudSubmissions();
+      await saveCloudData();
       alert('Record submitted successfully! Waiting for admin approval.');
       e.target.reset();
     }
@@ -932,7 +941,7 @@
       };
 
       pendingSubmissions.push(submission);
-      await saveCloudSubmissions();
+      await saveCloudData();
       alert('Level submitted successfully! Waiting for admin approval.');
       e.target.reset();
     }
@@ -942,6 +951,8 @@
         const subRes = await fetch(NPOINT_URL + '?v=' + Date.now());
         const subData = await subRes.json();
         pendingSubmissions = subData.zgloszenia || [];
+        if (subData.levels) levelsData = subData.levels;
+        if (subData.players) playersData = subData.players;
       } catch (err) {
         console.error('Failed to sync submissions', err);
       }
@@ -1042,7 +1053,7 @@
       }
 
       pendingSubmissions.splice(idx, 1);
-      await saveCloudSubmissions();
+      await saveCloudData();
       init();
       renderAdminPanel();
     }
@@ -1077,7 +1088,7 @@
       }
 
       pendingSubmissions.splice(idx, 1);
-      await saveCloudSubmissions();
+      await saveCloudData();
       init();
       renderAdminPanel();
     }
