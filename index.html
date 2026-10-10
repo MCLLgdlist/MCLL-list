@@ -22,6 +22,7 @@
       --badge-border: rgba(124, 179, 114, 0.35);
       --danger-color: #d9534f;
       --success-color: #5cb85c;
+      --warning-color: #f0ad4e;
     }
 
     [data-theme="light"] {
@@ -41,6 +42,7 @@
       --badge-border: rgba(77, 115, 72, 0.25);
       --danger-color: #c9302c;
       --success-color: #4cae4c;
+      --warning-color: #ec971f;
     }
 
     * { box-sizing: border-box; }
@@ -426,8 +428,37 @@
       border-radius: 10px;
       margin-bottom: 12px;
       display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .submission-header {
+      display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .status-pending { background: rgba(240, 173, 78, 0.2); color: var(--warning-color); border: 1px solid var(--warning-color); }
+    .status-accepted { background: rgba(92, 184, 92, 0.2); color: var(--success-color); border: 1px solid var(--success-color); }
+    .status-declined { background: rgba(217, 83, 79, 0.2); color: var(--danger-color); border: 1px solid var(--danger-color); }
+
+    .staff-note-box {
+      background: rgba(0,0,0,0.25);
+      border-left: 3px solid var(--accent-cyan);
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
     }
 
     footer { text-align: center; color: var(--text-muted); font-size: 12px; padding: 30px 16px; }
@@ -502,6 +533,7 @@
       <div class="sub-nav-tabs" style="margin-bottom: 16px;">
         <button class="sub-tab-btn active" id="sub-tab-record" onclick="switchSubmitSubTab('record')">Submit Record</button>
         <button class="sub-tab-btn" id="sub-tab-level" onclick="switchSubmitSubTab('level')">Submit Level</button>
+        <button class="sub-tab-btn" id="sub-tab-mine" onclick="switchSubmitSubTab('mine')">My Submissions</button>
       </div>
       
       <!-- Submit Record Form -->
@@ -552,6 +584,9 @@
 
         <button type="submit" class="btn-action btn-primary">Submit Level</button>
       </form>
+
+      <!-- My Submissions View -->
+      <div id="my-submissions-container" style="display:none;"></div>
     </div>
 
     <!-- Admin Panel View -->
@@ -963,17 +998,65 @@
     }
 
     function switchSubmitSubTab(type) {
+      document.getElementById('sub-tab-record').classList.remove('active');
+      document.getElementById('sub-tab-level').classList.remove('active');
+      document.getElementById('sub-tab-mine').classList.remove('active');
+      document.getElementById('record-form').style.display = 'none';
+      document.getElementById('level-form').style.display = 'none';
+      document.getElementById('my-submissions-container').style.display = 'none';
+
       if (type === 'record') {
         document.getElementById('sub-tab-record').classList.add('active');
-        document.getElementById('sub-tab-level').classList.remove('active');
         document.getElementById('record-form').style.display = 'block';
-        document.getElementById('level-form').style.display = 'none';
-      } else {
+      } else if (type === 'level') {
         document.getElementById('sub-tab-level').classList.add('active');
-        document.getElementById('sub-tab-record').classList.remove('active');
         document.getElementById('level-form').style.display = 'block';
-        document.getElementById('record-form').style.display = 'none';
+      } else if (type === 'mine') {
+        document.getElementById('sub-tab-mine').classList.add('active');
+        document.getElementById('my-submissions-container').style.display = 'block';
+        renderMySubmissions();
       }
+    }
+
+    function renderMySubmissions() {
+      const container = document.getElementById('my-submissions-container');
+      if (!currentUser) {
+        container.innerHTML = '<div style="color:var(--text-muted); text-align:center;">Log in to see your submissions.</div>';
+        return;
+      }
+
+      const mySubs = pendingSubmissions.filter(s => s.submittedBy && s.submittedBy.toLowerCase() === currentUser.name.toLowerCase());
+
+      if (mySubs.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:20px;">No submissions found.</div>';
+        return;
+      }
+
+      container.innerHTML = mySubs.map(sub => {
+        let statusBadge = `<span class="status-badge status-pending">Pending</span>`;
+        if (sub.status === 'accepted') {
+          statusBadge = `<span class="status-badge status-accepted">Accepted</span>`;
+        } else if (sub.status === 'declined') {
+          statusBadge = `<span class="status-badge status-declined">Declined</span>`;
+        }
+
+        let details = '';
+        if (sub.type === 'record') {
+          details = `<strong>[Record]</strong> Level: <b>${sub.level}</b> | Player: ${sub.player}<br>Video: <a href="${sub.video}" target="_blank" style="color:var(--text-secondary);">${sub.video}</a>`;
+        } else {
+          details = `<strong>[Level]</strong> Title: <b>${sub.title}</b> by ${sub.creator}<br>GD ID: ${sub.gdId} | Song: ${sub.song}`;
+        }
+
+        return `
+          <div class="submission-item">
+            <div class="submission-header">
+              <div>${details}</div>
+              <div>${statusBadge}</div>
+            </div>
+            ${sub.staffNote ? `<div class="staff-note-box"><strong>Note from staff:</strong> ${sub.staffNote}</div>` : ''}
+          </div>
+        `;
+      }).join('');
     }
 
     function switchAdminTab(tab) {
@@ -998,11 +1081,14 @@
       const submission = {
         id: Date.now(),
         type: 'record',
+        submittedBy: currentUser.name,
         player: currentUser.name,
         level: document.getElementById('rec-level-select').value,
         video: document.getElementById('rec-video').value,
         raw: document.getElementById('rec-raw').value,
-        notes: document.getElementById('rec-notes').value
+        notes: document.getElementById('rec-notes').value,
+        status: 'pending',
+        staffNote: ''
       };
 
       pendingSubmissions.push(submission);
@@ -1018,13 +1104,16 @@
       const submission = {
         id: Date.now(),
         type: 'level',
+        submittedBy: currentUser.name,
         title: document.getElementById('lvl-name').value.trim(),
         creator: document.getElementById('lvl-creator').value.trim(),
         verifier: document.getElementById('lvl-verifier').value.trim(),
         video: document.getElementById('lvl-video').value.trim(),
         song: document.getElementById('lvl-song').value.trim(),
         gdId: document.getElementById('lvl-id').value.trim(),
-        length: document.getElementById('lvl-length').value
+        length: document.getElementById('lvl-length').value,
+        status: 'pending',
+        staffNote: ''
       };
 
       pendingSubmissions.push(submission);
@@ -1045,26 +1134,30 @@
       }
 
       const container = document.getElementById('admin-pending-container');
+      const pendingList = pendingSubmissions.filter(s => s.status === 'pending' || !s.status);
       
-      if (pendingSubmissions.length === 0) {
+      if (pendingList.length === 0) {
         container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">No pending submissions.</div>';
         return;
       }
 
-      container.innerHTML = pendingSubmissions.map(sub => {
+      container.innerHTML = pendingList.map(sub => {
         if (sub.type === 'record') {
           return `
             <div class="submission-item">
               <div>
                 <strong>[Record Submission]</strong><br>
-                Player: <span style="color:var(--accent-cyan);">${sub.player}</span> | Level: ${sub.level}<br>
+                Submitted by: <span style="color:var(--accent-cyan);">${sub.submittedBy || sub.player}</span> | Level: ${sub.level}<br>
                 Video: <a href="${sub.video}" target="_blank" style="color:var(--text-secondary);">${sub.video}</a>
                 ${sub.raw ? `<br>Raw: <a href="${sub.raw}" target="_blank" style="color:var(--text-secondary);">${sub.raw}</a>` : ''}
                 ${sub.notes ? `<br>Notes: ${sub.notes}` : ''}
               </div>
-              <div style="display: flex; gap: 8px; align-items: center;">
-                <button class="btn-action btn-success" onclick="resolveSubmission(${sub.id}, true)">Accept</button>
-                <button class="btn-action btn-danger" onclick="resolveSubmission(${sub.id}, false)">Decline</button>
+              <div>
+                <input type="text" id="note-${sub.id}" placeholder="Note from staff (optional)..." style="margin-bottom: 8px;">
+                <div style="display: flex; gap: 8px;">
+                  <button class="btn-action btn-success" onclick="resolveSubmission(${sub.id}, true)" style="flex:1;">Accept</button>
+                  <button class="btn-action btn-danger" onclick="resolveSubmission(${sub.id}, false)" style="flex:1;">Decline</button>
+                </div>
               </div>
             </div>
           `;
@@ -1073,18 +1166,20 @@
             <div class="submission-item">
               <div>
                 <strong>[Level Submission]</strong><br>
+                Submitted by: ${sub.submittedBy || 'Unknown'}<br>
                 Title: <span style="color:var(--accent-cyan);">${sub.title}</span> by ${sub.creator} (Verifier: ${sub.verifier})<br>
                 GD ID: ${sub.gdId} | Song: ${sub.song} | Length: ${sub.length}<br>
                 Verification: <a href="${sub.video}" target="_blank" style="color:var(--text-secondary);">${sub.video}</a>
               </div>
-              <div style="display: flex; gap: 8px; align-items: center; flex-direction: column;">
+              <div style="display: flex; flex-direction: column; gap: 8px;">
                 <div style="display: flex; align-items: center; gap: 6px;">
-                  <label style="font-size: 12px;">Top:</label>
-                  <input type="number" id="pos-${sub.id}" value="1" min="1" max="${levelsData.length + 1}" style="width: 60px; margin: 0; padding: 4px 8px; text-align: center;">
+                  <label style="font-size: 12px; white-space:nowrap;">Top Rank:</label>
+                  <input type="number" id="pos-${sub.id}" value="1" min="1" max="${levelsData.length + 1}" style="width: 70px; margin: 0; padding: 4px 8px; text-align: center;">
                 </div>
+                <input type="text" id="note-${sub.id}" placeholder="Note from staff (optional)..." style="margin-bottom: 0;">
                 <div style="display: flex; gap: 6px;">
-                  <button class="btn-action btn-success" onclick="resolveLevelSubmission(${sub.id})">Accept</button>
-                  <button class="btn-action btn-danger" onclick="resolveSubmission(${sub.id}, false)">Decline</button>
+                  <button class="btn-action btn-success" onclick="resolveLevelSubmission(${sub.id})" style="flex:1;">Accept</button>
+                  <button class="btn-action btn-danger" onclick="resolveSubmission(${sub.id}, false)" style="flex:1;">Decline</button>
                 </div>
               </div>
             </div>
@@ -1096,9 +1191,9 @@
     function renderAdminManageSection() {
       const lvlContainer = document.getElementById('admin-levels-manage-container');
       lvlContainer.innerHTML = levelsData.map((lvl, idx) => `
-        <div class="submission-item" style="flex-wrap: wrap; gap: 10px;">
+        <div class="submission-item" style="flex-direction:row; flex-wrap: wrap; gap: 10px; align-items:center;">
           <div><strong>#${idx + 1} - ${lvl.title}</strong></div>
-          <div style="display: flex; gap: 8px; align-items: center;">
+          <div style="display: flex; gap: 8px; align-items: center; margin-left:auto;">
             <select id="move-pos-${lvl.id}" style="width: 70px; margin: 0; padding: 6px;">
               ${levelsData.map((_, i) => `<option value="${i + 1}" ${i === idx ? 'selected' : ''}>#${i + 1}</option>`).join('')}
             </select>
@@ -1110,9 +1205,9 @@
 
       const plContainer = document.getElementById('admin-players-manage-container');
       plContainer.innerHTML = playersData.map(p => `
-        <div class="submission-item">
+        <div class="submission-item" style="flex-direction:row; align-items:center;">
           <div><strong>${p.name}</strong></div>
-          <button class="btn-action btn-danger" onclick="adminDeletePlayer(${p.id})" style="padding: 6px 12px; font-size: 12px;">Delete Player</button>
+          <button class="btn-action btn-danger" onclick="adminDeletePlayer(${p.id})" style="padding: 6px 12px; font-size: 12px; margin-left:auto;">Delete Player</button>
         </div>
       `).join('');
     }
@@ -1155,13 +1250,16 @@
     }
 
     async function resolveLevelSubmission(id) {
-      const idx = pendingSubmissions.findIndex(s => s.id === id);
-      if (idx === -1) return;
-      const sub = pendingSubmissions[idx];
+      const sub = pendingSubmissions.find(s => s.id === id);
+      if (!sub) return;
 
       const posInput = document.getElementById(`pos-${id}`);
+      const noteInput = document.getElementById(`note-${id}`);
       let targetPos = parseInt(posInput.value) || 1;
       targetPos = Math.max(1, Math.min(targetPos, levelsData.length + 1));
+
+      sub.status = 'accepted';
+      sub.staffNote = noteInput ? noteInput.value.trim() : '';
 
       const todayStr = new Date().toISOString().split('T')[0];
 
@@ -1192,16 +1290,18 @@
         playersData.push({ id: playersData.length > 0 ? Math.max(...playersData.map(p => p.id || 0)) + 1 : 1, name: sub.verifier, country: '', completed: [sub.title] });
       }
 
-      pendingSubmissions.splice(idx, 1);
       await saveCloudData();
       init();
       renderAdminPanel();
     }
 
     async function resolveSubmission(id, accept) {
-      const idx = pendingSubmissions.findIndex(s => s.id === id);
-      if (idx === -1) return;
-      const sub = pendingSubmissions[idx];
+      const sub = pendingSubmissions.find(s => s.id === id);
+      if (!sub) return;
+
+      const noteInput = document.getElementById(`note-${id}`);
+      sub.status = accept ? 'accepted' : 'declined';
+      sub.staffNote = noteInput ? noteInput.value.trim() : '';
 
       if (accept) {
         if (sub.type === 'record') {
@@ -1235,7 +1335,6 @@
         }
       }
 
-      pendingSubmissions.splice(idx, 1);
       await saveCloudData();
       init();
       renderAdminPanel();
