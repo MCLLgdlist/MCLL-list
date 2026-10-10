@@ -79,6 +79,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
     .auth-top-btn {
@@ -708,7 +709,7 @@
         <input type="text" id="reg-username" required>
         <label style="font-size: 13px; color: var(--text-secondary);">password:</label>
         <input type="password" id="reg-password" required>
-        <label style="font-size: 13px; color: var(--text-secondary);">country (code e.g. pl, us, ch):</label>
+        <label style="font-size: 13px; color: var(--text-secondary);">country (code e.g. pl, ge, us, ch):</label>
         <input type="text" id="reg-country" maxlength="2">
         <button type="submit" class="btn-action btn-primary" style="margin-top: 10px;">Register</button>
       </form>
@@ -730,6 +731,23 @@
     </div>
   </div>
 
+  <!-- Set / Change Flag Modal -->
+  <div class="modal" id="flag-modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeFlagModal()">&times;</button>
+      <h3 style="color:var(--accent-cyan); margin-top:0;">Set / Change Country Flag</h3>
+      <form onsubmit="handleSetFlag(event)">
+        <label style="font-size: 13px; color: var(--text-secondary);">Username (to confirm identity):</label>
+        <input type="text" id="flag-username" required>
+        <label style="font-size: 13px; color: var(--text-secondary);">Password:</label>
+        <input type="password" id="flag-password" required>
+        <label style="font-size: 13px; color: var(--text-secondary);">Country code (2 letters e.g. pl, ge, us, de, ch):</label>
+        <input type="text" id="flag-country-code" maxlength="2" required placeholder="ge">
+        <button type="submit" class="btn-action btn-primary" style="margin-top: 10px;">Set / Change Flag</button>
+      </form>
+    </div>
+  </div>
+
   <footer>
     &copy; 2026 MCLL List. All rights reserved.
   </footer>
@@ -741,16 +759,14 @@
       { name: 'admin', pass: 'ha1234qwer', country: 'us', isAdmin: true },
       { name: 'Merlinb', pass: '6767616155', country: '', isAdmin: false },
       { name: 'capmind', pass: '6767616155', country: 'eg', isAdmin: false },
-      { name: 'elias37', pass: '6767616155', country: 'ch', isAdmin: false },
       { name: 'kosu', pass: '6767616155', country: 'us', isAdmin: false },
       { name: 'ZXNN43', pass: '6767616155', country: 'us', isAdmin: false },
-      { name: 'Hershey420', pass: '6767616155', country: '', isAdmin: false },
       { name: 'szymipek', pass: '6767616155', country: 'pl', isAdmin: false },
       { name: 'Okad8m', pass: '6767616155', country: 'us', isAdmin: false }
     ];
 
     const countryNames = {
-      eg: "Egypt", us: "United States", pl: "Poland", gb: "United Kingdom",
+      ge: "Georgia", eg: "Egypt", us: "United States", pl: "Poland", gb: "United Kingdom",
       fr: "France", de: "Germany", ru: "Russia", br: "Brazil", es: "Spain", ca: "Canada", ch: "Switzerland"
     };
 
@@ -797,8 +813,28 @@
         console.error('Failed to load data from cloud', err);
       }
 
-      playersData = playersData.filter(p => p.name.toLowerCase() !== 'hershey');
+      // Czyszczenie listy graczy z usuniętych użytkowników
+      const blacklisted = ['hershey', 'hershey420', 'elias37', 'ersay37'];
+      playersData = playersData.filter(p => p.name && !blacklisted.includes(p.name.toLowerCase()));
+
+      // Czyszczenie samych rekordów i ukończeń (BEZ modyfikowania creator / history)
+      cleanUpRecordsOnly(blacklisted);
+
       init();
+    }
+
+    function cleanUpRecordsOnly(removedList) {
+      levelsData.forEach(lvl => {
+        if (!lvl.history) lvl.history = [];
+        if (lvl.records) {
+          lvl.records = lvl.records.filter(r => r.player && !removedList.includes(r.player.toLowerCase()));
+        }
+      });
+      playersData.forEach(p => {
+        if (p.completed) {
+          p.completed = p.completed.filter(c => c !== null && c !== undefined);
+        }
+      });
     }
 
     async function saveCloudData() {
@@ -902,6 +938,7 @@
 
       if (currentUser) {
         headerActions.innerHTML = `
+          <button class="auth-top-btn" onclick="openFlagModal()">Set / Change Flag</button>
           <button class="auth-top-btn" onclick="openPassModal()">Change Pass</button>
           <button class="auth-top-btn" onclick="handleLogout()">Logout (${currentUser.name})</button>
           <a href="https://discord.gg/4a6qdgvCN" target="_blank" class="discord-btn" title="Join Discord">
@@ -935,6 +972,7 @@
         }
       } else {
         headerActions.innerHTML = `
+          <button class="auth-top-btn" onclick="openFlagModal()">Set / Change Flag</button>
           <button class="auth-top-btn" id="auth-top-btn" onclick="openAuthModal()">Log In / Register</button>
           <a href="https://discord.gg/4a6qdgvCN" target="_blank" class="discord-btn" title="Join Discord">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36">
@@ -951,21 +989,12 @@
       }
     }
 
-    function openAuthModal() {
-      document.getElementById('auth-modal').style.display = 'flex';
-    }
-
-    function closeAuthModal() {
-      document.getElementById('auth-modal').style.display = 'none';
-    }
-
-    function openPassModal() {
-      document.getElementById('pass-modal').style.display = 'flex';
-    }
-
-    function closePassModal() {
-      document.getElementById('pass-modal').style.display = 'none';
-    }
+    function openAuthModal() { document.getElementById('auth-modal').style.display = 'flex'; }
+    function closeAuthModal() { document.getElementById('auth-modal').style.display = 'none'; }
+    function openPassModal() { document.getElementById('pass-modal').style.display = 'flex'; }
+    function closePassModal() { document.getElementById('pass-modal').style.display = 'none'; }
+    function openFlagModal() { document.getElementById('flag-modal').style.display = 'flex'; }
+    function closeFlagModal() { document.getElementById('flag-modal').style.display = 'none'; }
 
     function switchAuthMode(mode) {
       if (mode === 'login') {
@@ -999,6 +1028,7 @@
       }
 
       saveData();
+      saveCloudData();
       alert('Registration successful! You can now log in.');
       switchAuthMode('login');
       e.target.reset();
@@ -1048,6 +1078,38 @@
       saveData();
       closePassModal();
       alert('Password updated successfully!');
+      e.target.reset();
+    }
+
+    async function handleSetFlag(e) {
+      e.preventDefault();
+      const name = document.getElementById('flag-username').value.trim();
+      const pass = document.getElementById('flag-password').value;
+      const countryCode = document.getElementById('flag-country-code').value.trim().toLowerCase();
+
+      const userObj = usersData.find(u => u.name.toLowerCase() === name.toLowerCase() && u.pass === pass);
+      if (!userObj) {
+        alert('Invalid username or password!');
+        return;
+      }
+
+      userObj.country = countryCode;
+      if (currentUser && currentUser.name.toLowerCase() === name.toLowerCase()) {
+        currentUser.country = countryCode;
+      }
+
+      let pl = playersData.find(p => p.name && p.name.toLowerCase() === name.toLowerCase());
+      if (pl) {
+        pl.country = countryCode;
+      } else {
+        playersData.push({ id: playersData.length + 1, name: userObj.name, country: countryCode, completed: [] });
+      }
+
+      saveData();
+      await saveCloudData();
+      closeFlagModal();
+      init();
+      alert(`Country flag set to "${countryCode.toUpperCase()}" for ${userObj.name}!`);
       e.target.reset();
     }
 
@@ -1349,11 +1411,26 @@
 
     async function adminDeletePlayer(id) {
       if (!confirm('Are you sure you want to delete this player?')) return;
-      playersData = playersData.filter(p => p.id !== id);
+      
+      const targetPlayer = playersData.find(p => p.id === id);
+      if (targetPlayer) {
+        const pNameLower = targetPlayer.name.toLowerCase();
+        
+        // Usunięcie z tablicy graczy
+        playersData = playersData.filter(p => p.id !== id);
+
+        // Usuwanie TYLKO z ukończonych rekordów poziomów (pole creator zostaje nienaruszone)
+        levelsData.forEach(lvl => {
+          if (lvl.records) {
+            lvl.records = lvl.records.filter(r => r.player && r.player.toLowerCase() !== pNameLower);
+          }
+        });
+      }
+
       await saveCloudData();
       init();
       renderAdminManageSection();
-      alert('Player deleted successfully!');
+      alert('Player and all their completed records deleted successfully!');
     }
 
     async function resolveLevelSubmission(id) {
@@ -1448,6 +1525,7 @@
     }
 
     function extractYouTubeId(url) {
+      if (!url) return '';
       const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
       const match = url.match(regExp);
       return (match && match[2].length === 11) ? match[2] : '';
@@ -1548,17 +1626,22 @@
         : '<div style="color: var(--text-muted);">No records yet.</div>';
 
       let historyHtml = '';
-      if (lvl.history && lvl.history.length > 0) {
+      if (lvl.history && Array.isArray(lvl.history) && lvl.history.length > 0) {
         historyHtml = `
           <h3 style="color: var(--accent-cyan); margin-top: 20px;">History</h3>
           <div class="history-section">
             ${lvl.history.map(h => `
               <div class="history-item">
-                <span class="history-date">${h.date}</span>
-                <span>${h.text}</span>
+                <span class="history-date">${h.date || ''}</span>
+                <span>${h.text || ''}</span>
               </div>
             `).join('')}
           </div>
+        `;
+      } else {
+        historyHtml = `
+          <h3 style="color: var(--accent-cyan); margin-top: 20px;">History</h3>
+          <div class="info-meta" style="color: var(--text-muted);">No history record available.</div>
         `;
       }
 
