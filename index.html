@@ -59,6 +59,7 @@
       min-height: 100vh;
       position: relative;
       transition: background-color 0.3s ease, color 0.3s ease;
+      overflow-x: hidden;
     }
 
     header {
@@ -167,6 +168,7 @@
       justify-content: center;
       gap: 10px;
       margin-bottom: 20px;
+      flex-wrap: wrap;
     }
 
     .tab-btn {
@@ -208,6 +210,7 @@
       padding: 20px;
       margin-bottom: 24px;
       display: none;
+      word-break: break-word;
     }
 
     .controls { display: flex; gap: 10px; margin-bottom: 20px; flex-direction: column; }
@@ -360,6 +363,7 @@
       margin-bottom: 16px;
       font-size: 14px;
       line-height: 1.6;
+      word-break: break-all;
     }
 
     .history-section {
@@ -394,6 +398,7 @@
     .btn-primary { background: var(--accent-cyan); color: #0c140e; width: 100%; }
     .btn-success { background: var(--success-color); color: #fff; }
     .btn-danger { background: var(--danger-color); color: #fff; }
+    .btn-warning { background: var(--warning-color); color: #fff; }
 
     .modal {
       display: none;
@@ -403,6 +408,7 @@
       justify-content: center;
       align-items: center;
       z-index: 1000;
+      padding: 12px;
     }
     .modal-content {
       background: var(--card-bg);
@@ -429,7 +435,30 @@
       margin-bottom: 12px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
+      word-break: break-word;
+    }
+
+    .submission-info {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .submission-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .action-row .btn-action {
+      flex: 1;
     }
 
     .submission-header {
@@ -446,6 +475,7 @@
       font-size: 11px;
       font-weight: 800;
       text-transform: uppercase;
+      white-space: nowrap;
     }
     .status-pending { background: rgba(240, 173, 78, 0.2); color: var(--warning-color); border: 1px solid var(--warning-color); }
     .status-accepted { background: rgba(92, 184, 92, 0.2); color: var(--success-color); border: 1px solid var(--success-color); }
@@ -459,6 +489,30 @@
       font-size: 13px;
       color: var(--text-secondary);
       margin-top: 4px;
+    }
+
+    .edit-level-form {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--card-border);
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    .manage-item-top {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+
+    @media (min-width: 600px) {
+      .manage-item-top {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
     }
 
     footer { text-align: center; color: var(--text-muted); font-size: 12px; padding: 30px 16px; }
@@ -602,7 +656,7 @@
       </div>
 
       <div id="admin-manage-section" style="display:none;">
-        <h3 style="color:var(--accent-cyan);">Manage Levels (Move / Remove)</h3>
+        <h3 style="color:var(--accent-cyan);">Manage Levels (Edit / Move / Remove)</h3>
         <div id="admin-levels-manage-container"></div>
 
         <h3 style="color:var(--accent-cyan); margin-top:24px;">Manage Players (Remove)</h3>
@@ -1050,7 +1104,7 @@
         return `
           <div class="submission-item">
             <div class="submission-header">
-              <div>${details}</div>
+              <div class="submission-info">${details}</div>
               <div>${statusBadge}</div>
             </div>
             ${sub.staffNote ? `<div class="staff-note-box"><strong>Note from staff:</strong> ${sub.staffNote}</div>` : ''}
@@ -1145,18 +1199,18 @@
         if (sub.type === 'record') {
           return `
             <div class="submission-item">
-              <div>
+              <div class="submission-info">
                 <strong>[Record Submission]</strong><br>
                 Submitted by: <span style="color:var(--accent-cyan);">${sub.submittedBy || sub.player}</span> | Level: ${sub.level}<br>
                 Video: <a href="${sub.video}" target="_blank" style="color:var(--text-secondary);">${sub.video}</a>
                 ${sub.raw ? `<br>Raw: <a href="${sub.raw}" target="_blank" style="color:var(--text-secondary);">${sub.raw}</a>` : ''}
                 ${sub.notes ? `<br>Notes: ${sub.notes}` : ''}
               </div>
-              <div>
-                <input type="text" id="note-${sub.id}" placeholder="Note from staff (optional)..." style="margin-bottom: 8px;">
-                <div style="display: flex; gap: 8px;">
-                  <button class="btn-action btn-success" onclick="resolveSubmission(${sub.id}, true)" style="flex:1;">Accept</button>
-                  <button class="btn-action btn-danger" onclick="resolveSubmission(${sub.id}, false)" style="flex:1;">Decline</button>
+              <div class="submission-actions">
+                <input type="text" id="note-${sub.id}" placeholder="Note from staff (optional)..." style="margin-bottom: 0;">
+                <div class="action-row">
+                  <button class="btn-action btn-success" onclick="resolveSubmission(${sub.id}, true)">Accept</button>
+                  <button class="btn-action btn-danger" onclick="resolveSubmission(${sub.id}, false)">Decline</button>
                 </div>
               </div>
             </div>
@@ -1164,22 +1218,22 @@
         } else {
           return `
             <div class="submission-item">
-              <div>
+              <div class="submission-info">
                 <strong>[Level Submission]</strong><br>
                 Submitted by: ${sub.submittedBy || 'Unknown'}<br>
                 Title: <span style="color:var(--accent-cyan);">${sub.title}</span> by ${sub.creator} (Verifier: ${sub.verifier})<br>
                 GD ID: ${sub.gdId} | Song: ${sub.song} | Length: ${sub.length}<br>
                 Verification: <a href="${sub.video}" target="_blank" style="color:var(--text-secondary);">${sub.video}</a>
               </div>
-              <div style="display: flex; flex-direction: column; gap: 8px;">
-                <div style="display: flex; align-items: center; gap: 6px;">
+              <div class="submission-actions">
+                <div style="display: flex; align-items: center; gap: 8px;">
                   <label style="font-size: 12px; white-space:nowrap;">Top Rank:</label>
-                  <input type="number" id="pos-${sub.id}" value="1" min="1" max="${levelsData.length + 1}" style="width: 70px; margin: 0; padding: 4px 8px; text-align: center;">
+                  <input type="number" id="pos-${sub.id}" value="1" min="1" max="${levelsData.length + 1}" style="margin: 0; padding: 6px; text-align: center;">
                 </div>
                 <input type="text" id="note-${sub.id}" placeholder="Note from staff (optional)..." style="margin-bottom: 0;">
-                <div style="display: flex; gap: 6px;">
-                  <button class="btn-action btn-success" onclick="resolveLevelSubmission(${sub.id})" style="flex:1;">Accept</button>
-                  <button class="btn-action btn-danger" onclick="resolveSubmission(${sub.id}, false)" style="flex:1;">Decline</button>
+                <div class="action-row">
+                  <button class="btn-action btn-success" onclick="resolveLevelSubmission(${sub.id})">Accept</button>
+                  <button class="btn-action btn-danger" onclick="resolveSubmission(${sub.id}, false)">Decline</button>
                 </div>
               </div>
             </div>
@@ -1191,25 +1245,78 @@
     function renderAdminManageSection() {
       const lvlContainer = document.getElementById('admin-levels-manage-container');
       lvlContainer.innerHTML = levelsData.map((lvl, idx) => `
-        <div class="submission-item" style="flex-direction:row; flex-wrap: wrap; gap: 10px; align-items:center;">
-          <div><strong>#${idx + 1} - ${lvl.title}</strong></div>
-          <div style="display: flex; gap: 8px; align-items: center; margin-left:auto;">
-            <select id="move-pos-${lvl.id}" style="width: 70px; margin: 0; padding: 6px;">
-              ${levelsData.map((_, i) => `<option value="${i + 1}" ${i === idx ? 'selected' : ''}>#${i + 1}</option>`).join('')}
+        <div class="submission-item">
+          <div class="manage-item-top">
+            <div><strong>#${idx + 1} - ${lvl.title}</strong> (ID: ${lvl.gdId || 'N/A'})</div>
+            <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+              <select id="move-pos-${lvl.id}" style="width: auto; flex: 1; min-width: 60px; margin: 0; padding: 6px;">
+                ${levelsData.map((_, i) => `<option value="${i + 1}" ${i === idx ? 'selected' : ''}>#${i + 1}</option>`).join('')}
+              </select>
+              <button class="btn-action btn-success" onclick="adminMoveLevel(${lvl.id})" style="padding: 6px 10px; font-size: 12px;">Move</button>
+              <button class="btn-action btn-warning" onclick="toggleEditLevelForm(${lvl.id})" style="padding: 6px 10px; font-size: 12px;">Edit</button>
+              <button class="btn-action btn-danger" onclick="adminDeleteLevel(${lvl.id})" style="padding: 6px 10px; font-size: 12px;">Delete</button>
+            </div>
+          </div>
+          <div id="edit-form-box-${lvl.id}" class="edit-level-form" style="display:none;">
+            <label style="font-size:12px;">Title:</label>
+            <input type="text" id="edit-title-${lvl.id}" value="${lvl.title || ''}">
+            <label style="font-size:12px;">Creator:</label>
+            <input type="text" id="edit-creator-${lvl.id}" value="${lvl.creator || ''}">
+            <label style="font-size:12px;">Verifier:</label>
+            <input type="text" id="edit-verifier-${lvl.id}" value="${lvl.verifier || ''}">
+            <label style="font-size:12px;">GD ID:</label>
+            <input type="text" id="edit-gdid-${lvl.id}" value="${lvl.gdId || ''}">
+            <label style="font-size:12px;">Song:</label>
+            <input type="text" id="edit-song-${lvl.id}" value="${lvl.song || ''}">
+            <label style="font-size:12px;">Length:</label>
+            <select id="edit-length-${lvl.id}">
+              <option value="tiny" ${lvl.length === 'tiny' ? 'selected' : ''}>Tiny</option>
+              <option value="short" ${lvl.length === 'short' ? 'selected' : ''}>Short</option>
+              <option value="medium" ${lvl.length === 'medium' ? 'selected' : ''}>Medium</option>
+              <option value="long" ${lvl.length === 'long' ? 'selected' : ''}>Long</option>
+              <option value="N/A" ${lvl.length === 'N/A' || !lvl.length ? 'selected' : ''}>N/A</option>
             </select>
-            <button class="btn-action btn-success" onclick="adminMoveLevel(${lvl.id})" style="padding: 6px 12px; font-size: 12px;">Move</button>
-            <button class="btn-action btn-danger" onclick="adminDeleteLevel(${lvl.id})" style="padding: 6px 12px; font-size: 12px;">Delete</button>
+            <label style="font-size:12px;">YouTube ID / Video Link:</label>
+            <input type="text" id="edit-yt-${lvl.id}" value="${lvl.youtubeId ? 'https://youtube.com/watch?v=' + lvl.youtubeId : ''}">
+            <button class="btn-action btn-primary" onclick="saveLevelEdits(${lvl.id})" style="padding:8px; font-size:13px; margin-top:6px;">Save Level Details</button>
           </div>
         </div>
       `).join('');
 
       const plContainer = document.getElementById('admin-players-manage-container');
       plContainer.innerHTML = playersData.map(p => `
-        <div class="submission-item" style="flex-direction:row; align-items:center;">
+        <div class="submission-item" style="flex-direction:row; align-items:center; justify-content:space-between;">
           <div><strong>${p.name}</strong></div>
-          <button class="btn-action btn-danger" onclick="adminDeletePlayer(${p.id})" style="padding: 6px 12px; font-size: 12px; margin-left:auto;">Delete Player</button>
+          <button class="btn-action btn-danger" onclick="adminDeletePlayer(${p.id})" style="padding: 6px 12px; font-size: 12px;">Delete Player</button>
         </div>
       `).join('');
+    }
+
+    function toggleEditLevelForm(id) {
+      const formBox = document.getElementById(`edit-form-box-${id}`);
+      if (formBox) {
+        formBox.style.display = formBox.style.display === 'none' ? 'block' : 'none';
+      }
+    }
+
+    async function saveLevelEdits(id) {
+      const lvl = levelsData.find(l => l.id === id);
+      if (!lvl) return;
+
+      lvl.title = document.getElementById(`edit-title-${id}`).value.trim();
+      lvl.creator = document.getElementById(`edit-creator-${id}`).value.trim();
+      lvl.verifier = document.getElementById(`edit-verifier-${id}`).value.trim();
+      lvl.gdId = document.getElementById(`edit-gdid-${id}`).value.trim();
+      lvl.song = document.getElementById(`edit-song-${id}`).value.trim();
+      lvl.length = document.getElementById(`edit-length-${id}`).value;
+      
+      const ytVal = document.getElementById(`edit-yt-${id}`).value.trim();
+      lvl.youtubeId = extractYouTubeId(ytVal) || ytVal;
+
+      await saveCloudData();
+      init();
+      renderAdminManageSection();
+      alert('Level updated successfully!');
     }
 
     async function adminMoveLevel(id) {
