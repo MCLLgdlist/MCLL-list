@@ -72,7 +72,6 @@
       box-shadow: 0 10px 30px var(--shadow-color);
     }
 
-    /* Uporządkowane ikony u góry strony */
     .header-actions {
       position: absolute;
       top: 12px;
@@ -694,7 +693,7 @@
     </div>
   </div>
 
-  <!-- Auth Modal (Login / Register) -->
+  <!-- Auth Modal -->
   <div class="modal" id="auth-modal">
     <div class="modal-content">
       <button class="close-modal" onclick="closeAuthModal()">&times;</button>
@@ -762,6 +761,57 @@
   <script>
     const NPOINT_URL = 'https://api.npoint.io/2a62ce7078414fa7cab3';
 
+    // Awaryjne dane zapasowe, gdyby pobieranie pliku json lub npoint zawiodło
+    const fallbackData = {
+      levels: [
+        {
+          id: 1,
+          gdId: "10000001",
+          title: "first ever mcll level",
+          creator: "capmind",
+          verifier: "capmind",
+          song: "Custom Song",
+          length: "medium",
+          youtubeId: "dQw4w9WgXcQ",
+          type: "main",
+          history: [{ date: "2026-01-01", text: "first ever mcll level was added to the list" }],
+          records: [
+            { player: "capmind", percent: 100, video: "https://youtube.com" },
+            { player: "MRMUSTAFF", percent: 100, video: "https://youtube.com" }
+          ]
+        },
+        {
+          id: 2,
+          gdId: "10000002",
+          title: "Example Challenge",
+          creator: "Merlinb",
+          verifier: "Merlinb",
+          song: "Time Leaper",
+          length: "short",
+          youtubeId: "",
+          type: "main",
+          history: [{ date: "2026-01-10", text: "Example Challenge was added to the list" }],
+          records: [
+            { player: "Merlinb", percent: 100, video: "" },
+            { player: "ZXNN43", percent: 100, video: "" },
+            { player: "Okad8m", percent: 100, video: "" }
+          ]
+        }
+      ],
+      players: [
+        { id: 1, name: "admin", country: "us", completed: [] },
+        { id: 2, name: "Merlinb", country: "", completed: ["Example Challenge"] },
+        { id: 3, name: "capmind", country: "eg", completed: ["first ever mcll level"] },
+        { id: 4, name: "kosu", country: "us", completed: [] },
+        { id: 5, name: "ZXNN43", country: "us", completed: ["Example Challenge"] },
+        { id: 6, name: "Okad8m", country: "us", completed: ["Example Challenge"] },
+        { id: 7, name: "szymipek", country: "pl", completed: [] },
+        { id: 8, name: "Andreasmp", country: "", completed: [] },
+        { id: 9, name: "MRMUSTAFF", country: "tr", completed: ["first ever mcll level"] },
+        { id: 10, name: "Ryanlikejuice", country: "", completed: [] }
+      ]
+    };
+
     const defaultUsers = [
       { name: 'admin', pass: 'ha1234qwer', country: 'us', isAdmin: true },
       { name: 'Merlinb', pass: '6767616155', country: '', isAdmin: false },
@@ -769,7 +819,8 @@
       { name: 'kosu', pass: '6767616155', country: 'us', isAdmin: false },
       { name: 'ZXNN43', pass: '6767616155', country: 'us', isAdmin: false },
       { name: 'szymipek', pass: '6767616155', country: 'pl', isAdmin: false },
-      { name: 'Okad8m', pass: '6767616155', country: 'us', isAdmin: false }
+      { name: 'Okad8m', pass: '6767616155', country: 'us', isAdmin: false },
+      { name: 'MRMUSTAFF', pass: '6767616155', country: 'tr', isAdmin: false }
     ];
 
     const countryNames = {
@@ -804,27 +855,35 @@
     }
 
     async function loadData() {
+      // Domyślne ustawienie danych zapasowych
+      levelsData = fallbackData.levels;
+      playersData = fallbackData.players;
+
       try {
         const res = await fetch('./data.json?v=' + Date.now());
-        const data = await res.json();
-        levelsData = data.levels || [];
-        playersData = data.players || [];
+        if (res.ok) {
+          const data = await res.json();
+          if (data.levels) levelsData = data.levels;
+          if (data.players) playersData = data.players;
+        }
       } catch (err) {
-        console.error('Failed to load data.json', err);
+        console.warn('Local data.json not loaded, using fallback/cloud.');
       }
 
       try {
         const subRes = await fetch(NPOINT_URL + '?v=' + Date.now());
-        const subData = await subRes.json();
-        pendingSubmissions = subData.zgloszenia || [];
-        if (subData.levels && subData.levels.length > 0) {
-          levelsData = subData.levels;
-        }
-        if (subData.players && subData.players.length > 0) {
-          playersData = subData.players;
+        if (subRes.ok) {
+          const subData = await subRes.json();
+          pendingSubmissions = subData.zgloszenia || [];
+          if (subData.levels && subData.levels.length > 0) {
+            levelsData = subData.levels;
+          }
+          if (subData.players && subData.players.length > 0) {
+            playersData = subData.players;
+          }
         }
       } catch (err) {
-        console.error('Failed to load data from cloud', err);
+        console.warn('Cloud data from npoint failed, using local/fallback.');
       }
 
       const blacklisted = ['hershey', 'hershey420', 'elias37', 'ersay37'];
@@ -939,7 +998,6 @@
       });
     }
 
-    /* Uporządkowany wygląd sekcji ikonek / logowania u góry strony */
     function updateAuthUI() {
       const headerActions = document.getElementById('header-actions');
       const navTabs = document.getElementById('main-nav-tabs');
@@ -1058,7 +1116,7 @@
 
       currentUser = user;
       saveData();
-      closeAuthModal();
+      closeAuthUI();
       updateAuthUI();
       alert(`Welcome back, ${currentUser.name}!`);
       e.target.reset();
@@ -1240,10 +1298,12 @@
     async function renderAdminPanel() {
       try {
         const subRes = await fetch(NPOINT_URL + '?v=' + Date.now());
-        const subData = await subRes.json();
-        pendingSubmissions = subData.zgloszenia || [];
-        if (subData.levels) levelsData = subData.levels;
-        if (subData.players) playersData = subData.players;
+        if (subRes.ok) {
+          const subData = await subRes.json();
+          pendingSubmissions = subData.zgloszenia || [];
+          if (subData.levels) levelsData = subData.levels;
+          if (subData.players) playersData = subData.players;
+        }
       } catch (err) { console.error(err); }
 
       const container = document.getElementById('admin-pending-container');
@@ -1637,13 +1697,12 @@
       }).join('');
     }
 
-    /* NAPRAWIONY STATS VIEWER (PROFIL GRACZA) */
     function openPlayerViewByName(name) {
       const ranked = recalculatePlayerPoints();
       const p = ranked.find(item => item.name.toLowerCase() === name.toLowerCase());
       if (!p) return;
 
-      const rank = ranked.findIndex(item => item.name.toLowerCase() === p.name.toLowerCase()) + 1;
+      const rank = ranked.findIndex(item => item.name.toLowerCase() === name.toLowerCase()) + 1;
       const flagHtml = p.country ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country.toLowerCase()}.png" alt="${p.country}">` : '';
 
       document.getElementById('stats-view').style.display = 'none';
