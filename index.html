@@ -761,7 +761,6 @@
   <script>
     const NPOINT_URL = 'https://api.npoint.io/2a62ce7078414fa7cab3';
 
-    // Awaryjne dane zapasowe, gdyby pobieranie pliku json lub npoint zawiodło
     const fallbackData = {
       levels: [
         {
@@ -855,7 +854,6 @@
     }
 
     async function loadData() {
-      // Domyślne ustawienie danych zapasowych
       levelsData = fallbackData.levels;
       playersData = fallbackData.players;
 
@@ -1116,7 +1114,7 @@
 
       currentUser = user;
       saveData();
-      closeAuthUI();
+      closeAuthModal();
       updateAuthUI();
       alert(`Welcome back, ${currentUser.name}!`);
       e.target.reset();
@@ -1702,7 +1700,7 @@
       const p = ranked.find(item => item.name.toLowerCase() === name.toLowerCase());
       if (!p) return;
 
-      const rank = ranked.findIndex(item => item.name.toLowerCase() === name.toLowerCase()) + 1;
+      const rank = ranked.findIndex(item => item.name.toLowerCase() === p.name.toLowerCase()) + 1;
       const flagHtml = p.country ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country.toLowerCase()}.png" alt="${p.country}">` : '';
 
       document.getElementById('stats-view').style.display = 'none';
