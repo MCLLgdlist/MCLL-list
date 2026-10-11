@@ -1416,6 +1416,17 @@
         <div class="info-meta">
           <div><strong>Total Points:</strong> <span style="color:var(--accent-cyan); font-weight:800;">${p.points} PTS</span></div>
         </div>
+
+        <h3 style="color: var(--accent-cyan);">Created Levels (${p.created.length})</h3>
+        <div class="info-meta">
+          ${p.created.length > 0 ? p.created.map(l => `<div>• ${l}</div>`).join('') : 'None'}
+        </div>
+
+        <h3 style="color: var(--accent-cyan);">Verified Levels (${p.verified.length})</h3>
+        <div class="info-meta">
+          ${p.verified.length > 0 ? p.verified.map(l => `<div>• ${l}</div>`).join('') : 'None'}
+        </div>
+
         <h3 style="color: var(--accent-cyan);">Completed Levels (${p.completed.length})</h3>
         <div class="info-meta">
           ${p.completed.length > 0 ? p.completed.map(l => `<div>• ${l}</div>`).join('') : 'None'}
