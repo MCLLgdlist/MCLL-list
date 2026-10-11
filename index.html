@@ -91,6 +91,11 @@
       cursor: pointer;
       font-size: 12px;
       font-weight: 700;
+      transition: all 0.2s ease;
+    }
+
+    .auth-top-btn:hover {
+      background: var(--accent-hover);
     }
 
     .discord-btn {
@@ -118,6 +123,11 @@
       cursor: pointer;
       font-size: 12px;
       font-weight: 700;
+      transition: all 0.2s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--accent-hover);
     }
 
     h1 {
@@ -183,8 +193,14 @@
       cursor: pointer;
       text-align: center;
       width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
     }
 
+    .tab-btn svg { width: 14px; height: 14px; fill: currentColor; }
     .tab-btn.active { background: var(--accent-cyan); color: #0c140e; }
 
     .sub-tab-btn {
@@ -196,6 +212,7 @@
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
+      transition: all 0.2s ease;
     }
 
     .sub-tab-btn.active {
@@ -212,6 +229,7 @@
       margin-bottom: 24px;
       display: none;
       word-break: break-word;
+      box-shadow: 0 8px 24px var(--shadow-color);
     }
 
     .controls { display: flex; gap: 10px; margin-bottom: 20px; flex-direction: column; }
@@ -226,6 +244,11 @@
       outline: none;
       width: 100%;
       margin-bottom: 12px;
+      transition: border-color 0.2s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent-cyan);
     }
 
     textarea { resize: vertical; min-height: 80px; }
@@ -239,12 +262,14 @@
       margin-bottom: 20px !important;
       min-height: auto !important;
       cursor: pointer;
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 12px var(--shadow-color);
     }
 
     .pointercrate-card:hover {
       transform: translateY(-3px);
       border-color: var(--accent-cyan) !important;
+      box-shadow: 0 8px 20px var(--shadow-color);
     }
 
     .pointercrate-thumb-wrapper {
@@ -310,6 +335,7 @@
       align-items: center;
       justify-content: space-between;
       transition: transform 0.2s ease, border-color 0.2s ease;
+      box-shadow: 0 4px 12px var(--shadow-color);
     }
     .card.player-card:hover {
       transform: translateY(-3px);
@@ -339,7 +365,9 @@
       cursor: pointer;
       margin-bottom: 16px;
       font-weight: 700;
+      transition: background 0.2s ease;
     }
+    .back-btn:hover { background: var(--accent-hover); }
 
     .video-container {
       position: relative;
@@ -367,25 +395,6 @@
       word-break: break-all;
     }
 
-    .history-section {
-      margin-top: 20px;
-    }
-    .history-item {
-      display: flex;
-      justify-content: space-between;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-left: 4px solid var(--accent-cyan);
-      padding: 10px 14px;
-      margin-bottom: 8px;
-      border-radius: 0 8px 8px 0;
-      font-size: 13px;
-    }
-    .history-date {
-      color: var(--text-muted);
-      font-family: monospace;
-    }
-
     .btn-action, .btn-roulette {
       padding: 10px 18px;
       font-size: 14px;
@@ -393,9 +402,9 @@
       border-radius: 10px;
       border: none;
       cursor: pointer;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, transform 0.1s;
     }
-    .btn-action:hover, .btn-roulette:hover { opacity: 0.9; }
+    .btn-action:hover, .btn-roulette:hover { opacity: 0.9; transform: translateY(-1px); }
     .btn-primary { background: var(--accent-cyan); color: #0c140e; width: 100%; }
     .btn-success { background: var(--success-color); color: #fff; }
     .btn-danger { background: var(--danger-color); color: #fff; }
@@ -410,6 +419,7 @@
       align-items: center;
       z-index: 1000;
       padding: 12px;
+      backdrop-filter: blur(4px);
     }
     .modal-content {
       background: var(--card-bg);
@@ -419,6 +429,7 @@
       width: 100%;
       max-width: 420px;
       position: relative;
+      box-shadow: 0 12px 40px var(--shadow-color);
     }
     .close-modal {
       position: absolute;
@@ -427,6 +438,7 @@
       color: var(--text-muted);
       font-size: 20px; cursor: pointer;
     }
+    .close-modal:hover { color: var(--text-primary); }
 
     .submission-item {
       background: var(--input-bg);
@@ -443,13 +455,6 @@
     .submission-info {
       font-size: 13px;
       line-height: 1.5;
-    }
-
-    .submission-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      width: 100%;
     }
 
     .action-row {
@@ -521,9 +526,7 @@
 </head>
 <body>
   <header>
-    <div class="header-actions" id="header-actions">
-      <!-- Generowane dynamicznie przez JS -->
-    </div>
+    <div class="header-actions" id="header-actions"></div>
     <h1>MCLL</h1>
     <div class="sub">Official GD List</div>
     <div class="stats-counter-bar">
@@ -534,10 +537,18 @@
 
   <div class="wrap">
     <nav class="nav-tabs" id="main-nav-tabs">
-      <button class="tab-btn active" onclick="switchMainTab('levels', event)">Levels</button>
-      <button class="tab-btn" onclick="switchMainTab('stats', event)">Stats</button>
-      <button class="tab-btn" onclick="switchMainTab('rules', event)">Rules</button>
-      <button class="tab-btn" onclick="switchMainTab('roulette', event)">Roulette</button>
+      <button class="tab-btn active" onclick="switchMainTab('levels', event)">
+        <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg> Levels
+      </button>
+      <button class="tab-btn" onclick="switchMainTab('stats', event)">
+        <svg viewBox="0 0 24 24"><path d="M16 11V3H8v8H2v10h20V11h-6zm-6-6h4v14h-4V5zm-6 8h4v6H4v-6zm16 6h-4v-4h4v4z"/></svg> Stats
+      </button>
+      <button class="tab-btn" onclick="switchMainTab('rules', event)">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg> Rules
+      </button>
+      <button class="tab-btn" onclick="switchMainTab('roulette', event)">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm1-13h-2v6h6v-2h-4z"/></svg> Roulette
+      </button>
     </nav>
 
     <div class="sub-nav-tabs" id="sub-levels-nav">
@@ -572,13 +583,14 @@
     <!-- Roulette View -->
     <div class="roulette-box" id="roulette-view" style="text-align: center;">
       <h2 style="color: var(--accent-cyan); margin-top:0;">Level Roulette</h2>
-      <div id="roulette-target-text" style="font-size: 22px; font-weight: 800; margin: 20px 0; min-height: 50px; display: flex; align-items: center; justify-content: center;">
+      <div id="roulette-target-text" style="font-size: 22px; font-weight: 800; margin: 20px 0; min-height: 50px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px;">
         Click Start to begin!
       </div>
+      <div id="roulette-video-wrapper" style="display:none; margin-bottom: 16px;"></div>
       <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-        <button class="btn-roulette btn-start" id="btn-start" onclick="startRoulette()">Start Roulette</button>
-        <button class="btn-roulette btn-next" id="btn-next" style="display:none;" onclick="nextRoulette()">Done! (+1%)</button>
-        <button class="btn-roulette btn-giveup" id="btn-giveup" style="display:none;" onclick="giveupRoulette()">Give Up</button>
+        <button class="btn-roulette btn-primary" id="btn-start" onclick="startRoulette()">Start Roulette</button>
+        <button class="btn-roulette btn-success" id="btn-next" style="display:none;" onclick="nextRoulette()">Done! (+1%)</button>
+        <button class="btn-roulette btn-danger" id="btn-giveup" style="display:none;" onclick="giveupRoulette()">Give Up</button>
       </div>
     </div>
 
@@ -792,32 +804,33 @@
     async function loadData() {
       try {
         const res = await fetch('./data.json?v=' + Date.now());
-        const data = await res.json();
-        levelsData = data.levels || [];
-        playersData = data.players || [];
+        if (res.ok) {
+          const data = await res.json();
+          levelsData = data.levels || [];
+          playersData = data.players || [];
+        }
       } catch (err) {
         console.error('Failed to load data.json', err);
       }
 
       try {
         const subRes = await fetch(NPOINT_URL + '?v=' + Date.now());
-        const subData = await subRes.json();
-        pendingSubmissions = subData.zgloszenia || [];
-        if (subData.levels && subData.levels.length > 0) {
-          levelsData = subData.levels;
-        }
-        if (subData.players && subData.players.length > 0) {
-          playersData = subData.players;
+        if (subRes.ok) {
+          const subData = await subRes.json();
+          pendingSubmissions = subData.zgloszenia || [];
+          if (subData.levels && subData.levels.length > 0) {
+            levelsData = subData.levels;
+          }
+          if (subData.players && subData.players.length > 0) {
+            playersData = subData.players;
+          }
         }
       } catch (err) {
         console.error('Failed to load data from cloud', err);
       }
 
-      // Filter out deleted players (e.g. Hershey, elias37, ersay37)
       const blacklisted = ['hershey', 'hershey420', 'elias37', 'ersay37'];
       playersData = playersData.filter(p => p.name && !blacklisted.includes(p.name.toLowerCase()));
-
-      // Clean up records and completed lists from blacklisted/removed users
       cleanUpRemovedPlayersFromRecords(blacklisted);
 
       init();
@@ -906,6 +919,7 @@
 
     function populateCountryFilter() {
       const select = document.getElementById('country-filter-select');
+      if (!select) return;
       select.innerHTML = '<option value="">All Countries</option>';
       const countries = [...new Set(playersData.map(p => p.country ? p.country.toLowerCase() : '').filter(c => c !== ''))];
       countries.sort().forEach(code => {
@@ -919,6 +933,7 @@
 
     function populateRecordLevelSelect() {
       const select = document.getElementById('rec-level-select');
+      if (!select) return;
       select.innerHTML = '';
       levelsData.forEach(lvl => {
         const opt = document.createElement('option');
@@ -931,21 +946,27 @@
     function updateAuthUI() {
       const headerActions = document.getElementById('header-actions');
       const navTabs = document.getElementById('main-nav-tabs');
+      if (!headerActions || !navTabs) return;
 
       let submitTabBtn = document.getElementById('nav-btn-submit');
       let adminTabBtn = document.getElementById('nav-btn-admin');
 
+      const discordHtml = `
+        <a href="https://discord.gg/4a6qdgvCN" target="_blank" class="discord-btn" title="Join Discord">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36">
+            <path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.91-72.15ZM42.45 65.69c-6.22 0-11.33-5.71-11.33-12.73s5-12.72 11.33-12.72c6.38 0 11.45 5.76 11.33 12.72 0 7.02-4.95 12.73-11.33 12.73Zm42.24 0c-6.22 0-11.33-5.71-11.33-12.73s5-12.72 11.33-12.72c6.37 0 11.44 5.76 11.33 12.72 0 7.02-4.96 12.73-11.33 12.73Z"/>
+          </svg>
+        </a>`;
+
+      const themeHtml = `<button class="theme-toggle-btn" onclick="toggleTheme()">🌙 Theme</button>`;
+
       if (currentUser) {
         headerActions.innerHTML = `
-          <button class="auth-top-btn" onclick="openFlagModal()">Set / Change Flag</button>
+          <button class="auth-top-btn" onclick="openFlagModal()">Set Flag</button>
           <button class="auth-top-btn" onclick="openPassModal()">Change Pass</button>
           <button class="auth-top-btn" onclick="handleLogout()">Logout (${currentUser.name})</button>
-          <a href="https://discord.gg/4a6qdgvCN" target="_blank" class="discord-btn" title="Join Discord">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36">
-              <path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.91-72.15ZM42.45 65.69c-6.22 0-11.33-5.71-11.33-12.73s5-12.72 11.33-12.72c6.38 0 11.45 5.76 11.33 12.72 0 7.02-4.95 12.73-11.33 12.73Zm42.24 0c-6.22 0-11.33-5.71-11.33-12.73s5-12.72 11.33-12.72c6.37 0 11.44 5.76 11.33 12.72 0 7.02-4.96 12.73-11.33 12.73Z"/>
-            </svg>
-          </a>
-          <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()">🌙 Theme</button>
+          ${discordHtml}
+          ${themeHtml}
         `;
 
         if (!submitTabBtn) {
@@ -971,14 +992,10 @@
         }
       } else {
         headerActions.innerHTML = `
-          <button class="auth-top-btn" onclick="openFlagModal()">Set / Change Flag</button>
-          <button class="auth-top-btn" id="auth-top-btn" onclick="openAuthModal()">Log In / Register</button>
-          <a href="https://discord.gg/4a6qdgvCN" target="_blank" class="discord-btn" title="Join Discord">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36">
-              <path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.91-72.15ZM42.45 65.69c-6.22 0-11.33-5.71-11.33-12.73s5-12.72 11.33-12.72c6.38 0 11.45 5.76 11.33 12.72 0 7.02-4.95 12.73-11.33 12.73Zm42.24 0c-6.22 0-11.33-5.71-11.33-12.73s5-12.72 11.33-12.72c6.37 0 11.44 5.76 11.33 12.72 0 7.02-4.96 12.73-11.33 12.73Z"/>
-            </svg>
-          </a>
-          <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()">🌙 Theme</button>
+          <button class="auth-top-btn" onclick="openFlagModal()">Set Flag</button>
+          <button class="auth-top-btn" onclick="openAuthModal()">Log In / Register</button>
+          ${discordHtml}
+          ${themeHtml}
         `;
         if (submitTabBtn) submitTabBtn.remove();
         if (adminTabBtn) adminTabBtn.remove();
@@ -988,29 +1005,12 @@
       }
     }
 
-    function openAuthModal() {
-      document.getElementById('auth-modal').style.display = 'flex';
-    }
-
-    function closeAuthModal() {
-      document.getElementById('auth-modal').style.display = 'none';
-    }
-
-    function openPassModal() {
-      document.getElementById('pass-modal').style.display = 'flex';
-    }
-
-    function closePassModal() {
-      document.getElementById('pass-modal').style.display = 'none';
-    }
-
-    function openFlagModal() {
-      document.getElementById('flag-modal').style.display = 'flex';
-    }
-
-    function closeFlagModal() {
-      document.getElementById('flag-modal').style.display = 'none';
-    }
+    function openAuthModal() { document.getElementById('auth-modal').style.display = 'flex'; }
+    function closeAuthModal() { document.getElementById('auth-modal').style.display = 'none'; }
+    function openPassModal() { document.getElementById('pass-modal').style.display = 'flex'; }
+    function closePassModal() { document.getElementById('pass-modal').style.display = 'none'; }
+    function openFlagModal() { document.getElementById('flag-modal').style.display = 'flex'; }
+    function closeFlagModal() { document.getElementById('flag-modal').style.display = 'none'; }
 
     function switchAuthMode(mode) {
       if (mode === 'login') {
@@ -1033,19 +1033,18 @@
       const country = document.getElementById('reg-country').value.trim().toLowerCase();
 
       if (usersData.some(u => u.name.toLowerCase() === name.toLowerCase())) {
-        alert('Username is already taken! Choose a different one.');
+        alert('Username is already taken!');
         return;
       }
 
       usersData.push({ name, pass, country, isAdmin: false });
-      
       if (!playersData.some(p => p.name.toLowerCase() === name.toLowerCase())) {
         playersData.push({ id: playersData.length + 1, name, country, completed: [] });
       }
 
       saveData();
       saveCloudData();
-      alert('Registration successful! You can now log in.');
+      alert('Registration successful!');
       switchAuthMode('login');
       e.target.reset();
     }
@@ -1079,7 +1078,6 @@
     function handleChangePassword(e) {
       e.preventDefault();
       if (!currentUser) return;
-
       const oldPass = document.getElementById('pass-old').value;
       const newPass = document.getElementById('pass-new').value;
 
@@ -1125,7 +1123,7 @@
       await saveCloudData();
       closeFlagModal();
       init();
-      alert(`Country flag set to "${countryCode.toUpperCase()}" for ${userObj.name}!`);
+      alert(`Country flag set to "${countryCode.toUpperCase()}"!`);
       e.target.reset();
     }
 
@@ -1158,7 +1156,6 @@
       }
 
       const mySubs = pendingSubmissions.filter(s => s.submittedBy && s.submittedBy.toLowerCase() === currentUser.name.toLowerCase());
-
       if (mySubs.length === 0) {
         container.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:20px;">No submissions found.</div>';
         return;
@@ -1166,18 +1163,12 @@
 
       container.innerHTML = mySubs.map(sub => {
         let statusBadge = `<span class="status-badge status-pending">Pending</span>`;
-        if (sub.status === 'accepted') {
-          statusBadge = `<span class="status-badge status-accepted">Accepted</span>`;
-        } else if (sub.status === 'declined') {
-          statusBadge = `<span class="status-badge status-declined">Declined</span>`;
-        }
+        if (sub.status === 'accepted') statusBadge = `<span class="status-badge status-accepted">Accepted</span>`;
+        else if (sub.status === 'declined') statusBadge = `<span class="status-badge status-declined">Declined</span>`;
 
-        let details = '';
-        if (sub.type === 'record') {
-          details = `<strong>[Record]</strong> Level: <b>${sub.level}</b> | Player: ${sub.player}<br>Video: <a href="${sub.video}" target="_blank" style="color:var(--text-secondary);">${sub.video}</a>`;
-        } else {
-          details = `<strong>[Level]</strong> Title: <b>${sub.title}</b> by ${sub.creator}<br>GD ID: ${sub.gdId} | Song: ${sub.song}`;
-        }
+        let details = sub.type === 'record' 
+          ? `<strong>[Record]</strong> Level: <b>${sub.level}</b> | Player: ${sub.player}<br>Video: <a href="${sub.video}" target="_blank" style="color:var(--text-secondary);">${sub.video}</a>`
+          : `<strong>[Level]</strong> Title: <b>${sub.title}</b> by ${sub.creator}<br>GD ID: ${sub.gdId} | Song: ${sub.song}`;
 
         return `
           <div class="submission-item">
@@ -1197,6 +1188,7 @@
         document.getElementById('admin-tab-manage').classList.remove('active');
         document.getElementById('admin-sub-section').style.display = 'block';
         document.getElementById('admin-manage-section').style.display = 'none';
+        renderAdminPendingSection();
       } else {
         document.getElementById('admin-tab-manage').classList.add('active');
         document.getElementById('admin-tab-sub').classList.remove('active');
@@ -1206,10 +1198,177 @@
       }
     }
 
+    function renderAdminPendingSection() {
+      const container = document.getElementById('admin-pending-container');
+      if (!container) return;
+
+      const pending = pendingSubmissions.filter(s => s.status === 'pending');
+      if (pending.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:20px;">No pending submissions.</div>';
+        return;
+      }
+
+      container.innerHTML = pending.map(sub => {
+        let details = sub.type === 'record'
+          ? `<strong>[Record]</strong> Level: <b>${sub.level}</b> | Player: <b>${sub.player}</b><br>Video: <a href="${sub.video}" target="_blank" style="color:var(--text-secondary);">${sub.video}</a>`
+          : `<strong>[Level]</strong> Title: <b>${sub.title}</b> | Creator: <b>${sub.creator}</b><br>Verifier: ${sub.verifier} | Video: <a href="${sub.video}" target="_blank" style="color:var(--text-secondary);">${sub.video}</a>`;
+
+        return `
+          <div class="submission-item">
+            <div class="submission-info">${details}</div>
+            <input type="text" id="staff-note-${sub.id}" placeholder="Optional staff note...">
+            <div class="action-row">
+              <button class="btn-action btn-success" onclick="acceptSubmission(${sub.id})">Accept</button>
+              <button class="btn-action btn-danger" onclick="declineSubmission(${sub.id})">Decline</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function acceptSubmission(id) {
+      const sub = pendingSubmissions.find(s => s.id === id);
+      if (!sub) return;
+
+      const note = document.getElementById(`staff-note-${id}`)?.value || '';
+      sub.status = 'accepted';
+      sub.staffNote = note;
+
+      if (sub.type === 'record') {
+        let lvl = levelsData.find(l => l.title.toLowerCase() === sub.level.toLowerCase());
+        if (lvl) {
+          if (!lvl.records) lvl.records = [];
+          if (!lvl.records.some(r => r.player.toLowerCase() === sub.player.toLowerCase())) {
+            lvl.records.push({ player: sub.player, percent: 100, video: sub.video });
+          }
+        }
+        let pl = playersData.find(p => p.name.toLowerCase() === sub.player.toLowerCase());
+        if (pl) {
+          if (!pl.completed) pl.completed = [];
+          if (!pl.completed.includes(sub.level)) pl.completed.push(sub.level);
+        } else {
+          playersData.push({ id: playersData.length + 1, name: sub.player, country: '', completed: [sub.level] });
+        }
+      } else if (sub.type === 'level') {
+        let ytMatch = sub.video.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([a-zA-Z0-9_-]{11})/);
+        let ytId = ytMatch ? ytMatch[1] : '';
+
+        levelsData.push({
+          id: levelsData.length + 1,
+          title: sub.title,
+          creator: sub.creator,
+          verifier: sub.verifier,
+          song: sub.song,
+          gdId: sub.gdId,
+          length: sub.length,
+          type: 'main',
+          youtubeId: ytId,
+          records: [{ player: sub.verifier, percent: 100, video: sub.video }]
+        });
+
+        let pl = playersData.find(p => p.name.toLowerCase() === sub.verifier.toLowerCase());
+        if (pl) {
+          if (!pl.completed) pl.completed = [];
+          if (!pl.completed.includes(sub.title)) pl.completed.push(sub.title);
+        } else {
+          playersData.push({ id: playersData.length + 1, name: sub.verifier, country: '', completed: [sub.title] });
+        }
+      }
+
+      await saveCloudData();
+      renderAdminPendingSection();
+      init();
+      alert('Submission accepted!');
+    }
+
+    async function declineSubmission(id) {
+      const sub = pendingSubmissions.find(s => s.id === id);
+      if (!sub) return;
+
+      const note = document.getElementById(`staff-note-${id}`)?.value || '';
+      sub.status = 'declined';
+      sub.staffNote = note;
+
+      await saveCloudData();
+      renderAdminPendingSection();
+      alert('Submission declined.');
+    }
+
+    function renderAdminManageSection() {
+      const lvlContainer = document.getElementById('admin-levels-manage-container');
+      const plContainer = document.getElementById('admin-players-manage-container');
+
+      if (lvlContainer) {
+        lvlContainer.innerHTML = levelsData.map((lvl, idx) => `
+          <div class="submission-item">
+            <div class="manage-item-top">
+              <strong>#${idx + 1} - ${lvl.title}</strong>
+              <div class="action-row" style="width: auto;">
+                <button class="btn-action btn-warning" onclick="toggleEditLevelForm(${lvl.id})">Edit</button>
+                <button class="btn-action btn-danger" onclick="removeLevel(${lvl.id})">Delete</button>
+              </div>
+            </div>
+            <div id="edit-lvl-form-${lvl.id}" class="edit-level-form" style="display:none;">
+              <label style="font-size:11px;">Title:</label>
+              <input type="text" id="edit-title-${lvl.id}" value="${lvl.title}">
+              <label style="font-size:11px;">Creator:</label>
+              <input type="text" id="edit-creator-${lvl.id}" value="${lvl.creator}">
+              <label style="font-size:11px;">Verifier:</label>
+              <input type="text" id="edit-verifier-${lvl.id}" value="${lvl.verifier}">
+              <button class="btn-action btn-success" onclick="saveLevelEdits(${lvl.id})">Save Changes</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      if (plContainer) {
+        plContainer.innerHTML = playersData.map(p => `
+          <div class="submission-item" style="flex-direction:row; justify-content:space-between; align-items:center;">
+            <span><strong>${p.name}</strong> (${p.country ? p.country.toUpperCase() : 'No flag'})</span>
+            <button class="btn-action btn-danger" style="width:auto;" onclick="removePlayer('${p.name}')">Remove Player</button>
+          </div>
+        `).join('');
+      }
+    }
+
+    function toggleEditLevelForm(id) {
+      const form = document.getElementById(`edit-lvl-form-${id}`);
+      if (form) form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
+    async function saveLevelEdits(id) {
+      const lvl = levelsData.find(l => l.id === id);
+      if (!lvl) return;
+
+      lvl.title = document.getElementById(`edit-title-${id}`).value.trim();
+      lvl.creator = document.getElementById(`edit-creator-${id}`).value.trim();
+      lvl.verifier = document.getElementById(`edit-verifier-${id}`).value.trim();
+
+      await saveCloudData();
+      renderAdminManageSection();
+      init();
+      alert('Level updated!');
+    }
+
+    async function removeLevel(id) {
+      if (!confirm('Are you sure you want to delete this level?')) return;
+      levelsData = levelsData.filter(l => l.id !== id);
+      await saveCloudData();
+      renderAdminManageSection();
+      init();
+    }
+
+    async function removePlayer(name) {
+      if (!confirm(`Are you sure you want to remove player "${name}"?`)) return;
+      playersData = playersData.filter(p => p.name.toLowerCase() !== name.toLowerCase());
+      await saveCloudData();
+      renderAdminManageSection();
+      init();
+    }
+
     async function handleRecordSubmit(e) {
       e.preventDefault();
       if (!currentUser) return alert('You must be logged in!');
-
       const submission = {
         id: Date.now(),
         type: 'record',
@@ -1222,17 +1381,15 @@
         status: 'pending',
         staffNote: ''
       };
-
       pendingSubmissions.push(submission);
       await saveCloudData();
-      alert('Record submitted successfully! Waiting for admin approval.');
+      alert('Record submitted successfully!');
       e.target.reset();
     }
 
     async function handleLevelSubmit(e) {
       e.preventDefault();
       if (!currentUser) return alert('You must be logged in!');
-
       const submission = {
         id: Date.now(),
         type: 'level',
@@ -1247,309 +1404,198 @@
         status: 'pending',
         staffNote: ''
       };
-
       pendingSubmissions.push(submission);
       await saveCloudData();
-      alert('Level submitted successfully! Waiting for admin approval.');
+      alert('Level submitted successfully!');
       e.target.reset();
     }
 
-    async function renderAdminPanel() {
-      try {
-        const subRes = await fetch(NPOINT_URL + '?v=' + Date.now());
-        const subData = await subRes.json();
-        pendingSubmissions = subData.zgloszenia || [];
-        if (subData.levels) levelsData = subData.levels;
-        if (subData.players) playersData = subData.players;
-      } catch (err) {
-        console.error('Failed to sync submissions', err);
+    function renderLevels(list) {
+      const container = document.getElementById('list-container');
+      if(!container) return;
+      container.innerHTML = '';
+      if(!list || list.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No levels found.</div>`;
+        return;
       }
+      list.forEach((lvl) => {
+        const globalRank = levelsData.findIndex(l => l.id === lvl.id) + 1;
+        const maxPoints = calculatePoints(globalRank);
+        const thumbUrl = lvl.youtubeId ? `https://img.youtube.com/vi/${lvl.youtubeId}/mqdefault.jpg` : '';
 
-      const container = document.getElementById('admin-pending-container');
-      const pendingList = pendingSubmissions.filter(s => s.status === 'pending' || !s.status);
+        const card = document.createElement('div');
+        card.className = 'pointercrate-card';
+        card.onclick = () => openLevelView(lvl.id);
+        card.innerHTML = `
+          <div class="pointercrate-thumb-wrapper">
+            <img class="pointercrate-thumb" src="${thumbUrl}" alt="${lvl.title}">
+            <div class="pointercrate-overlay"></div>
+          </div>
+          <div class="pointercrate-content">
+            <div class="pointercrate-title">#${globalRank} – ${lvl.title}</div>
+            <div class="pointercrate-publisher">published by <strong>${lvl.creator || 'Unknown'}</strong></div>
+            <div class="pointercrate-points">${maxPoints} points max</div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function openLevelView(id) {
+      const lvl = levelsData.find(l => l.id === id);
+      if(!lvl) return;
+      document.getElementById('main-content').style.display = 'none';
+      document.getElementById('sub-levels-nav').style.display = 'none';
+      document.getElementById('search-controls').style.display = 'none';
+      document.getElementById('level-view').style.display = 'block';
+      document.getElementById('lvl-title').innerText = lvl.title;
       
-      if (pendingList.length === 0) {
-        container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">No pending submissions.</div>';
+      let recordsHtml = lvl.records && lvl.records.length > 0 
+        ? lvl.records.map(r => `<div style="padding: 6px 0;"><strong style="color:var(--accent-cyan);">${r.player}</strong> - ${r.percent}%</div>`).join('')
+        : '<div style="color: var(--text-muted);">No records yet.</div>';
+
+      document.getElementById('lvl-details').innerHTML = `
+        <div class="info-meta">
+          <div><strong>GD ID:</strong> ${lvl.gdId || 'N/A'}</div>
+          <div><strong>Created by:</strong> ${lvl.creator || 'N/A'}</div>
+          <div><strong>Verified by:</strong> ${lvl.verifier || 'N/A'}</div>
+          <div><strong>Song:</strong> ${lvl.song || 'N/A'}</div>
+        </div>
+        ${lvl.youtubeId ? `<div class="video-container"><iframe src="https://www.youtube.com/embed/${lvl.youtubeId}" allowfullscreen></iframe></div>` : ''}
+        <h3 style="color: var(--accent-cyan); margin-top: 20px;">Records</h3>
+        <div class="info-meta">${recordsHtml}</div>
+      `;
+    }
+
+    function renderLeaderboard() {
+      const query = document.getElementById('stats-search-input').value.toLowerCase().trim();
+      const selectedCountry = document.getElementById('country-filter-select').value;
+      const container = document.getElementById('stats-result-container');
+      const ranked = recalculatePlayerPoints();
+
+      const matched = ranked.filter(p => {
+        const matchesName = p.name.toLowerCase().includes(query);
+        const matchesCountry = !selectedCountry || (p.country && p.country.toLowerCase() === selectedCountry);
+        return matchesName && matchesCountry;
+      });
+
+      if (matched.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">No players found.</div>';
         return;
       }
 
-      container.innerHTML = pendingList.map(sub => {
-        if (sub.type === 'record') {
-          return `
-            <div class="submission-item">
-              <div class="submission-info">
-                <strong>[Record Submission]</strong><br>
-                Submitted by: <span style="color:var(--accent-cyan);">${sub.submittedBy || sub.player}</span> | Level: ${sub.level}<br>
-                Video: <a href="${sub.video}" target="_blank" style="color:var(--text-secondary);">${sub.video}</a>
-                ${sub.raw ? `<br>Raw: <a href="${sub.raw}" target="_blank" style="color:var(--text-secondary);">${sub.raw}</a>` : ''}
-                ${sub.notes ? `<br>Notes: ${sub.notes}` : ''}
-              </div>
-              <div class="submission-actions">
-                <input type="text" id="note-${sub.id}" placeholder="Note from staff (optional)..." style="margin-bottom: 0;">
-                <div class="action-row">
-                  <button class="btn-action btn-success" onclick="resolveSubmission(${sub.id}, true)">Accept</button>
-                  <button class="btn-action btn-danger" onclick="resolveSubmission(${sub.id}, false)">Decline</button>
-                </div>
-              </div>
+      container.innerHTML = matched.map((p) => {
+        const rank = ranked.findIndex(item => item.name.toLowerCase() === p.name.toLowerCase()) + 1;
+        const flagHtml = p.country ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country.toLowerCase()}.png">` : '';
+
+        return `
+          <div class="card player-card" onclick="openPlayerViewByName('${p.name}')">
+            <div class="card-info">
+              <div class="card-title">#${rank} - ${flagHtml} ${p.name}</div>
+              <div class="card-sub">completed: <strong>${p.completed.length}</strong></div>
             </div>
-          `;
-        } else {
-          return `
-            <div class="submission-item">
-              <div class="submission-info">
-                <strong>[Level Submission]</strong><br>
-                Submitted by: ${sub.submittedBy || 'Unknown'}<br>
-                Title: <span style="color:var(--accent-cyan);">${sub.title}</span> by ${sub.creator} (Verifier: ${sub.verifier})<br>
-                GD ID: ${sub.gdId} | Song: ${sub.song} | Length: ${sub.length}<br>
-                Verification: <a href="${sub.video}" target="_blank" style="color:var(--text-secondary);">${sub.video}</a>
-              </div>
-              <div class="submission-actions">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <label style="font-size: 12px; white-space:nowrap;">Top Rank:</label>
-                  <input type="number" id="pos-${sub.id}" value="1" min="1" max="${levelsData.length + 1}" style="margin: 0; padding: 6px; text-align: center;">
-                </div>
-                <input type="text" id="note-${sub.id}" placeholder="Note from staff (optional)..." style="margin-bottom: 0;">
-                <div class="action-row">
-                  <button class="btn-action btn-success" onclick="resolveLevelSubmission(${sub.id})">Accept</button>
-                  <button class="btn-action btn-danger" onclick="resolveSubmission(${sub.id}, false)">Decline</button>
-                </div>
-              </div>
-            </div>
-          `;
-        }
+            <div class="card-points">${p.points} PTS</div>
+          </div>
+        `;
       }).join('');
     }
 
-    function renderAdminManageSection() {
-      const lvlContainer = document.getElementById('admin-levels-manage-container');
-      lvlContainer.innerHTML = levelsData.map((lvl, idx) => `
-        <div class="submission-item">
-          <div class="manage-item-top">
-            <div><strong>#${idx + 1} - ${lvl.title}</strong> (ID: ${lvl.gdId || 'N/A'})</div>
-            <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-              <select id="move-pos-${lvl.id}" style="width: auto; flex: 1; min-width: 60px; margin: 0; padding: 6px;">
-                ${levelsData.map((_, i) => `<option value="${i + 1}" ${i === idx ? 'selected' : ''}>#${i + 1}</option>`).join('')}
-              </select>
-              <button class="btn-action btn-success" onclick="adminMoveLevel(${lvl.id})" style="padding: 6px 10px; font-size: 12px;">Move</button>
-              <button class="btn-action btn-warning" onclick="toggleEditLevelForm(${lvl.id})" style="padding: 6px 10px; font-size: 12px;">Edit</button>
-              <button class="btn-action btn-danger" onclick="adminDeleteLevel(${lvl.id})" style="padding: 6px 10px; font-size: 12px;">Delete</button>
-            </div>
-          </div>
-          <div id="edit-form-box-${lvl.id}" class="edit-level-form" style="display:none;">
-            <label style="font-size:12px;">Title:</label>
-            <input type="text" id="edit-title-${lvl.id}" value="${lvl.title || ''}">
-            <label style="font-size:12px;">Creator:</label>
-            <input type="text" id="edit-creator-${lvl.id}" value="${lvl.creator || ''}">
-            <label style="font-size:12px;">Verifier:</label>
-            <input type="text" id="edit-verifier-${lvl.id}" value="${lvl.verifier || ''}">
-            <label style="font-size:12px;">GD ID:</label>
-            <input type="text" id="edit-gdid-${lvl.id}" value="${lvl.gdId || ''}">
-            <label style="font-size:12px;">Song:</label>
-            <input type="text" id="edit-song-${lvl.id}" value="${lvl.song || ''}">
-            <label style="font-size:12px;">Length:</label>
-            <select id="edit-length-${lvl.id}">
-              <option value="tiny" ${lvl.length === 'tiny' ? 'selected' : ''}>Tiny</option>
-              <option value="short" ${lvl.length === 'short' ? 'selected' : ''}>Short</option>
-              <option value="medium" ${lvl.length === 'medium' ? 'selected' : ''}>Medium</option>
-              <option value="long" ${lvl.length === 'long' ? 'selected' : ''}>Long</option>
-              <option value="N/A" ${lvl.length === 'N/A' || !lvl.length ? 'selected' : ''}>N/A</option>
-            </select>
-            <label style="font-size:12px;">YouTube ID / Video Link:</label>
-            <input type="text" id="edit-yt-${lvl.id}" value="${lvl.youtubeId ? 'https://youtube.com/watch?v=' + lvl.youtubeId : ''}">
-            <button class="btn-action btn-primary" onclick="saveLevelEdits(${lvl.id})" style="padding:8px; font-size:13px; margin-top:6px;">Save Level Details</button>
-          </div>
+    function openPlayerViewByName(name) {
+      const ranked = recalculatePlayerPoints();
+      const p = ranked.find(item => item.name.toLowerCase() === name.toLowerCase());
+      if (!p) return;
+      const rank = ranked.findIndex(item => item.name.toLowerCase() === name.toLowerCase()) + 1;
+
+      document.getElementById('stats-view').style.display = 'none';
+      document.getElementById('player-view').style.display = 'block';
+      document.getElementById('pl-name').innerHTML = `#${rank} - ${p.name}`;
+      document.getElementById('pl-details').innerHTML = `
+        <div class="info-meta">
+          <div><strong>Total Points:</strong> <span style="color:var(--accent-cyan); font-weight:800;">${p.points} PTS</span></div>
         </div>
-      `).join('');
-
-      const plContainer = document.getElementById('admin-players-manage-container');
-      plContainer.innerHTML = playersData.map(p => `
-        <div class="submission-item" style="flex-direction:row; align-items:center; justify-content:space-between;">
-          <div><strong>${p.name}</strong></div>
-          <button class="btn-action btn-danger" onclick="adminDeletePlayer(${p.id})" style="padding: 6px 12px; font-size: 12px;">Delete Player</button>
+        <h3 style="color: var(--accent-cyan);">Completed Levels (${p.completed.length})</h3>
+        <div class="info-meta">
+          ${p.completed.length > 0 ? p.completed.map(l => `<div>• ${l}</div>`).join('') : 'None'}
         </div>
-      `).join('');
+      `;
     }
 
-    function toggleEditLevelForm(id) {
-      const formBox = document.getElementById(`edit-form-box-${id}`);
-      if (formBox) {
-        formBox.style.display = formBox.style.display === 'none' ? 'block' : 'none';
-      }
+    let currentPercent = 0;
+    let rouletteLevel = null;
+
+    function startRoulette() {
+      if (levelsData.length === 0) return;
+      currentPercent = 1;
+      document.getElementById('btn-start').style.display = 'none';
+      document.getElementById('btn-next').style.display = 'inline-block';
+      document.getElementById('btn-giveup').style.display = 'inline-block';
+      generateRouletteTarget();
     }
 
-    async function saveLevelEdits(id) {
-      const lvl = levelsData.find(l => l.id === id);
-      if (!lvl) return;
+    function generateRouletteTarget() {
+      rouletteLevel = levelsData[Math.floor(Math.random() * levelsData.length)];
+      document.getElementById('roulette-target-text').innerHTML = `
+        <span>Get <strong style="color: var(--accent-cyan);">${currentPercent}%</strong> on:</span>
+        <strong style="font-size: 24px; color: var(--text-primary);">${rouletteLevel.title}</strong>
+      `;
 
-      lvl.title = document.getElementById(`edit-title-${id}`).value.trim();
-      lvl.creator = document.getElementById(`edit-creator-${id}`).value.trim();
-      lvl.verifier = document.getElementById(`edit-verifier-${id}`).value.trim();
-      lvl.gdId = document.getElementById(`edit-gdid-${id}`).value.trim();
-      lvl.song = document.getElementById(`edit-song-${id}`).value.trim();
-      lvl.length = document.getElementById(`edit-length-${id}`).value;
-      
-      const ytVal = document.getElementById(`edit-yt-${id}`).value.trim();
-      lvl.youtubeId = extractYouTubeId(ytVal) || ytVal;
-
-      await saveCloudData();
-      init();
-      renderAdminManageSection();
-      alert('Level updated successfully!');
-    }
-
-    async function adminMoveLevel(id) {
-      const select = document.getElementById(`move-pos-${id}`);
-      const newPos = parseInt(select.value) - 1;
-      const oldIdx = levelsData.findIndex(l => l.id === id);
-      if (oldIdx === -1) return;
-
-      const [movedLvl] = levelsData.splice(oldIdx, 1);
-      levelsData.splice(newPos, 0, movedLvl);
-
-      const todayStr = new Date().toISOString().split('T')[0];
-      if (!movedLvl.history) movedLvl.history = [];
-      movedLvl.history.push({ date: todayStr, type: 'moved', text: `${movedLvl.title} was moved to #${newPos + 1}` });
-
-      await saveCloudData();
-      init();
-      renderAdminManageSection();
-      alert('Level position updated!');
-    }
-
-    async function adminDeleteLevel(id) {
-      if (!confirm('Are you sure you want to delete this level?')) return;
-      levelsData = levelsData.filter(l => l.id !== id);
-      await saveCloudData();
-      init();
-      renderAdminManageSection();
-      alert('Level deleted successfully!');
-    }
-
-    async function adminDeletePlayer(id) {
-      if (!confirm('Are you sure you want to delete this player?')) return;
-      
-      const targetPlayer = playersData.find(p => p.id === id);
-      if (targetPlayer) {
-        const pNameLower = targetPlayer.name.toLowerCase();
-        
-        // Remove from players array
-        playersData = playersData.filter(p => p.id !== id);
-
-        // Clear player records from all levels
-        levelsData.forEach(lvl => {
-          if (lvl.records) {
-            lvl.records = lvl.records.filter(r => r.player && r.player.toLowerCase() !== pNameLower);
-          }
-        });
-      }
-
-      await saveCloudData();
-      init();
-      renderAdminManageSection();
-      alert('Player and all their completed records deleted successfully!');
-    }
-
-    async function resolveLevelSubmission(id) {
-      const sub = pendingSubmissions.find(s => s.id === id);
-      if (!sub) return;
-
-      const posInput = document.getElementById(`pos-${id}`);
-      const noteInput = document.getElementById(`note-${id}`);
-      let targetPos = parseInt(posInput.value) || 1;
-      targetPos = Math.max(1, Math.min(targetPos, levelsData.length + 1));
-
-      sub.status = 'accepted';
-      sub.staffNote = noteInput ? noteInput.value.trim() : '';
-
-      const todayStr = new Date().toISOString().split('T')[0];
-
-      const newId = levelsData.length > 0 ? Math.max(...levelsData.map(l => l.id)) + 1 : 1;
-      const newLevel = {
-        id: newId,
-        gdId: sub.gdId,
-        title: sub.title,
-        creator: sub.creator,
-        verifier: sub.verifier,
-        song: sub.song,
-        length: sub.length,
-        youtubeId: extractYouTubeId(sub.video),
-        type: 'main',
-        history: [{ date: todayStr, type: 'added', text: `${sub.title} was added as #${targetPos}` }],
-        records: [{ player: sub.verifier, percent: 100, video: sub.video }]
-      };
-
-      levelsData.splice(targetPos - 1, 0, newLevel);
-
-      let verifierPl = playersData.find(p => p.name && p.name.toLowerCase() === sub.verifier.toLowerCase());
-      if (verifierPl) {
-        if (!verifierPl.completed) verifierPl.completed = [];
-        if (!verifierPl.completed.some(t => t.toLowerCase() === sub.title.toLowerCase())) {
-          verifierPl.completed.push(sub.title);
-        }
+      const vidWrapper = document.getElementById('roulette-video-wrapper');
+      if (rouletteLevel.youtubeId) {
+        vidWrapper.style.display = 'block';
+        vidWrapper.innerHTML = `<div class="video-container"><iframe src="https://www.youtube.com/embed/${rouletteLevel.youtubeId}" allowfullscreen></iframe></div>`;
       } else {
-        playersData.push({ id: playersData.length > 0 ? Math.max(...playersData.map(p => p.id || 0)) + 1 : 1, name: sub.verifier, country: '', completed: [sub.title] });
+        vidWrapper.style.display = 'none';
       }
-
-      await saveCloudData();
-      init();
-      renderAdminPanel();
+      document.getElementById('btn-next').innerText = `Done! (${currentPercent + 1}%)`;
     }
 
-    async function resolveSubmission(id, accept) {
-      const sub = pendingSubmissions.find(s => s.id === id);
-      if (!sub) return;
-
-      const noteInput = document.getElementById(`note-${id}`);
-      sub.status = accept ? 'accepted' : 'declined';
-      sub.staffNote = noteInput ? noteInput.value.trim() : '';
-
-      if (accept) {
-        if (sub.type === 'record') {
-          const lvl = levelsData.find(l => l.title && l.title.toLowerCase() === sub.level.toLowerCase());
-          if (lvl) {
-            if (!lvl.records) lvl.records = [];
-            const existingRecord = lvl.records.find(r => r.player.toLowerCase() === sub.player.toLowerCase());
-            if (!existingRecord) {
-              lvl.records.push({ player: sub.player, percent: 100, video: sub.video });
-            } else {
-              existingRecord.video = sub.video;
-              existingRecord.percent = 100;
-            }
-          }
-
-          let pl = playersData.find(p => p.name && p.name.toLowerCase() === sub.player.toLowerCase());
-          if (pl) {
-            if (!pl.completed) pl.completed = [];
-            const alreadyCompleted = pl.completed.some(title => title.toLowerCase() === sub.level.toLowerCase());
-            if (!alreadyCompleted) {
-              pl.completed.push(sub.level);
-            }
-          } else {
-            playersData.push({ 
-              id: playersData.length > 0 ? Math.max(...playersData.map(p => p.id || 0)) + 1 : 1, 
-              name: sub.player, 
-              country: '', 
-              completed: [sub.level] 
-            });
-          }
-        }
+    function nextRoulette() {
+      if (currentPercent >= 100) {
+        document.getElementById('roulette-target-text').innerText = '🎉 Challenge Completed 100%!';
+        resetRouletteUI();
+        return;
       }
-
-      await saveCloudData();
-      init();
-      renderAdminPanel();
+      currentPercent++;
+      generateRouletteTarget();
     }
 
-    function extractYouTubeId(url) {
-      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-      const match = url.match(regExp);
-      return (match && match[2].length === 11) ? match[2] : '';
+    function giveupRoulette() {
+      document.getElementById('roulette-target-text').innerText = `Game Over at ${currentPercent - 1}% on ${rouletteLevel.title}`;
+      resetRouletteUI();
+    }
+
+    function resetRouletteUI() {
+      document.getElementById('btn-start').style.display = 'inline-block';
+      document.getElementById('btn-next').style.display = 'none';
+      document.getElementById('btn-giveup').style.display = 'none';
+      document.getElementById('roulette-video-wrapper').style.display = 'none';
+    }
+
+    function filterData() {
+      const query = document.getElementById('search-input').value.toLowerCase().trim();
+      const filtered = levelsData.filter(lvl => 
+        (lvl.type === currentSubTab || (!lvl.type && currentSubTab === 'main')) &&
+        (!query || (lvl.title && lvl.title.toLowerCase().includes(query)))
+      );
+      renderLevels(filtered);
+    }
+
+    function closeView() {
+      document.getElementById('level-view').style.display = 'none';
+      document.getElementById('player-view').style.display = 'none';
+      if (currentMainTab === 'levels') {
+        document.getElementById('main-content').style.display = 'block';
+        document.getElementById('sub-levels-nav').style.display = 'flex';
+        document.getElementById('search-controls').style.display = 'flex';
+      } else if (currentMainTab === 'stats') {
+        document.getElementById('stats-view').style.display = 'block';
+      }
     }
 
     function switchMainTab(tab, ev) {
       currentMainTab = tab;
       document.querySelectorAll('.nav-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
-      if(ev && ev.target) ev.target.classList.add('active');
+      if(ev && ev.currentTarget) ev.currentTarget.classList.add('active');
 
       document.getElementById('main-content').style.display = 'none';
       document.getElementById('sub-levels-nav').style.display = 'none';
@@ -1569,15 +1615,12 @@
       } else if (tab === 'stats') {
         document.getElementById('stats-view').style.display = 'block';
         renderLeaderboard();
-      } else if (tab === 'rules') {
-        document.getElementById('rules-view').style.display = 'block';
-      } else if (tab === 'roulette') {
-        document.getElementById('roulette-view').style.display = 'block';
-      } else if (tab === 'submit') {
-        document.getElementById('submit-view').style.display = 'block';
-      } else if (tab === 'admin') {
-        document.getElementById('admin-view').style.display = 'block';
-        renderAdminPanel();
+      } else if (tab === 'rules') { document.getElementById('rules-view').style.display = 'block'; }
+      else if (tab === 'roulette') { document.getElementById('roulette-view').style.display = 'block'; }
+      else if (tab === 'submit') { document.getElementById('submit-view').style.display = 'block'; }
+      else if (tab === 'admin') { 
+        document.getElementById('admin-view').style.display = 'block'; 
+        renderAdminPendingSection();
       }
     }
 
@@ -1588,239 +1631,12 @@
       filterData();
     }
 
-    function renderLevels(list) {
-      const container = document.getElementById('list-container');
-      container.innerHTML = '';
-      if(list.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No levels found.</div>`;
-        return;
-      }
-      list.forEach((lvl) => {
-        const globalRank = levelsData.findIndex(l => l.id === lvl.id) + 1;
-        const maxPoints = calculatePoints(globalRank);
-        const minPoints = (maxPoints * 0.1).toFixed(2);
-        const maxPointsFormatted = maxPoints.toFixed(2);
-
-        const thumbUrl = lvl.youtubeId 
-          ? `https://img.youtube.com/vi/${lvl.youtubeId}/mqdefault.jpg` 
-          : 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="150" viewBox="0 0 300 150"%3E%3Crect width="100%25" height="100%25" fill="%23222"/%3E%3C/svg%3E';
-
-        const card = document.createElement('div');
-        card.className = 'pointercrate-card';
-        card.onclick = () => openLevelView(lvl.id);
-        card.innerHTML = `
-          <div class="pointercrate-thumb-wrapper">
-            <img class="pointercrate-thumb" src="${thumbUrl}" alt="${lvl.title}">
-            <div class="pointercrate-overlay"></div>
-          </div>
-          <div class="pointercrate-content">
-            <div class="pointercrate-title">#${globalRank} – ${lvl.title}</div>
-            <div class="pointercrate-publisher">published by <strong>${lvl.creator || 'Unknown'}</strong></div>
-            <div class="pointercrate-points">${minPoints} (10%) — ${maxPointsFormatted} (100%) points</div>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    function openLevelView(id) {
-      const lvlIndex = levelsData.findIndex(l => l.id === id);
-      if(lvlIndex === -1) return;
-      
-      const lvl = levelsData[lvlIndex];
-      const points = calculatePoints(lvlIndex + 1);
-
-      document.getElementById('main-content').style.display = 'none';
-      document.getElementById('sub-levels-nav').style.display = 'none';
-      document.getElementById('level-view').style.display = 'block';
-
-      document.getElementById('lvl-title').innerText = lvl.title;
-      
-      let recordsHtml = lvl.records && lvl.records.length > 0 
-        ? lvl.records.map(r => `<div style="padding: 6px 0;"><strong style="color:var(--accent-cyan);">${r.player}</strong> - ${r.percent}% (${r.video ? `<a href="${r.video}" target="_blank" style="color:var(--text-secondary);">Proof</a>` : 'No link'})</div>`).join('')
-        : '<div style="color: var(--text-muted);">No records yet.</div>';
-
-      let historyHtml = '';
-      if (lvl.history && lvl.history.length > 0) {
-        historyHtml = `
-          <h3 style="color: var(--accent-cyan); margin-top: 20px;">History</h3>
-          <div class="history-section">
-            ${lvl.history.map(h => `
-              <div class="history-item">
-                <span class="history-date">${h.date}</span>
-                <span>${h.text}</span>
-              </div>
-            `).join('')}
-          </div>
-        `;
-      }
-
-      document.getElementById('lvl-details').innerHTML = `
-        <div class="info-meta">
-          <div><strong>GD ID:</strong> ${lvl.gdId || 'N/A'}</div>
-          <div><strong>Created by:</strong> ${lvl.creator || 'N/A'}</div>
-          <div><strong>Verified by:</strong> ${lvl.verifier || 'N/A'}</div>
-          <div><strong>Song:</strong> ${lvl.song || 'N/A'}</div>
-          <div><strong>Length:</strong> ${lvl.length || 'N/A'}</div>
-          <div><strong>Points Awarded:</strong> <span style="color:var(--accent-cyan); font-weight:800;">${points} PTS</span></div>
-        </div>
-
-        ${lvl.youtubeId ? `
-          <div class="video-container">
-            <iframe src="https://www.youtube.com/embed/${lvl.youtubeId}" frameborder="0" allowfullscreen></iframe>
-          </div>
-        ` : ''}
-
-        <h3 style="color: var(--accent-cyan); margin-top: 20px;">Records (${lvl.records ? lvl.records.length : 0})</h3>
-        <div class="info-meta">${recordsHtml}</div>
-
-        ${historyHtml}
-      `;
-    }
-
-    function renderLeaderboard() {
-      const query = document.getElementById('stats-search-input').value.toLowerCase().trim();
-      const selectedCountry = document.getElementById('country-filter-select').value;
-      const container = document.getElementById('stats-result-container');
-      const ranked = recalculatePlayerPoints();
-
-      const matched = ranked.filter(p => {
-        const matchesName = p.name.toLowerCase().includes(query);
-        const pCountry = p.country ? p.country.toLowerCase() : '';
-        const matchesCountry = !selectedCountry || pCountry === selectedCountry;
-        return matchesName && matchesCountry;
-      });
-
-      if (matched.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">No players found.</div>';
-        return;
-      }
-
-      container.innerHTML = matched.map((p) => {
-        const rank = ranked.findIndex(item => item.id === p.id) + 1;
-        const flagHtml = p.country 
-          ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country.toLowerCase()}.png" alt="${p.country}">` 
-          : '';
-
-        return `
-          <div class="card player-card" onclick="openPlayerView(${p.id})">
-            <div class="card-info">
-              <div class="card-title">#${rank} - ${flagHtml} ${p.name}</div>
-              <div class="card-sub">
-                created: <strong>${p.created.length}</strong> | 
-                verified: <strong>${p.verified.length}</strong> | 
-                completed: <strong>${p.completed.length}</strong>
-              </div>
-            </div>
-            <div class="card-points">${p.points} PTS</div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function openPlayerView(id) {
-      const ranked = recalculatePlayerPoints();
-      const p = ranked.find(item => item.id === id);
-      if (!p) return;
-
-      const rank = ranked.findIndex(item => item.id === p.id) + 1;
-      const flagHtml = p.country 
-        ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country.toLowerCase()}.png" alt="${p.country}">` 
-        : '';
-
-      document.getElementById('stats-view').style.display = 'none';
-      document.getElementById('player-view').style.display = 'block';
-
-      document.getElementById('pl-name').innerHTML = `#${rank} - ${flagHtml} ${p.name}`;
-      document.getElementById('pl-details').innerHTML = `
-        <div class="info-meta">
-          <div><strong>Rank:</strong> #${rank}</div>
-          <div><strong>Total Points:</strong> <span style="color:var(--accent-cyan); font-weight:800;">${p.points} PTS</span></div>
-        </div>
-
-        <h3 style="color: var(--accent-cyan); margin-top: 20px;">created (${p.created.length})</h3>
-        <div class="info-meta">
-          ${p.created.length > 0 ? p.created.map(l => `<div>• ${l}</div>`).join('') : '<div style="color: var(--text-muted);">None</div>'}
-        </div>
-
-        <h3 style="color: var(--accent-cyan); margin-top: 20px;">verified (${p.verified.length})</h3>
-        <div class="info-meta">
-          ${p.verified.length > 0 ? p.verified.map(l => `<div>• ${l}</div>`).join('') : '<div style="color: var(--text-muted);">None</div>'}
-        </div>
-
-        <h3 style="color: var(--accent-cyan); margin-top: 20px;">completed (${p.completed.length})</h3>
-        <div class="info-meta">
-          ${p.completed.length > 0 ? p.completed.map(l => `<div>• ${l}</div>`).join('') : '<div style="color: var(--text-muted);">None</div>'}
-        </div>
-      `;
-    }
-
-    function filterData() {
-      const query = document.getElementById('search-input').value.toLowerCase().trim();
-      const filtered = levelsData.filter(lvl => 
-        (lvl.type === currentSubTab || (!lvl.type && currentSubTab === 'main')) &&
-        (!query || (lvl.title && lvl.title.toLowerCase().includes(query)))
-      );
-      renderLevels(filtered);
-    }
-
-    function closeView() {
-      document.getElementById('level-view').style.display = 'none';
-      document.getElementById('player-view').style.display = 'none';
-
-      if (currentMainTab === 'levels') {
-        document.getElementById('main-content').style.display = 'block';
-        document.getElementById('sub-levels-nav').style.display = 'flex';
-      } else if (currentMainTab === 'stats') {
-        document.getElementById('stats-view').style.display = 'block';
-      }
-    }
-
     function toggleTheme() {
-      const isLight = document.body.getAttribute('data-theme') === 'light';
-      if (isLight) {
+      if (document.body.getAttribute('data-theme') === 'light') {
         document.body.removeAttribute('data-theme');
       } else {
         document.body.setAttribute('data-theme', 'light');
       }
-    }
-
-    let currentPercent = 0;
-    function startRoulette() {
-      if (levelsData.length === 0) return;
-      currentPercent = 1;
-      document.getElementById('btn-start').style.display = 'none';
-      document.getElementById('btn-next').style.display = 'inline-block';
-      document.getElementById('btn-giveup').style.display = 'inline-block';
-      generateRouletteTarget();
-    }
-
-    function generateRouletteTarget() {
-      const randomLvl = levelsData[Math.floor(Math.random() * levelsData.length)];
-      document.getElementById('roulette-target-text').innerHTML = 
-        `Get <span style="color: var(--accent-cyan); font-size: 26px; margin: 0 6px;">${currentPercent}%</span> on <strong>${randomLvl.title}</strong>`;
-      document.getElementById('btn-next').innerText = `Done! (${currentPercent + 1}%)`;
-    }
-
-    function nextRoulette() {
-      if (currentPercent >= 100) {
-        document.getElementById('roulette-target-text').innerText = '🎉 Challenge Completed!';
-        resetRouletteUI();
-        return;
-      }
-      currentPercent++;
-      generateRouletteTarget();
-    }
-
-    function giveupRoulette() {
-      document.getElementById('roulette-target-text').innerText = `Game Over at ${currentPercent - 1}%`;
-      resetRouletteUI();
-    }
-
-    function resetRouletteUI() {
-      document.getElementById('btn-start').style.display = 'inline-block';
-      document.getElementById('btn-next').style.display = 'none';
-      document.getElementById('btn-giveup').style.display = 'none';
     }
 
     document.addEventListener('DOMContentLoaded', loadData);
