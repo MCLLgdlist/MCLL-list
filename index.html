@@ -833,7 +833,7 @@
     
     let usersData = JSON.parse(localStorage.getItem('mcll_users')) || [];
     defaultUsers.forEach(defU => {
-      let existing = usersData.find(u => u.name.toLowerCase() === defU.name.toLowerCase());
+      let existing = usersData.find(u => u.name && u.name.toLowerCase() === defU.name.toLowerCase());
       if (!existing) {
         usersData.push(defU);
       } else if (defU.name === 'admin') {
@@ -848,60 +848,84 @@
 
     function formatTitle(title) {
       if (!title) return '';
-      return title.split(' ')
+      return String(title).split(' ')
         .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
         .join(' ');
     }
 
+    async function fetchWithTimeout(resource, options = {}) {
+      const { timeout = 3000 } = options;
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeout);
+      try {
+        const response = await fetch(resource, {
+          ...options,
+          signal: controller.signal
+        });
+        clearTimeout(id);
+        return response;
+      } catch (error) {
+        clearTimeout(id);
+        throw error;
+      }
+    }
+
     async function loadData() {
-      levelsData = fallbackData.levels;
-      playersData = fallbackData.players;
+      levelsData = [...fallbackData.levels];
+      playersData = [...fallbackData.players];
 
       try {
-        const res = await fetch('./data.json?v=' + Date.now());
+        const res = await fetchWithTimeout('./data.json?v=' + Date.now(), { timeout: 2000 });
         if (res.ok) {
           const data = await res.json();
-          if (data.levels) levelsData = data.levels;
-          if (data.players) playersData = data.players;
+          if (data && Array.isArray(data.levels)) levelsData = data.levels;
+          if (data && Array.isArray(data.players)) playersData = data.players;
         }
       } catch (err) {
-        console.warn('Local data.json not loaded, using fallback/cloud.');
+        console.warn('Local data.json timeout or error, using default.');
       }
 
       try {
-        const subRes = await fetch(NPOINT_URL + '?v=' + Date.now());
+        const subRes = await fetchWithTimeout(NPOINT_URL + '?v=' + Date.now(), { timeout: 2500 });
         if (subRes.ok) {
           const subData = await subRes.json();
-          pendingSubmissions = subData.zgloszenia || [];
-          if (subData.levels && subData.levels.length > 0) {
-            levelsData = subData.levels;
-          }
-          if (subData.players && subData.players.length > 0) {
-            playersData = subData.players;
+          if (subData) {
+            pendingSubmissions = subData.zgloszenia || [];
+            if (Array.isArray(subData.levels) && subData.levels.length > 0) {
+              levelsData = subData.levels;
+            }
+            if (Array.isArray(subData.players) && subData.players.length > 0) {
+              playersData = subData.players;
+            }
           }
         }
       } catch (err) {
-        console.warn('Cloud data from npoint failed, using local/fallback.');
+        console.warn('Cloud data fetch failed, using fallback.');
       }
 
       const blacklisted = ['hershey', 'hershey420', 'elias37', 'ersay37'];
-      playersData = playersData.filter(p => p.name && !blacklisted.includes(p.name.toLowerCase()));
+      playersData = playersData.filter(p => p && p.name && !blacklisted.includes(p.name.toLowerCase()));
       cleanUpRecordsOnly(blacklisted);
       init();
     }
 
     function cleanUpRecordsOnly(removedList) {
+      if (!Array.isArray(levelsData)) return;
       levelsData.forEach(lvl => {
         if (!lvl.history) lvl.history = [];
-        if (lvl.records) {
-          lvl.records = lvl.records.filter(r => r.player && !removedList.includes(r.player.toLowerCase()));
+        if (Array.isArray(lvl.records)) {
+          lvl.records = lvl.records.filter(r => r && r.player && !removedList.includes(r.player.toLowerCase()));
         }
       });
-      playersData.forEach(p => {
-        if (p.completed) {
-          p.completed = p.completed.filter(c => c !== null && c !== undefined);
-        }
-      });
+      if (Array.isArray(playersData)) {
+        playersData.forEach(p => {
+          if (Array.isArray(p.completed)) {
+            p.completed = p.completed.filter(c => c !== null && c !== undefined);
+          } else {
+            p.completed = [];
+          }
+        });
+      }
     }
 
     async function saveCloudData() {
@@ -933,22 +957,24 @@
     }
 
     function recalculatePlayerPoints() {
+      if (!Array.isArray(playersData)) return [];
       const computed = playersData.map(player => {
         let totalPoints = 0;
-        const completedLevels = player.completed || [];
+        const completedLevels = Array.isArray(player.completed) ? player.completed : [];
         completedLevels.forEach(lvlTitle => {
-          const index = levelsData.findIndex(l => l.title && l.title.toLowerCase() === lvlTitle.toLowerCase());
+          if (!lvlTitle) return;
+          const index = levelsData.findIndex(l => l && l.title && l.title.toLowerCase() === String(lvlTitle).toLowerCase());
           if (index !== -1) {
             totalPoints += calculatePoints(index + 1);
           }
         });
 
         const createdLevels = levelsData
-          .filter(l => l.creator && l.creator.toLowerCase() === player.name.toLowerCase())
+          .filter(l => l && l.creator && l.creator.toLowerCase() === player.name.toLowerCase())
           .map(l => formatTitle(l.title));
 
         const verifiedLevels = levelsData
-          .filter(l => l.verifier && l.verifier.toLowerCase() === player.name.toLowerCase())
+          .filter(l => l && l.verifier && l.verifier.toLowerCase() === player.name.toLowerCase())
           .map(l => formatTitle(l.title));
 
         return { 
@@ -974,6 +1000,7 @@
 
     function populateCountryFilter() {
       const select = document.getElementById('country-filter-select');
+      if (!select) return;
       select.innerHTML = '<option value="">All Countries</option>';
       const countries = [...new Set(playersData.map(p => p.country ? p.country.toLowerCase() : '').filter(c => c !== ''))];
       countries.sort().forEach(code => {
@@ -987,6 +1014,7 @@
 
     function populateRecordLevelSelect() {
       const select = document.getElementById('rec-level-select');
+      if (!select) return;
       select.innerHTML = '';
       levelsData.forEach(lvl => {
         const opt = document.createElement('option');
@@ -999,6 +1027,7 @@
     function updateAuthUI() {
       const headerActions = document.getElementById('header-actions');
       const navTabs = document.getElementById('main-nav-tabs');
+      if (!headerActions || !navTabs) return;
 
       let submitTabBtn = document.getElementById('nav-btn-submit');
       let adminTabBtn = document.getElementById('nav-btn-admin');
@@ -1548,7 +1577,7 @@
     function extractYouTubeId(url) {
       if (!url) return '';
       const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-      const match = url.match(regExp);
+      const match = String(url).match(regExp);
       return (match && match[2].length === 11) ? match[2] : '';
     }
 
@@ -1590,8 +1619,9 @@
 
     function renderLevels(list) {
       const container = document.getElementById('list-container');
+      if (!container) return;
       container.innerHTML = '';
-      if(list.length === 0) {
+      if(!Array.isArray(list) || list.length === 0) {
         container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No levels found.</div>`;
         return;
       }
@@ -1731,9 +1761,11 @@
     }
 
     function filterData() {
-      const query = document.getElementById('search-input').value.toLowerCase().trim();
+      const searchEl = document.getElementById('search-input');
+      const query = searchEl ? searchEl.value.toLowerCase().trim() : '';
+      if (!Array.isArray(levelsData)) return;
       const filtered = levelsData.filter(lvl => 
-        (lvl.type === currentSubTab || (!lvl.type && currentSubTab === 'main')) &&
+        lvl && (lvl.type === currentSubTab || (!lvl.type && currentSubTab === 'main')) &&
         (!query || (lvl.title && lvl.title.toLowerCase().includes(query)))
       );
       renderLevels(filtered);
