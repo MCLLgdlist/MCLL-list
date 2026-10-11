@@ -94,9 +94,7 @@
       transition: all 0.2s ease;
     }
 
-    .auth-top-btn:hover {
-      background: var(--accent-hover);
-    }
+    .auth-top-btn:hover { background: var(--accent-hover); }
 
     .discord-btn {
       display: inline-flex;
@@ -126,9 +124,7 @@
       transition: all 0.2s ease;
     }
 
-    .theme-toggle-btn:hover {
-      background: var(--accent-hover);
-    }
+    .theme-toggle-btn:hover { background: var(--accent-hover); }
 
     h1 {
       margin: 0 0 4px;
@@ -247,10 +243,7 @@
       transition: border-color 0.2s ease;
     }
 
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--accent-cyan);
-    }
-
+    input:focus, select:focus, textarea:focus { border-color: var(--accent-cyan); }
     textarea { resize: vertical; min-height: 80px; }
 
     .pointercrate-card {
@@ -280,129 +273,54 @@
       border-radius: 4px;
     }
 
-    .pointercrate-thumb {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      position: absolute;
-      top: 0; left: 0;
-    }
-
-    .pointercrate-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 50%;
-      background: linear-gradient(to bottom, transparent, var(--card-bg));
-    }
-
-    .pointercrate-content {
-      padding: 12px 6px 4px 6px;
-    }
-
-    .pointercrate-title {
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--text-primary);
-    }
-
-    .pointercrate-publisher {
-      font-size: 15px;
-      color: var(--text-secondary);
-      margin: 4px 0;
-    }
-
-    .pointercrate-publisher strong {
-      text-decoration: underline;
-      text-decoration-style: dotted;
-    }
-
-    .pointercrate-points {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
+    .pointercrate-thumb { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+    .pointercrate-overlay { position: absolute; bottom: 0; left: 0; width: 100%; height: 50%; background: linear-gradient(to bottom, transparent, var(--card-bg)); }
+    .pointercrate-content { padding: 12px 6px 4px 6px; }
+    .pointercrate-title { font-size: 22px; font-weight: 800; color: var(--text-primary); }
+    .pointercrate-publisher { font-size: 15px; color: var(--text-secondary); margin: 4px 0; }
+    .pointercrate-publisher strong { text-decoration: underline; text-decoration-style: dotted; }
+    .pointercrate-points { font-size: 12px; color: var(--text-muted); }
 
     .card.player-card {
-      position: relative;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      margin: 12px 0;
-      padding: 16px 20px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: transform 0.2s ease, border-color 0.2s ease;
-      box-shadow: 0 4px 12px var(--shadow-color);
+      position: relative; background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 12px; margin: 12px 0; padding: 16px 20px; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease; box-shadow: 0 4px 12px var(--shadow-color);
     }
-    .card.player-card:hover {
-      transform: translateY(-3px);
-      border-color: var(--accent-cyan);
-    }
+    .card.player-card:hover { transform: translateY(-3px); border-color: var(--accent-cyan); }
     .card-info { flex-grow: 1; min-width: 0; padding-right: 16px; }
     .card-title { font-size: 20px; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
     .card-sub { font-size: 13px; color: var(--text-secondary); margin-top: 6px; }
     .card-points { font-size: 17px; font-weight: 800; color: var(--accent-cyan); white-space: nowrap; flex-shrink: 0; }
 
     .player-flag {
-      width: 22px;
-      height: 15px;
-      object-fit: cover;
-      border-radius: 2px;
-      vertical-align: middle;
-      border: 1px solid var(--card-border);
+      width: 22px; height: 15px; object-fit: cover; border-radius: 2px;
+      vertical-align: middle; border: 1px solid var(--card-border);
     }
 
     #level-view, #player-view { display: none; }
     .back-btn {
-      background: var(--card-bg);
-      color: var(--accent-cyan);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 8px 14px;
-      cursor: pointer;
-      margin-bottom: 16px;
-      font-weight: 700;
+      background: var(--card-bg); color: var(--accent-cyan); border: 1px solid var(--card-border);
+      border-radius: 8px; padding: 8px 14px; cursor: pointer; margin-bottom: 16px; font-weight: 700;
       transition: background 0.2s ease;
     }
     .back-btn:hover { background: var(--accent-hover); }
 
     .video-container {
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      overflow: hidden;
-      border-radius: 12px;
-      margin: 16px 0;
-      border: 1px solid var(--card-border);
+      position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
+      border-radius: 12px; margin: 16px 0; border: 1px solid var(--card-border);
     }
 
-    .video-container iframe {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-    }
+    .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
     .info-meta {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 16px;
-      font-size: 14px;
-      line-height: 1.6;
-      word-break: break-all;
+      background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px;
+      padding: 14px; margin-bottom: 16px; font-size: 14px; line-height: 1.6; word-break: break-all;
     }
 
     .btn-action, .btn-roulette {
-      padding: 10px 18px;
-      font-size: 14px;
-      font-weight: 800;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      transition: opacity 0.2s, transform 0.1s;
+      padding: 10px 18px; font-size: 14px; font-weight: 800; border-radius: 10px; border: none;
+      cursor: pointer; transition: opacity 0.2s, transform 0.1s;
     }
     .btn-action:hover, .btn-roulette:hover { opacity: 0.9; transform: translateY(-1px); }
     .btn-primary { background: var(--accent-cyan); color: #0c140e; width: 100%; }
@@ -411,114 +329,56 @@
     .btn-warning { background: var(--warning-color); color: #fff; }
 
     .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      padding: 12px;
-      backdrop-filter: blur(4px);
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000;
+      padding: 12px; backdrop-filter: blur(4px);
     }
     .modal-content {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      padding: 24px;
-      border-radius: 14px;
-      width: 100%;
-      max-width: 420px;
-      position: relative;
+      background: var(--card-bg); border: 1px solid var(--card-border); padding: 24px;
+      border-radius: 14px; width: 100%; max-width: 420px; position: relative;
       box-shadow: 0 12px 40px var(--shadow-color);
     }
     .close-modal {
-      position: absolute;
-      top: 12px; right: 14px;
-      background: none; border: none;
-      color: var(--text-muted);
-      font-size: 20px; cursor: pointer;
+      position: absolute; top: 12px; right: 14px; background: none; border: none;
+      color: var(--text-muted); font-size: 20px; cursor: pointer;
     }
     .close-modal:hover { color: var(--text-primary); }
 
     .submission-item {
-      background: var(--input-bg);
-      border: 1px solid var(--card-border);
-      padding: 14px;
-      border-radius: 10px;
-      margin-bottom: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      word-break: break-word;
+      background: var(--input-bg); border: 1px solid var(--card-border); padding: 14px;
+      border-radius: 10px; margin-bottom: 12px; display: flex; flex-direction: column;
+      gap: 12px; word-break: break-word;
     }
 
-    .submission-info {
-      font-size: 13px;
-      line-height: 1.5;
-    }
+    .submission-info { font-size: 13px; line-height: 1.5; }
 
-    .action-row {
-      display: flex;
-      gap: 8px;
-      width: 100%;
-    }
+    .action-row { display: flex; gap: 8px; width: 100%; flex-wrap: wrap; }
+    .action-row .btn-action { flex: 1; min-width: 80px; }
 
-    .action-row .btn-action {
-      flex: 1;
-    }
-
-    .submission-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 10px;
-    }
+    .submission-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 
     .status-badge {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      white-space: nowrap;
+      display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 11px;
+      font-weight: 800; text-transform: uppercase; white-space: nowrap;
     }
     .status-pending { background: rgba(240, 173, 78, 0.2); color: var(--warning-color); border: 1px solid var(--warning-color); }
     .status-accepted { background: rgba(92, 184, 92, 0.2); color: var(--success-color); border: 1px solid var(--success-color); }
     .status-declined { background: rgba(217, 83, 79, 0.2); color: var(--danger-color); border: 1px solid var(--danger-color); }
 
     .staff-note-box {
-      background: rgba(0,0,0,0.25);
-      border-left: 3px solid var(--accent-cyan);
-      padding: 8px 12px;
-      border-radius: 4px;
-      font-size: 13px;
-      color: var(--text-secondary);
-      margin-top: 4px;
+      background: rgba(0,0,0,0.25); border-left: 3px solid var(--accent-cyan);
+      padding: 8px 12px; border-radius: 4px; font-size: 13px; color: var(--text-secondary); margin-top: 4px;
     }
 
     .edit-level-form {
-      background: rgba(0,0,0,0.3);
-      border: 1px solid var(--card-border);
-      padding: 12px;
-      border-radius: 8px;
-      margin-top: 10px;
-      width: 100%;
+      background: rgba(0,0,0,0.3); border: 1px solid var(--card-border);
+      padding: 12px; border-radius: 8px; margin-top: 10px; width: 100%;
     }
 
-    .manage-item-top {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      width: 100%;
-    }
+    .manage-item-top { display: flex; flex-direction: column; gap: 10px; width: 100%; }
 
     @media (min-width: 600px) {
-      .manage-item-top {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-      }
+      .manage-item-top { flex-direction: row; justify-content: space-between; align-items: center; }
     }
 
     footer { text-align: center; color: var(--text-muted); font-size: 12px; padding: 30px 16px; }
@@ -706,7 +566,6 @@
         <button class="sub-tab-btn" id="modal-tab-register" onclick="switchAuthMode('register')" style="flex:1;">Register</button>
       </div>
 
-      <!-- Login Form -->
       <form id="modal-login-form" onsubmit="handleLogin(event)">
         <label style="font-size: 13px; color: var(--text-secondary);">login name:</label>
         <input type="text" id="login-username" required>
@@ -715,7 +574,6 @@
         <button type="submit" class="btn-action btn-primary" style="margin-top: 10px;">Log In</button>
       </form>
 
-      <!-- Register Form -->
       <form id="modal-register-form" class="hidden" onsubmit="handleRegister(event)" style="display:none;">
         <label style="font-size: 13px; color: var(--text-secondary);">Register name:</label>
         <input type="text" id="reg-username" required>
@@ -1213,9 +1071,18 @@
           ? `<strong>[Record]</strong> Level: <b>${sub.level}</b> | Player: <b>${sub.player}</b><br>Video: <a href="${sub.video}" target="_blank" style="color:var(--text-secondary);">${sub.video}</a>`
           : `<strong>[Level]</strong> Title: <b>${sub.title}</b> | Creator: <b>${sub.creator}</b><br>Verifier: ${sub.verifier} | Video: <a href="${sub.video}" target="_blank" style="color:var(--text-secondary);">${sub.video}</a>`;
 
+        let extraField = '';
+        if (sub.type === 'level') {
+          extraField = `
+            <label style="font-size:12px; color:var(--text-secondary); margin-top:6px; display:block;">Target Top Position (e.g. 1):</label>
+            <input type="number" id="accept-pos-${sub.id}" value="1" min="1" max="${levelsData.length + 1}" style="margin-bottom:8px;">
+          `;
+        }
+
         return `
           <div class="submission-item">
             <div class="submission-info">${details}</div>
+            ${extraField}
             <input type="text" id="staff-note-${sub.id}" placeholder="Optional staff note...">
             <div class="action-row">
               <button class="btn-action btn-success" onclick="acceptSubmission(${sub.id})">Accept</button>
@@ -1253,8 +1120,8 @@
         let ytMatch = sub.video.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([a-zA-Z0-9_-]{11})/);
         let ytId = ytMatch ? ytMatch[1] : '';
 
-        levelsData.push({
-          id: levelsData.length + 1,
+        const newLvl = {
+          id: levelsData.length > 0 ? Math.max(...levelsData.map(l => l.id)) + 1 : 1,
           title: sub.title,
           creator: sub.creator,
           verifier: sub.verifier,
@@ -1264,7 +1131,14 @@
           type: 'main',
           youtubeId: ytId,
           records: [{ player: sub.verifier, percent: 100, video: sub.video }]
-        });
+        };
+
+        const posInput = document.getElementById(`accept-pos-${sub.id}`);
+        let targetIndex = posInput ? parseInt(posInput.value) - 1 : 0;
+        if (isNaN(targetIndex) || targetIndex < 0) targetIndex = 0;
+        if (targetIndex > levelsData.length) targetIndex = levelsData.length;
+
+        levelsData.splice(targetIndex, 0, newLvl);
 
         let pl = playersData.find(p => p.name.toLowerCase() === sub.verifier.toLowerCase());
         if (pl) {
@@ -1308,6 +1182,13 @@
                 <button class="btn-action btn-danger" onclick="removeLevel(${lvl.id})">Delete</button>
               </div>
             </div>
+            
+            <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
+              <span style="font-size: 12px; color: var(--text-secondary);">Move to position:</span>
+              <input type="number" id="move-pos-${lvl.id}" value="${idx + 1}" min="1" max="${levelsData.length}" style="margin-bottom:0; width: 90px; padding: 6px 10px;">
+              <button class="btn-action btn-warning" style="padding: 6px 14px; width: auto;" onclick="moveLevelToPosition(${lvl.id})">Move</button>
+            </div>
+
             <div id="edit-lvl-form-${lvl.id}" class="edit-level-form" style="display:none;">
               <label style="font-size:11px;">Title:</label>
               <input type="text" id="edit-title-${lvl.id}" value="${lvl.title}">
@@ -1334,6 +1215,28 @@
     function toggleEditLevelForm(id) {
       const form = document.getElementById(`edit-lvl-form-${id}`);
       if (form) form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
+    async function moveLevelToPosition(id) {
+      const input = document.getElementById(`move-pos-${id}`);
+      if (!input) return;
+      let newPos = parseInt(input.value);
+      if (isNaN(newPos)) return;
+
+      const currentIndex = levelsData.findIndex(l => l.id === id);
+      if (currentIndex === -1) return;
+
+      let targetIndex = newPos - 1;
+      if (targetIndex < 0) targetIndex = 0;
+      if (targetIndex >= levelsData.length) targetIndex = levelsData.length - 1;
+
+      const [movedLevel] = levelsData.splice(currentIndex, 1);
+      levelsData.splice(targetIndex, 0, movedLevel);
+
+      await saveCloudData();
+      renderAdminManageSection();
+      init();
+      alert(`Level moved to position #${targetIndex + 1}!`);
     }
 
     async function saveLevelEdits(id) {
