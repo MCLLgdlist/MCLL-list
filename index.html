@@ -72,56 +72,65 @@
       box-shadow: 0 10px 30px var(--shadow-color);
     }
 
+    /* Uporządkowane ikony u góry strony */
     .header-actions {
       position: absolute;
-      top: 14px;
-      right: 16px;
+      top: 12px;
+      right: 12px;
+      left: 12px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: flex-end;
+      gap: 6px;
       flex-wrap: wrap;
     }
 
-    .auth-top-btn {
+    .auth-top-btn, .theme-toggle-btn {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       color: var(--accent-cyan);
-      padding: 8px 14px;
-      border-radius: 20px;
+      padding: 6px 12px;
+      border-radius: 18px;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .auth-top-btn:hover, .theme-toggle-btn:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-cyan);
     }
 
     .discord-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       background: #5865F2;
       color: #ffffff;
       border-radius: 50%;
       text-decoration: none;
-      transition: all 0.2s ease;
+      transition: transform 0.2s, opacity 0.2s;
       box-shadow: 0 2px 8px var(--shadow-color);
+      flex-shrink: 0;
     }
 
-    .discord-btn svg { width: 20px; height: 20px; fill: currentColor; }
-
-    .theme-toggle-btn {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text-primary);
-      padding: 8px 12px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 700;
+    .discord-btn:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
     }
+
+    .discord-btn svg { width: 18px; height: 18px; fill: currentColor; }
 
     h1 {
-      margin: 0 0 4px;
+      margin: 10px 0 4px;
       font-size: 42px;
       font-weight: 900;
       letter-spacing: 2px;
@@ -280,6 +289,7 @@
       font-size: 22px;
       font-weight: 800;
       color: var(--text-primary);
+      text-transform: capitalize;
     }
 
     .pointercrate-publisher {
@@ -521,9 +531,7 @@
 </head>
 <body>
   <header>
-    <div class="header-actions" id="header-actions">
-      <!-- Generowane dynamicznie przez JS -->
-    </div>
+    <div class="header-actions" id="header-actions"></div>
     <h1>MCLL</h1>
     <div class="sub">Official GD List</div>
     <div class="stats-counter-bar">
@@ -572,9 +580,10 @@
     <!-- Roulette View -->
     <div class="roulette-box" id="roulette-view" style="text-align: center;">
       <h2 style="color: var(--accent-cyan); margin-top:0;">Level Roulette</h2>
-      <div id="roulette-target-text" style="font-size: 22px; font-weight: 800; margin: 20px 0; min-height: 50px; display: flex; align-items: center; justify-content: center;">
+      <div id="roulette-target-text" style="font-size: 20px; font-weight: 800; margin: 16px 0; min-height: 40px; display: flex; align-items: center; justify-content: center; text-transform: capitalize;">
         Click Start to begin!
       </div>
+      <div id="roulette-media-container" style="margin-bottom: 16px;"></div>
       <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
         <button class="btn-roulette btn-start" id="btn-start" onclick="startRoulette()">Start Roulette</button>
         <button class="btn-roulette btn-next" id="btn-next" style="display:none;" onclick="nextRoulette()">Done! (+1%)</button>
@@ -674,7 +683,7 @@
 
     <div id="level-view">
       <button class="back-btn" onclick="closeView()">← Back to list</button>
-      <h2 id="lvl-title" style="color: var(--text-primary); margin-top: 0; font-size: 28px;"></h2>
+      <h2 id="lvl-title" style="color: var(--text-primary); margin-top: 0; font-size: 28px; text-transform: capitalize;"></h2>
       <div id="lvl-details"></div>
     </div>
 
@@ -694,7 +703,6 @@
         <button class="sub-tab-btn" id="modal-tab-register" onclick="switchAuthMode('register')" style="flex:1;">Register</button>
       </div>
 
-      <!-- Login Form -->
       <form id="modal-login-form" onsubmit="handleLogin(event)">
         <label style="font-size: 13px; color: var(--text-secondary);">login name:</label>
         <input type="text" id="login-username" required>
@@ -703,7 +711,6 @@
         <button type="submit" class="btn-action btn-primary" style="margin-top: 10px;">Log In</button>
       </form>
 
-      <!-- Register Form -->
       <form id="modal-register-form" class="hidden" onsubmit="handleRegister(event)" style="display:none;">
         <label style="font-size: 13px; color: var(--text-secondary);">Register name:</label>
         <input type="text" id="reg-username" required>
@@ -767,7 +774,7 @@
 
     const countryNames = {
       ge: "Georgia", eg: "Egypt", us: "United States", pl: "Poland", gb: "United Kingdom",
-      fr: "France", de: "Germany", ru: "Russia", br: "Brazil", es: "Spain", ca: "Canada", ch: "Switzerland"
+      fr: "France", de: "Germany", ru: "Russia", br: "Brazil", es: "Spain", ca: "Canada", ch: "Switzerland", tr: "Turkey"
     };
 
     let levelsData = [];
@@ -788,6 +795,13 @@
     let currentUser = JSON.parse(localStorage.getItem('mcll_current_user')) || null;
     let currentMainTab = 'levels';
     let currentSubTab = 'main';
+
+    function formatTitle(title) {
+      if (!title) return '';
+      return title.split(' ')
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+        .join(' ');
+    }
 
     async function loadData() {
       try {
@@ -813,13 +827,9 @@
         console.error('Failed to load data from cloud', err);
       }
 
-      // Czyszczenie listy graczy z usuniętych użytkowników
       const blacklisted = ['hershey', 'hershey420', 'elias37', 'ersay37'];
       playersData = playersData.filter(p => p.name && !blacklisted.includes(p.name.toLowerCase()));
-
-      // Czyszczenie samych rekordów i ukończeń (BEZ modyfikowania creator / history)
       cleanUpRecordsOnly(blacklisted);
-
       init();
     }
 
@@ -878,18 +888,18 @@
 
         const createdLevels = levelsData
           .filter(l => l.creator && l.creator.toLowerCase() === player.name.toLowerCase())
-          .map(l => l.title);
+          .map(l => formatTitle(l.title));
 
         const verifiedLevels = levelsData
           .filter(l => l.verifier && l.verifier.toLowerCase() === player.name.toLowerCase())
-          .map(l => l.title);
+          .map(l => formatTitle(l.title));
 
         return { 
           ...player, 
           points: totalPoints,
           created: createdLevels,
           verified: verifiedLevels,
-          completed: completedLevels
+          completed: completedLevels.map(t => formatTitle(t))
         };
       });
 
@@ -924,11 +934,12 @@
       levelsData.forEach(lvl => {
         const opt = document.createElement('option');
         opt.value = lvl.title;
-        opt.innerText = lvl.title;
+        opt.innerText = formatTitle(lvl.title);
         select.appendChild(opt);
       });
     }
 
+    /* Uporządkowany wygląd sekcji ikonek / logowania u góry strony */
     function updateAuthUI() {
       const headerActions = document.getElementById('header-actions');
       const navTabs = document.getElementById('main-nav-tabs');
@@ -936,17 +947,22 @@
       let submitTabBtn = document.getElementById('nav-btn-submit');
       let adminTabBtn = document.getElementById('nav-btn-admin');
 
+      const discordHtml = `
+        <a href="https://discord.gg/4a6qdgvCN" target="_blank" class="discord-btn" title="Join Discord">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36">
+            <path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.91-72.15ZM42.45 65.69c-6.22 0-11.33-5.71-11.33-12.73s5-12.72 11.33-12.72c6.38 0 11.45 5.76 11.33 12.72 0 7.02-4.95 12.73-11.33 12.73Zm42.24 0c-6.22 0-11.33-5.71-11.33-12.73s5-12.72 11.33-12.72c6.37 0 11.44 5.76 11.33 12.72 0 7.02-4.96 12.73-11.33 12.73Z"/>
+          </svg>
+        </a>`;
+
+      const themeHtml = `<button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()">🌙 Theme</button>`;
+
       if (currentUser) {
         headerActions.innerHTML = `
           <button class="auth-top-btn" onclick="openFlagModal()">Set / Change Flag</button>
           <button class="auth-top-btn" onclick="openPassModal()">Change Pass</button>
           <button class="auth-top-btn" onclick="handleLogout()">Logout (${currentUser.name})</button>
-          <a href="https://discord.gg/4a6qdgvCN" target="_blank" class="discord-btn" title="Join Discord">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36">
-              <path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.91-72.15ZM42.45 65.69c-6.22 0-11.33-5.71-11.33-12.73s5-12.72 11.33-12.72c6.38 0 11.45 5.76 11.33 12.72 0 7.02-4.95 12.73-11.33 12.73Zm42.24 0c-6.22 0-11.33-5.71-11.33-12.73s5-12.72 11.33-12.72c6.37 0 11.44 5.76 11.33 12.72 0 7.02-4.96 12.73-11.33 12.73Z"/>
-            </svg>
-          </a>
-          <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()">🌙 Theme</button>
+          ${discordHtml}
+          ${themeHtml}
         `;
 
         if (!submitTabBtn) {
@@ -974,12 +990,8 @@
         headerActions.innerHTML = `
           <button class="auth-top-btn" onclick="openFlagModal()">Set / Change Flag</button>
           <button class="auth-top-btn" id="auth-top-btn" onclick="openAuthModal()">Log In / Register</button>
-          <a href="https://discord.gg/4a6qdgvCN" target="_blank" class="discord-btn" title="Join Discord">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36">
-              <path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.91-72.15ZM42.45 65.69c-6.22 0-11.33-5.71-11.33-12.73s5-12.72 11.33-12.72c6.38 0 11.45 5.76 11.33 12.72 0 7.02-4.95 12.73-11.33 12.73Zm42.24 0c-6.22 0-11.33-5.71-11.33-12.73s5-12.72 11.33-12.72c6.37 0 11.44 5.76 11.33 12.72 0 7.02-4.96 12.73-11.33 12.73Z"/>
-            </svg>
-          </a>
-          <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()">🌙 Theme</button>
+          ${discordHtml}
+          ${themeHtml}
         `;
         if (submitTabBtn) submitTabBtn.remove();
         if (adminTabBtn) adminTabBtn.remove();
@@ -1017,19 +1029,18 @@
       const country = document.getElementById('reg-country').value.trim().toLowerCase();
 
       if (usersData.some(u => u.name.toLowerCase() === name.toLowerCase())) {
-        alert('Username is already taken! Choose a different one.');
+        alert('Username is already taken!');
         return;
       }
 
       usersData.push({ name, pass, country, isAdmin: false });
-      
       if (!playersData.some(p => p.name.toLowerCase() === name.toLowerCase())) {
         playersData.push({ id: playersData.length + 1, name, country, completed: [] });
       }
 
       saveData();
       saveCloudData();
-      alert('Registration successful! You can now log in.');
+      alert('Registration successful!');
       switchAuthMode('login');
       e.target.reset();
     }
@@ -1063,7 +1074,6 @@
     function handleChangePassword(e) {
       e.preventDefault();
       if (!currentUser) return;
-
       const oldPass = document.getElementById('pass-old').value;
       const newPass = document.getElementById('pass-new').value;
 
@@ -1142,7 +1152,6 @@
       }
 
       const mySubs = pendingSubmissions.filter(s => s.submittedBy && s.submittedBy.toLowerCase() === currentUser.name.toLowerCase());
-
       if (mySubs.length === 0) {
         container.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:20px;">No submissions found.</div>';
         return;
@@ -1150,18 +1159,12 @@
 
       container.innerHTML = mySubs.map(sub => {
         let statusBadge = `<span class="status-badge status-pending">Pending</span>`;
-        if (sub.status === 'accepted') {
-          statusBadge = `<span class="status-badge status-accepted">Accepted</span>`;
-        } else if (sub.status === 'declined') {
-          statusBadge = `<span class="status-badge status-declined">Declined</span>`;
-        }
+        if (sub.status === 'accepted') statusBadge = `<span class="status-badge status-accepted">Accepted</span>`;
+        else if (sub.status === 'declined') statusBadge = `<span class="status-badge status-declined">Declined</span>`;
 
-        let details = '';
-        if (sub.type === 'record') {
-          details = `<strong>[Record]</strong> Level: <b>${sub.level}</b> | Player: ${sub.player}<br>Video: <a href="${sub.video}" target="_blank" style="color:var(--text-secondary);">${sub.video}</a>`;
-        } else {
-          details = `<strong>[Level]</strong> Title: <b>${sub.title}</b> by ${sub.creator}<br>GD ID: ${sub.gdId} | Song: ${sub.song}`;
-        }
+        let details = sub.type === 'record' 
+          ? `<strong>[Record]</strong> Level: <b>${formatTitle(sub.level)}</b> | Player: ${sub.player}<br>Video: <a href="${sub.video}" target="_blank" style="color:var(--text-secondary);">${sub.video}</a>`
+          : `<strong>[Level]</strong> Title: <b>${formatTitle(sub.title)}</b> by ${sub.creator}<br>GD ID: ${sub.gdId} | Song: ${sub.song}`;
 
         return `
           <div class="submission-item">
@@ -1193,7 +1196,6 @@
     async function handleRecordSubmit(e) {
       e.preventDefault();
       if (!currentUser) return alert('You must be logged in!');
-
       const submission = {
         id: Date.now(),
         type: 'record',
@@ -1206,17 +1208,15 @@
         status: 'pending',
         staffNote: ''
       };
-
       pendingSubmissions.push(submission);
       await saveCloudData();
-      alert('Record submitted successfully! Waiting for admin approval.');
+      alert('Record submitted successfully!');
       e.target.reset();
     }
 
     async function handleLevelSubmit(e) {
       e.preventDefault();
       if (!currentUser) return alert('You must be logged in!');
-
       const submission = {
         id: Date.now(),
         type: 'level',
@@ -1231,10 +1231,9 @@
         status: 'pending',
         staffNote: ''
       };
-
       pendingSubmissions.push(submission);
       await saveCloudData();
-      alert('Level submitted successfully! Waiting for admin approval.');
+      alert('Level submitted successfully!');
       e.target.reset();
     }
 
@@ -1245,9 +1244,7 @@
         pendingSubmissions = subData.zgloszenia || [];
         if (subData.levels) levelsData = subData.levels;
         if (subData.players) playersData = subData.players;
-      } catch (err) {
-        console.error('Failed to sync submissions', err);
-      }
+      } catch (err) { console.error(err); }
 
       const container = document.getElementById('admin-pending-container');
       const pendingList = pendingSubmissions.filter(s => s.status === 'pending' || !s.status);
@@ -1263,13 +1260,11 @@
             <div class="submission-item">
               <div class="submission-info">
                 <strong>[Record Submission]</strong><br>
-                Submitted by: <span style="color:var(--accent-cyan);">${sub.submittedBy || sub.player}</span> | Level: ${sub.level}<br>
+                Submitted by: <span style="color:var(--accent-cyan);">${sub.submittedBy || sub.player}</span> | Level: ${formatTitle(sub.level)}<br>
                 Video: <a href="${sub.video}" target="_blank" style="color:var(--text-secondary);">${sub.video}</a>
-                ${sub.raw ? `<br>Raw: <a href="${sub.raw}" target="_blank" style="color:var(--text-secondary);">${sub.raw}</a>` : ''}
-                ${sub.notes ? `<br>Notes: ${sub.notes}` : ''}
               </div>
               <div class="submission-actions">
-                <input type="text" id="note-${sub.id}" placeholder="Note from staff (optional)..." style="margin-bottom: 0;">
+                <input type="text" id="note-${sub.id}" placeholder="Note from staff..." style="margin-bottom: 0;">
                 <div class="action-row">
                   <button class="btn-action btn-success" onclick="resolveSubmission(${sub.id}, true)">Accept</button>
                   <button class="btn-action btn-danger" onclick="resolveSubmission(${sub.id}, false)">Decline</button>
@@ -1282,17 +1277,15 @@
             <div class="submission-item">
               <div class="submission-info">
                 <strong>[Level Submission]</strong><br>
-                Submitted by: ${sub.submittedBy || 'Unknown'}<br>
-                Title: <span style="color:var(--accent-cyan);">${sub.title}</span> by ${sub.creator} (Verifier: ${sub.verifier})<br>
-                GD ID: ${sub.gdId} | Song: ${sub.song} | Length: ${sub.length}<br>
-                Verification: <a href="${sub.video}" target="_blank" style="color:var(--text-secondary);">${sub.video}</a>
+                Title: <span style="color:var(--accent-cyan);">${formatTitle(sub.title)}</span> by ${sub.creator} (Verifier: ${sub.verifier})<br>
+                GD ID: ${sub.gdId} | Song: ${sub.song}
               </div>
               <div class="submission-actions">
                 <div style="display: flex; align-items: center; gap: 8px;">
                   <label style="font-size: 12px; white-space:nowrap;">Top Rank:</label>
                   <input type="number" id="pos-${sub.id}" value="1" min="1" max="${levelsData.length + 1}" style="margin: 0; padding: 6px; text-align: center;">
                 </div>
-                <input type="text" id="note-${sub.id}" placeholder="Note from staff (optional)..." style="margin-bottom: 0;">
+                <input type="text" id="note-${sub.id}" placeholder="Note from staff..." style="margin-bottom: 0;">
                 <div class="action-row">
                   <button class="btn-action btn-success" onclick="resolveLevelSubmission(${sub.id})">Accept</button>
                   <button class="btn-action btn-danger" onclick="resolveSubmission(${sub.id}, false)">Decline</button>
@@ -1309,7 +1302,7 @@
       lvlContainer.innerHTML = levelsData.map((lvl, idx) => `
         <div class="submission-item">
           <div class="manage-item-top">
-            <div><strong>#${idx + 1} - ${lvl.title}</strong> (ID: ${lvl.gdId || 'N/A'})</div>
+            <div><strong>#${idx + 1} - ${formatTitle(lvl.title)}</strong> (ID: ${lvl.gdId || 'N/A'})</div>
             <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
               <select id="move-pos-${lvl.id}" style="width: auto; flex: 1; min-width: 60px; margin: 0; padding: 6px;">
                 ${levelsData.map((_, i) => `<option value="${i + 1}" ${i === idx ? 'selected' : ''}>#${i + 1}</option>`).join('')}
@@ -1356,22 +1349,18 @@
 
     function toggleEditLevelForm(id) {
       const formBox = document.getElementById(`edit-form-box-${id}`);
-      if (formBox) {
-        formBox.style.display = formBox.style.display === 'none' ? 'block' : 'none';
-      }
+      if (formBox) formBox.style.display = formBox.style.display === 'none' ? 'block' : 'none';
     }
 
     async function saveLevelEdits(id) {
       const lvl = levelsData.find(l => l.id === id);
       if (!lvl) return;
-
       lvl.title = document.getElementById(`edit-title-${id}`).value.trim();
       lvl.creator = document.getElementById(`edit-creator-${id}`).value.trim();
       lvl.verifier = document.getElementById(`edit-verifier-${id}`).value.trim();
       lvl.gdId = document.getElementById(`edit-gdid-${id}`).value.trim();
       lvl.song = document.getElementById(`edit-song-${id}`).value.trim();
       lvl.length = document.getElementById(`edit-length-${id}`).value;
-      
       const ytVal = document.getElementById(`edit-yt-${id}`).value.trim();
       lvl.youtubeId = extractYouTubeId(ytVal) || ytVal;
 
@@ -1392,7 +1381,7 @@
 
       const todayStr = new Date().toISOString().split('T')[0];
       if (!movedLvl.history) movedLvl.history = [];
-      movedLvl.history.push({ date: todayStr, type: 'moved', text: `${movedLvl.title} was moved to #${newPos + 1}` });
+      movedLvl.history.push({ date: todayStr, type: 'moved', text: `${formatTitle(movedLvl.title)} was moved from #${oldIdx + 1} to #${newPos + 1}` });
 
       await saveCloudData();
       init();
@@ -1411,32 +1400,25 @@
 
     async function adminDeletePlayer(id) {
       if (!confirm('Are you sure you want to delete this player?')) return;
-      
       const targetPlayer = playersData.find(p => p.id === id);
       if (targetPlayer) {
         const pNameLower = targetPlayer.name.toLowerCase();
-        
-        // Usunięcie z tablicy graczy
         playersData = playersData.filter(p => p.id !== id);
-
-        // Usuwanie TYLKO z ukończonych rekordów poziomów (pole creator zostaje nienaruszone)
         levelsData.forEach(lvl => {
           if (lvl.records) {
             lvl.records = lvl.records.filter(r => r.player && r.player.toLowerCase() !== pNameLower);
           }
         });
       }
-
       await saveCloudData();
       init();
       renderAdminManageSection();
-      alert('Player and all their completed records deleted successfully!');
+      alert('Player and their completed records deleted successfully!');
     }
 
     async function resolveLevelSubmission(id) {
       const sub = pendingSubmissions.find(s => s.id === id);
       if (!sub) return;
-
       const posInput = document.getElementById(`pos-${id}`);
       const noteInput = document.getElementById(`note-${id}`);
       let targetPos = parseInt(posInput.value) || 1;
@@ -1446,7 +1428,6 @@
       sub.staffNote = noteInput ? noteInput.value.trim() : '';
 
       const todayStr = new Date().toISOString().split('T')[0];
-
       const newId = levelsData.length > 0 ? Math.max(...levelsData.map(l => l.id)) + 1 : 1;
       const newLevel = {
         id: newId,
@@ -1458,12 +1439,11 @@
         length: sub.length,
         youtubeId: extractYouTubeId(sub.video),
         type: 'main',
-        history: [{ date: todayStr, type: 'added', text: `${sub.title} was added as #${targetPos}` }],
+        history: [{ date: todayStr, type: 'added', text: `${formatTitle(sub.title)} was added as #${targetPos}` }],
         records: [{ player: sub.verifier, percent: 100, video: sub.video }]
       };
 
       levelsData.splice(targetPos - 1, 0, newLevel);
-
       let verifierPl = playersData.find(p => p.name && p.name.toLowerCase() === sub.verifier.toLowerCase());
       if (verifierPl) {
         if (!verifierPl.completed) verifierPl.completed = [];
@@ -1482,43 +1462,26 @@
     async function resolveSubmission(id, accept) {
       const sub = pendingSubmissions.find(s => s.id === id);
       if (!sub) return;
-
       const noteInput = document.getElementById(`note-${id}`);
       sub.status = accept ? 'accepted' : 'declined';
       sub.staffNote = noteInput ? noteInput.value.trim() : '';
 
-      if (accept) {
-        if (sub.type === 'record') {
-          const lvl = levelsData.find(l => l.title && l.title.toLowerCase() === sub.level.toLowerCase());
-          if (lvl) {
-            if (!lvl.records) lvl.records = [];
-            const existingRecord = lvl.records.find(r => r.player.toLowerCase() === sub.player.toLowerCase());
-            if (!existingRecord) {
-              lvl.records.push({ player: sub.player, percent: 100, video: sub.video });
-            } else {
-              existingRecord.video = sub.video;
-              existingRecord.percent = 100;
-            }
-          }
-
-          let pl = playersData.find(p => p.name && p.name.toLowerCase() === sub.player.toLowerCase());
-          if (pl) {
-            if (!pl.completed) pl.completed = [];
-            const alreadyCompleted = pl.completed.some(title => title.toLowerCase() === sub.level.toLowerCase());
-            if (!alreadyCompleted) {
-              pl.completed.push(sub.level);
-            }
-          } else {
-            playersData.push({ 
-              id: playersData.length > 0 ? Math.max(...playersData.map(p => p.id || 0)) + 1 : 1, 
-              name: sub.player, 
-              country: '', 
-              completed: [sub.level] 
-            });
-          }
+      if (accept && sub.type === 'record') {
+        const lvl = levelsData.find(l => l.title && l.title.toLowerCase() === sub.level.toLowerCase());
+        if (lvl) {
+          if (!lvl.records) lvl.records = [];
+          const existingRecord = lvl.records.find(r => r.player.toLowerCase() === sub.player.toLowerCase());
+          if (!existingRecord) lvl.records.push({ player: sub.player, percent: 100, video: sub.video });
+          else { existingRecord.video = sub.video; existingRecord.percent = 100; }
+        }
+        let pl = playersData.find(p => p.name && p.name.toLowerCase() === sub.player.toLowerCase());
+        if (pl) {
+          if (!pl.completed) pl.completed = [];
+          if (!pl.completed.some(title => title.toLowerCase() === sub.level.toLowerCase())) pl.completed.push(sub.level);
+        } else {
+          playersData.push({ id: playersData.length > 0 ? Math.max(...playersData.map(p => p.id || 0)) + 1 : 1, name: sub.player, country: '', completed: [sub.level] });
         }
       }
-
       await saveCloudData();
       init();
       renderAdminPanel();
@@ -1554,16 +1517,10 @@
       } else if (tab === 'stats') {
         document.getElementById('stats-view').style.display = 'block';
         renderLeaderboard();
-      } else if (tab === 'rules') {
-        document.getElementById('rules-view').style.display = 'block';
-      } else if (tab === 'roulette') {
-        document.getElementById('roulette-view').style.display = 'block';
-      } else if (tab === 'submit') {
-        document.getElementById('submit-view').style.display = 'block';
-      } else if (tab === 'admin') {
-        document.getElementById('admin-view').style.display = 'block';
-        renderAdminPanel();
-      }
+      } else if (tab === 'rules') { document.getElementById('rules-view').style.display = 'block'; }
+      else if (tab === 'roulette') { document.getElementById('roulette-view').style.display = 'block'; }
+      else if (tab === 'submit') { document.getElementById('submit-view').style.display = 'block'; }
+      else if (tab === 'admin') { document.getElementById('admin-view').style.display = 'block'; renderAdminPanel(); }
     }
 
     function switchSubTab(subTab, ev) {
@@ -1585,7 +1542,6 @@
         const maxPoints = calculatePoints(globalRank);
         const minPoints = (maxPoints * 0.1).toFixed(2);
         const maxPointsFormatted = maxPoints.toFixed(2);
-
         const thumbUrl = lvl.youtubeId 
           ? `https://img.youtube.com/vi/${lvl.youtubeId}/mqdefault.jpg` 
           : 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="150" viewBox="0 0 300 150"%3E%3Crect width="100%25" height="100%25" fill="%23222"/%3E%3C/svg%3E';
@@ -1599,7 +1555,7 @@
             <div class="pointercrate-overlay"></div>
           </div>
           <div class="pointercrate-content">
-            <div class="pointercrate-title">#${globalRank} – ${lvl.title}</div>
+            <div class="pointercrate-title">#${globalRank} – ${formatTitle(lvl.title)}</div>
             <div class="pointercrate-publisher">published by <strong>${lvl.creator || 'Unknown'}</strong></div>
             <div class="pointercrate-points">${minPoints} (10%) — ${maxPointsFormatted} (100%) points</div>
           </div>
@@ -1611,39 +1567,21 @@
     function openLevelView(id) {
       const lvlIndex = levelsData.findIndex(l => l.id === id);
       if(lvlIndex === -1) return;
-      
       const lvl = levelsData[lvlIndex];
       const points = calculatePoints(lvlIndex + 1);
 
       document.getElementById('main-content').style.display = 'none';
       document.getElementById('sub-levels-nav').style.display = 'none';
       document.getElementById('level-view').style.display = 'block';
-
-      document.getElementById('lvl-title').innerText = lvl.title;
+      document.getElementById('lvl-title').innerText = formatTitle(lvl.title);
       
       let recordsHtml = lvl.records && lvl.records.length > 0 
         ? lvl.records.map(r => `<div style="padding: 6px 0;"><strong style="color:var(--accent-cyan);">${r.player}</strong> - ${r.percent}% (${r.video ? `<a href="${r.video}" target="_blank" style="color:var(--text-secondary);">Proof</a>` : 'No link'})</div>`).join('')
         : '<div style="color: var(--text-muted);">No records yet.</div>';
 
-      let historyHtml = '';
-      if (lvl.history && Array.isArray(lvl.history) && lvl.history.length > 0) {
-        historyHtml = `
-          <h3 style="color: var(--accent-cyan); margin-top: 20px;">History</h3>
-          <div class="history-section">
-            ${lvl.history.map(h => `
-              <div class="history-item">
-                <span class="history-date">${h.date || ''}</span>
-                <span>${h.text || ''}</span>
-              </div>
-            `).join('')}
-          </div>
-        `;
-      } else {
-        historyHtml = `
-          <h3 style="color: var(--accent-cyan); margin-top: 20px;">History</h3>
-          <div class="info-meta" style="color: var(--text-muted);">No history record available.</div>
-        `;
-      }
+      let historyHtml = lvl.history && Array.isArray(lvl.history) && lvl.history.length > 0
+        ? `<h3 style="color: var(--accent-cyan); margin-top: 20px;">History</h3><div class="history-section">${lvl.history.map(h => `<div class="history-item"><span class="history-date">${h.date \vert{}\vert{} ''}</span><span>${h.text || ''}</span></div>`).join('')}</div>`
+        : `<h3 style="color: var(--accent-cyan); margin-top: 20px;">History</h3><div class="info-meta" style="color: var(--text-muted);">No history record available.</div>`;
 
       document.getElementById('lvl-details').innerHTML = `
         <div class="info-meta">
@@ -1654,16 +1592,9 @@
           <div><strong>Length:</strong> ${lvl.length || 'N/A'}</div>
           <div><strong>Points Awarded:</strong> <span style="color:var(--accent-cyan); font-weight:800;">${points} PTS</span></div>
         </div>
-
-        ${lvl.youtubeId ? `
-          <div class="video-container">
-            <iframe src="https://www.youtube.com/embed/${lvl.youtubeId}" frameborder="0" allowfullscreen></iframe>
-          </div>
-        ` : ''}
-
+        ${lvl.youtubeId ? `<div class="video-container"><iframe src="https://www.youtube.com/embed/${lvl.youtubeId}" frameborder="0" allowfullscreen></iframe></div>` : ''}
         <h3 style="color: var(--accent-cyan); margin-top: 20px;">Records (${lvl.records ? lvl.records.length : 0})</h3>
         <div class="info-meta">${recordsHtml}</div>
-
         ${historyHtml}
       `;
     }
@@ -1687,13 +1618,11 @@
       }
 
       container.innerHTML = matched.map((p) => {
-        const rank = ranked.findIndex(item => item.id === p.id) + 1;
-        const flagHtml = p.country 
-          ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country.toLowerCase()}.png" alt="${p.country}">` 
-          : '';
+        const rank = ranked.findIndex(item => item.name.toLowerCase() === p.name.toLowerCase()) + 1;
+        const flagHtml = p.country ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country.toLowerCase()}.png" alt="${p.country}">` : '';
 
         return `
-          <div class="card player-card" onclick="openPlayerView(${p.id})">
+          <div class="card player-card" onclick="openPlayerViewByName('${p.name.replace(/'/g, "\\'")}')">
             <div class="card-info">
               <div class="card-title">#${rank} - ${flagHtml} ${p.name}</div>
               <div class="card-sub">
@@ -1708,15 +1637,14 @@
       }).join('');
     }
 
-    function openPlayerView(id) {
+    /* NAPRAWIONY STATS VIEWER (PROFIL GRACZA) */
+    function openPlayerViewByName(name) {
       const ranked = recalculatePlayerPoints();
-      const p = ranked.find(item => item.id === id);
+      const p = ranked.find(item => item.name.toLowerCase() === name.toLowerCase());
       if (!p) return;
 
-      const rank = ranked.findIndex(item => item.id === p.id) + 1;
-      const flagHtml = p.country 
-        ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country.toLowerCase()}.png" alt="${p.country}">` 
-        : '';
+      const rank = ranked.findIndex(item => item.name.toLowerCase() === p.name.toLowerCase()) + 1;
+      const flagHtml = p.country ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country.toLowerCase()}.png" alt="${p.country}">` : '';
 
       document.getElementById('stats-view').style.display = 'none';
       document.getElementById('player-view').style.display = 'block';
@@ -1768,11 +1696,8 @@
 
     function toggleTheme() {
       const isLight = document.body.getAttribute('data-theme') === 'light';
-      if (isLight) {
-        document.body.removeAttribute('data-theme');
-      } else {
-        document.body.setAttribute('data-theme', 'light');
-      }
+      if (isLight) document.body.removeAttribute('data-theme');
+      else document.body.setAttribute('data-theme', 'light');
     }
 
     let currentPercent = 0;
@@ -1787,14 +1712,28 @@
 
     function generateRouletteTarget() {
       const randomLvl = levelsData[Math.floor(Math.random() * levelsData.length)];
+      const formattedTitle = formatTitle(randomLvl.title);
+
       document.getElementById('roulette-target-text').innerHTML = 
-        `Get <span style="color: var(--accent-cyan); font-size: 26px; margin: 0 6px;">${currentPercent}%</span> on <strong>${randomLvl.title}</strong>`;
+        `Get <span style="color: var(--accent-cyan); font-size: 26px; margin: 0 6px;">${currentPercent}%</span> on <strong>${formattedTitle}</strong>`;
       document.getElementById('btn-next').innerText = `Done! (${currentPercent + 1}%)`;
+
+      const mediaContainer = document.getElementById('roulette-media-container');
+      if (randomLvl.youtubeId) {
+        mediaContainer.innerHTML = `
+          <div class="video-container" style="max-width: 500px; margin: 0 auto 16px auto;">
+            <iframe src="https://www.youtube.com/embed/${randomLvl.youtubeId}" frameborder="0" allowfullscreen></iframe>
+          </div>
+        `;
+      } else {
+        mediaContainer.innerHTML = `<div style="color: var(--text-muted); font-size: 13px; margin-bottom: 12px;">No video preview available</div>`;
+      }
     }
 
     function nextRoulette() {
       if (currentPercent >= 100) {
         document.getElementById('roulette-target-text').innerText = '🎉 Challenge Completed!';
+        document.getElementById('roulette-media-container').innerHTML = '';
         resetRouletteUI();
         return;
       }
@@ -1804,6 +1743,7 @@
 
     function giveupRoulette() {
       document.getElementById('roulette-target-text').innerText = `Game Over at ${currentPercent - 1}%`;
+      document.getElementById('roulette-media-container').innerHTML = '';
       resetRouletteUI();
     }
 
