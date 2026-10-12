@@ -47,7 +47,6 @@
     body {
       margin: 0;
       background-color: var(--bg-color);
-      /* Wzór pajęczyny w tle zamiast piramid */
       background-image: 
         radial-gradient(at 50% 0%, var(--bg-radial) 0px, transparent 70%),
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M50 0 L50 100 M0 50 L100 50 M15 15 L85 85 M15 85 L85 15 M50 20 Q65 35 80 50 Q65 65 50 80 Q35 65 20 50 Q35 35 50 20 Z' fill='none' stroke='rgba(255, 119, 0, 0.05)' stroke-width='1'/%3E%3C/svg%3E");
@@ -86,6 +85,19 @@
       0%, 100% { transform: rotate(0deg); }
       50% { transform: rotate(15deg); }
     }
+
+    /* Pajęczyny w dolnych rogach ekranu */
+    .bottom-web {
+      position: fixed;
+      bottom: 0;
+      width: 120px;
+      height: 120px;
+      pointer-events: none;
+      z-index: 80;
+      opacity: 0.5;
+    }
+    .bottom-web.left { left: 0; transform: scaleY(-1); }
+    .bottom-web.right { right: 0; transform: scale(-1, -1); }
 
     header {
       position: relative;
@@ -162,19 +174,30 @@
       text-shadow: 0 0 20px rgba(255, 85, 0, 0.3);
     }
 
-    /* Dynia z czerwoną buzią MCLL */
+    /* Dynia z podświetlanymi na czerwono oczami */
     .pumpkin-header-box {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       margin: 6px 0 10px 0;
       position: relative;
+      cursor: pointer;
     }
 
     .pumpkin-svg {
-      width: 80px;
-      height: 70px;
+      width: 85px;
+      height: 75px;
       filter: drop-shadow(0 0 8px rgba(255, 119, 0, 0.6));
+      transition: transform 0.3s ease;
+    }
+
+    .pumpkin-header-box:hover .pumpkin-svg {
+      transform: scale(1.08) rotate(-3deg);
+    }
+
+    .pumpkin-header-box:hover .pumpkin-eye {
+      fill: #ff0000 !important;
+      filter: drop-shadow(0 0 6px #ff0000);
     }
 
     .sub {
@@ -271,6 +294,28 @@
       box-shadow: 0 8px 24px var(--shadow-color);
     }
 
+    /* Kociołek z parą nad szukajką */
+    .cauldron-deco {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 4px;
+      position: relative;
+    }
+    .cauldron-deco::before {
+      content: "💨";
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 14px;
+      animation: steamAnim 2s infinite ease-out;
+      opacity: 0.7;
+    }
+    @keyframes steamAnim {
+      0% { transform: translate(-50%, 0) scale(0.8); opacity: 0.8; }
+      100% { transform: translate(-50%, -15px) scale(1.4); opacity: 0; }
+    }
+
     .controls { display: flex; gap: 10px; margin-bottom: 20px; flex-direction: column; }
 
     input, select, textarea {
@@ -289,7 +334,6 @@
     input:focus, select:focus, textarea:focus { border-color: var(--accent-cyan); box-shadow: 0 0 8px rgba(255, 119, 0, 0.4); }
     textarea { resize: vertical; min-height: 80px; }
 
-    /* Karta poziomu ze specjalną pajęczyną w rogu */
     .pointercrate-card {
       position: relative;
       display: block !important;
@@ -311,7 +355,6 @@
       box-shadow: 0 8px 25px rgba(255, 119, 0, 0.3);
     }
 
-    /* Pajęczyna w prawym górnym rogu poziomu */
     .pointercrate-card::after {
       content: "";
       position: absolute;
@@ -462,7 +505,6 @@
       100% { transform: translateY(-10vh) rotate(360deg); }
     }
 
-    /* Dopasowania mobilne */
     @media (max-width: 600px) {
       header { padding-top: 70px; }
       .top-left-web-container { width: 100px; height: 100px; }
@@ -472,6 +514,7 @@
       .header-actions { position: relative; top: 0; right: 0; justify-content: center; margin-bottom: 12px; }
       .nav-tabs { grid-template-columns: repeat(2, 1fr); }
       .pointercrate-card::after { width: 50px; height: 50px; }
+      .bottom-web { width: 80px; height: 80px; }
     }
 
     footer { text-align: center; color: var(--text-muted); font-size: 12px; padding: 30px 16px; }
@@ -488,25 +531,28 @@
     <div class="spider-hanging" title="Booo! 🕷️">🕷️</div>
   </div>
 
+  <!-- Pajęczyny w dolnych rogach ekranu -->
+  <svg class="bottom-web left" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0 L100 0 M0 0 L0 100 M0 0 L100 100 M40 0 Q40 40 0 40 M80 0 Q80 80 0 80" stroke="#ff7700" stroke-width="2" />
+  </svg>
+  <svg class="bottom-web right" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0 L100 0 M0 0 L0 100 M0 0 L100 100 M40 0 Q40 40 0 40 M80 0 Q80 80 0 80" stroke="#ff7700" stroke-width="2" />
+  </svg>
+
   <div class="spooky-overlay" id="spooky-overlay"></div>
 
   <header>
     <div class="header-actions" id="header-actions"></div>
     <h1>MCLL</h1>
     
-    <!-- Dynia z czerwonym napisem MCLL w buzi -->
-    <div class="pumpkin-header-box">
+    <div class="pumpkin-header-box" title="Najedź, aby rozświetlić oczodoły dyni!">
       <svg class="pumpkin-svg" viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
-        <!-- Ogon dyni -->
         <path d="M46 15 Q50 5 58 8 Q54 18 50 20 Z" fill="#2d6a2e" />
-        <!-- Korpus dyni -->
         <ellipse cx="50" cy="52" rx="42" ry="32" fill="#ff6600" stroke="#cc4400" stroke-width="2" />
         <ellipse cx="50" cy="52" rx="30" ry="32" fill="#ff7700" />
         <ellipse cx="50" cy="52" rx="16" ry="32" fill="#ff8811" />
-        <!-- Oczy -->
-        <polygon points="30,38 40,38 35,46" fill="#1a0000" />
-        <polygon points="60,38 70,38 65,46" fill="#1a0000" />
-        <!-- Buzi z czerwoną oprawą i czerwonym napisem MCLL -->
+        <polygon class="pumpkin-eye" points="30,38 40,38 35,46" fill="#1a0000" />
+        <polygon class="pumpkin-eye" points="60,38 70,38 65,46" fill="#1a0000" />
         <path d="M25,58 Q50,78 75,58 Q50,68 25,58 Z" fill="#110000" stroke="#ff0000" stroke-width="1.5" />
         <text x="50" y="65" font-family="'Impact', 'Arial Black', sans-serif" font-size="9" font-weight="900" fill="#ff0000" text-anchor="middle" letter-spacing="1">MCLL</text>
       </svg>
@@ -653,7 +699,7 @@
       </div>
 
       <div id="admin-manage-section" style="display:none;">
-        <h3 style="color:var(--accent-cyan);">Manage Levels (Edit / Move / Remove)</h3>
+        <h3 style="color:var(--accent-cyan);">Manage Levels (Edit All Info / Move / Remove)</h3>
         <div id="admin-levels-manage-container"></div>
 
         <h3 style="color:var(--accent-cyan); margin-top:24px;">Manage Players (Remove)</h3>
@@ -662,6 +708,7 @@
     </div>
 
     <main id="main-content">
+      <div class="cauldron-deco">🧪</div>
       <div class="controls" id="search-controls">
         <input type="text" id="search-input" placeholder="Search level..." oninput="filterData()">
       </div>
@@ -1318,6 +1365,7 @@
       alert('Submission declined.');
     }
 
+    /* W pełni rozszerzona edycja WSZYSTKICH danych o poziomie w Admin Panelu */
     function renderAdminManageSection() {
       const lvlContainer = document.getElementById('admin-levels-manage-container');
       const plContainer = document.getElementById('admin-players-manage-container');
@@ -1328,7 +1376,7 @@
             <div class="manage-item-top">
               <strong>#${idx + 1} - ${lvl.title}</strong>
               <div class="action-row" style="width: auto;">
-                <button class="btn-action btn-warning" onclick="toggleEditLevelForm(${lvl.id})">Edit</button>
+                <button class="btn-action btn-warning" onclick="toggleEditLevelForm(${lvl.id})">Edit All Info</button>
                 <button class="btn-action btn-danger" onclick="removeLevel(${lvl.id})">Delete</button>
               </div>
             </div>
@@ -1340,13 +1388,34 @@
             </div>
 
             <div id="edit-lvl-form-${lvl.id}" class="edit-level-form" style="display:none;">
-              <label style="font-size:11px;">Title:</label>
-              <input type="text" id="edit-title-${lvl.id}" value="${lvl.title}">
-              <label style="font-size:11px;">Creator:</label>
-              <input type="text" id="edit-creator-${lvl.id}" value="${lvl.creator}">
-              <label style="font-size:11px;">Verifier:</label>
-              <input type="text" id="edit-verifier-${lvl.id}" value="${lvl.verifier}">
-              <button class="btn-action btn-success" onclick="saveLevelEdits(${lvl.id})">Save Changes</button>
+              <label style="font-size:11px; color:var(--text-secondary);">Title:</label>
+              <input type="text" id="edit-title-${lvl.id}" value="${lvl.title || ''}">
+              
+              <label style="font-size:11px; color:var(--text-secondary);">Creator:</label>
+              <input type="text" id="edit-creator-${lvl.id}" value="${lvl.creator || ''}">
+              
+              <label style="font-size:11px; color:var(--text-secondary);">Verifier:</label>
+              <input type="text" id="edit-verifier-${lvl.id}" value="${lvl.verifier || ''}">
+              
+              <label style="font-size:11px; color:var(--text-secondary);">YouTube Video ID / URL:</label>
+              <input type="text" id="edit-yt-${lvl.id}" value="${lvl.youtubeId || ''}">
+
+              <label style="font-size:11px; color:var(--text-secondary);">GD Level ID:</label>
+              <input type="text" id="edit-gdid-${lvl.id}" value="${lvl.gdId || ''}">
+
+              <label style="font-size:11px; color:var(--text-secondary);">Song Name:</label>
+              <input type="text" id="edit-song-${lvl.id}" value="${lvl.song || ''}">
+
+              <label style="font-size:11px; color:var(--text-secondary);">Length:</label>
+              <select id="edit-length-${lvl.id}">
+                <option value="tiny" ${lvl.length === 'tiny' ? 'selected' : ''}>Tiny</option>
+                <option value="short" ${lvl.length === 'short' ? 'selected' : ''}>Short</option>
+                <option value="medium" ${lvl.length === 'medium' ? 'selected' : ''}>Medium</option>
+                <option value="long" ${lvl.length === 'long' ? 'selected' : ''}>Long</option>
+                <option value="N/A" ${lvl.length === 'N/A' ? 'selected' : ''}>N/A</option>
+              </select>
+
+              <button class="btn-action btn-success" onclick="saveLevelEdits(${lvl.id})">Save All Changes</button>
             </div>
           </div>
         `).join('');
@@ -1397,10 +1466,18 @@
       lvl.creator = document.getElementById(`edit-creator-${id}`).value.trim();
       lvl.verifier = document.getElementById(`edit-verifier-${id}`).value.trim();
 
+      let ytVal = document.getElementById(`edit-yt-${id}`).value.trim();
+      let ytMatch = ytVal.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([a-zA-Z0-9_-]{11})/);
+      lvl.youtubeId = ytMatch ? ytMatch[1] : ytVal;
+
+      lvl.gdId = document.getElementById(`edit-gdid-${id}`).value.trim();
+      lvl.song = document.getElementById(`edit-song-${id}`).value.trim();
+      lvl.length = document.getElementById(`edit-length-${id}`).value;
+
       await saveCloudData();
       renderAdminManageSection();
       init();
-      alert('Level updated!');
+      alert('All level information updated successfully! 🎃');
     }
 
     async function removeLevel(id) {
@@ -1518,9 +1595,10 @@
           <div><strong>Created by:</strong> ${lvl.creator || 'N/A'}</div>
           <div><strong>Verified by:</strong> ${lvl.verifier || 'N/A'}</div>
           <div><strong>Song:</strong> ${lvl.song || 'N/A'}</div>
+          <div><strong>Length:</strong> ${lvl.length || 'N/A'}</div>
         </div>
         ${lvl.youtubeId ? `<div class="video-container"><iframe src="https://www.youtube.com/embed/${lvl.youtubeId}" allowfullscreen></iframe></div>` : ''}
-        <h3 style="color: var(--accent-cyan); margin-top: 20px;">Records</h3>
+        <h3 style="color: var(--accent-cyan); margin-top: 20px;">Records 📜</h3>
         <div class="info-meta">${recordsHtml}</div>
       `;
     }
