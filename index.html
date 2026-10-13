@@ -824,33 +824,13 @@
     let currentSubTab = 'main';
 
     async function loadData() {
-      // Najpierw sprawdzamy lokalną pamięć przeglądarki (localStorage) dla natychmiastowego efektu edycji
-      let savedLevels = localStorage.getItem('mcll_levels');
-      if (savedLevels) {
-        try {
-          levelsData = JSON.parse(savedLevels);
-        } catch(e) {}
-      }
-
-      if (levelsData.length === 0) {
-        try {
-          const res = await fetch('./data.json?v=' + Date.now());
-          if (res.ok) {
-            const data = await res.json();
-            levelsData = data.levels || [];
-            playersData = data.players || [];
-          }
-        } catch (err) {
-          console.error('Failed to load data.json', err);
-        }
-      }
-
+      // 1. Zawsze pobieramy najświeższe dane z serwera chmury
       try {
-        const subRes = await fetch(NPOINT_URL + '?v=' + Date.now());
+        const subRes = await fetch(NPOINT_URL + '?nocache=' + Date.now(), { cache: "no-store" });
         if (subRes.ok) {
           const subData = await subRes.json();
           pendingSubmissions = subData.zgloszenia || [];
-          if (subData.levels && subData.levels.length > 0 && !localStorage.getItem('mcll_levels')) {
+          if (subData.levels && subData.levels.length > 0) {
             levelsData = subData.levels;
           }
           if (subData.players && subData.players.length > 0) {
@@ -859,6 +839,20 @@
         }
       } catch (err) {
         console.error('Failed to load data from cloud', err);
+      }
+
+      // 2. Jeśli serwer nie odpowie, ładujemy zapasowo dane z data.json
+      if (levelsData.length === 0) {
+        try {
+          const res = await fetch('./data.json?v=' + Date.now(), { cache: "no-store" });
+          if (res.ok) {
+            const data = await res.json();
+            levelsData = data.levels || [];
+            playersData = data.players || [];
+          }
+        } catch (err) {
+          console.error('Failed to load data.json', err);
+        }
       }
 
       const blacklisted = ['hershey', 'hershey420', 'elias37', 'ersay37'];
@@ -882,10 +876,6 @@
     }
 
     async function saveCloudData() {
-      // Zapisujemy od razu w localStorage, żeby zmiany były natychmiast widoczne i trwałe lokalnie
-      localStorage.setItem('mcll_levels', JSON.stringify(levelsData));
-      localStorage.setItem('mcll_players', JSON.stringify(playersData));
-
       try {
         await fetch(NPOINT_URL, {
           method: 'POST',
@@ -904,8 +894,6 @@
     function saveData() {
       localStorage.setItem('mcll_users', JSON.stringify(usersData));
       localStorage.setItem('mcll_current_user', JSON.stringify(currentUser));
-      localStorage.setItem('mcll_players', JSON.stringify(playersData));
-      localStorage.setItem('mcll_levels', JSON.stringify(levelsData));
     }
 
     function calculatePoints(position) {
@@ -1484,7 +1472,7 @@
       await saveCloudData();
       renderAdminManageSection();
       init();
-      alert('All level information updated successfully! 🎃');
+      alert('All level information updated globally! 🎃');
     }
 
     async function removeLevel(id) {
