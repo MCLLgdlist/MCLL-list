@@ -582,13 +582,28 @@
     <!-- Rules View -->
     <div class="rules-box" id="rules-view">
       <h2 style="color: var(--accent-cyan); margin-top:0;">List Rules 📜</h2>
-      <ul style="padding-left: 18px; line-height: 1.6;">
-        <li>The clicking sound must be audible in the video.</li>
-        <li>You cannot use secret methods or any cheats that make playing easier.</li>
-        <li>The level must be at least 10 seconds long.</li>
-        <li>In case of violations you will have to send a raw video to the moderator.</li>
-        <li>Levels cannot be based on spam.</li>
-      </ul>
+      
+      <h3 style="color: var(--text-secondary); margin-top: 16px;">Verification Rules:</h3>
+      <ol style="padding-left: 18px; line-height: 1.6;">
+        <li>When verifying a level the sound of your click must be audible in the video.</li>
+        <li>If during the verification video you get caught using cheat or secret way or anything that’s makes the verification easier will expose you of a ban (list only).</li>
+        <li>You need to have a mod to show your click and cheat-detection if possible. Apple user (only mobile) can use the info label option as a last resort for your verification (apple restrictions make it so you can’t install mod or cheat).</li>
+      </ol>
+
+      <h3 style="color: var(--text-secondary); margin-top: 16px;">Level Rules:</h3>
+      <ol style="padding-left: 18px; line-height: 1.6;">
+        <li>The level need to be between 10 seconds - 10 minutes of gameplay.</li>
+        <li>The level needs to have the minimum of decoration (need to make an effort). If the level is judged not worthy you will need to make modifications to it.</li>
+        <li>Copy/paste gameplay will not be tolerated (from now on).</li>
+        <li>The level MUST be balanced (if it isn’t the level might be refused), there will be exceptions for like predrop and things like that.</li>
+      </ol>
+
+      <h3 style="color: var(--text-secondary); margin-top: 16px;">Punishment:</h3>
+      <ol style="padding-left: 18px; line-height: 1.6;">
+        <li>Your account on the website will get ban if caught of hacking or anything like that.</li>
+        <li>The verification video will be refused or deleted if caught of breaking rules in it.</li>
+        <li>The level will get deleted from the list (waiting for a real verification) if you made the level and posted it with cheat.</li>
+      </ol>
     </div>
 
     <!-- Stats View -->
@@ -824,7 +839,6 @@
     let currentSubTab = 'main';
 
     async function loadData() {
-      // 1. Zawsze pobieramy najświeższe dane z serwera chmury
       try {
         const subRes = await fetch(NPOINT_URL + '?nocache=' + Date.now(), { cache: "no-store" });
         if (subRes.ok) {
@@ -841,7 +855,6 @@
         console.error('Failed to load data from cloud', err);
       }
 
-      // 2. Jeśli serwer nie odpowie, ładujemy zapasowo dane z data.json
       if (levelsData.length === 0) {
         try {
           const res = await fetch('./data.json?v=' + Date.now(), { cache: "no-store" });
