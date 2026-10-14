@@ -909,6 +909,20 @@
       localStorage.setItem('mcll_current_user', JSON.stringify(currentUser));
     }
 
+    function ensurePlayerExists(name) {
+      if (!name) return;
+      const cleanName = name.trim();
+      let existing = playersData.find(p => p.name && p.name.toLowerCase() === cleanName.toLowerCase());
+      if (!existing) {
+        playersData.push({
+          id: playersData.length > 0 ? Math.max(...playersData.map(p => p.id || 0)) + 1 : 1,
+          name: cleanName,
+          country: '',
+          completed: []
+        });
+      }
+    }
+
     function calculatePoints(position) {
       if (position < 1) return 500;
       if (position > 100) return 0;
@@ -947,6 +961,17 @@
     }
 
     function init() {
+      // Automatyczne upewnienie się, że każdy twórca i weryfikator znajduje się w stats viewer (ignorując wielkość liter)
+      levelsData.forEach(lvl => {
+        if (lvl.creator) ensurePlayerExists(lvl.creator);
+        if (lvl.verifier) ensurePlayerExists(lvl.verifier);
+        if (lvl.records) {
+          lvl.records.forEach(r => {
+            if (r.player) ensurePlayerExists(r.player);
+          });
+        }
+      });
+
       document.getElementById('stat-levels').innerText = levelsData.length;
       document.getElementById('stat-players').innerText = playersData.length;
       populateCountryFilter();
@@ -1102,9 +1127,7 @@
       }
 
       usersData.push({ name, pass, country, isAdmin: false });
-      if (!playersData.some(p => p.name.toLowerCase() === name.toLowerCase())) {
-        playersData.push({ id: playersData.length + 1, name, country, completed: [] });
-      }
+      ensurePlayerExists(name);
 
       saveData();
       saveCloudData();
@@ -1176,12 +1199,9 @@
         currentUser.country = countryCode;
       }
 
+      ensurePlayerExists(name);
       let pl = playersData.find(p => p.name && p.name.toLowerCase() === name.toLowerCase());
-      if (pl) {
-        pl.country = countryCode;
-      } else {
-        playersData.push({ id: playersData.length + 1, name: userObj.name, country: countryCode, completed: [] });
-      }
+      if (pl) pl.country = countryCode;
 
       saveData();
       await saveCloudData();
@@ -1308,6 +1328,7 @@
       sub.staffNote = note;
 
       if (sub.type === 'record') {
+        ensurePlayerExists(sub.player);
         let lvl = levelsData.find(l => l.title.toLowerCase() === sub.level.toLowerCase());
         if (lvl) {
           if (!lvl.records) lvl.records = [];
@@ -1319,10 +1340,11 @@
         if (pl) {
           if (!pl.completed) pl.completed = [];
           if (!pl.completed.includes(sub.level)) pl.completed.push(sub.level);
-        } else {
-          playersData.push({ id: playersData.length + 1, name: sub.player, country: '', completed: [sub.level] });
         }
       } else if (sub.type === 'level') {
+        ensurePlayerExists(sub.creator);
+        ensurePlayerExists(sub.verifier);
+
         let ytMatch = sub.video.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([a-zA-Z0-9_-]{11})/);
         let ytId = ytMatch ? ytMatch[1] : '';
 
@@ -1350,15 +1372,13 @@
         if (pl) {
           if (!pl.completed) pl.completed = [];
           if (!pl.completed.includes(sub.title)) pl.completed.push(sub.title);
-        } else {
-          playersData.push({ id: playersData.length + 1, name: sub.verifier, country: '', completed: [sub.title] });
         }
       }
 
       await saveCloudData();
       renderAdminPendingSection();
       init();
-      alert('Submission accepted!');
+      alert('Submission accepted and user synchronized with stats viewer!');
     }
 
     async function declineSubmission(id) {
@@ -1474,6 +1494,9 @@
       lvl.creator = document.getElementById(`edit-creator-${id}`).value.trim();
       lvl.verifier = document.getElementById(`edit-verifier-${id}`).value.trim();
 
+      ensurePlayerExists(lvl.creator);
+      ensurePlayerExists(lvl.verifier);
+
       let ytVal = document.getElementById(`edit-yt-${id}`).value.trim();
       let ytMatch = ytVal.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([a-zA-Z0-9_-]{11})/);
       lvl.youtubeId = ytMatch ? ytMatch[1] : ytVal;
@@ -1485,7 +1508,7 @@
       await saveCloudData();
       renderAdminManageSection();
       init();
-      alert('All level information updated globally! 🎃');
+      alert('All level information and player links updated globally! 🎃');
     }
 
     async function removeLevel(id) {
