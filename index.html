@@ -822,6 +822,7 @@
     let levelsData = [];
     let playersData = [];
     let pendingSubmissions = [];
+    let removedPlayersList = JSON.parse(localStorage.getItem('mcll_removed_players')) || ['hershey', 'hershey420', 'elias37', 'ersay37'];
     
     let usersData = JSON.parse(localStorage.getItem('mcll_users')) || [];
     defaultUsers.forEach(defU => {
@@ -868,14 +869,12 @@
         }
       }
 
-      const blacklisted = ['hershey', 'hershey420', 'elias37', 'ersay37'];
-      playersData = playersData.filter(p => p.name && !blacklisted.includes(p.name.toLowerCase()));
-      cleanUpRemovedPlayersFromRecords(blacklisted);
-
+      cleanUpRemovedPlayersFromRecords(removedPlayersList);
       init();
     }
 
     function cleanUpRemovedPlayersFromRecords(removedList) {
+      playersData = playersData.filter(p => p.name && !removedList.includes(p.name.toLowerCase()));
       levelsData.forEach(lvl => {
         if (lvl.records) {
           lvl.records = lvl.records.filter(r => r.player && !removedList.includes(r.player.toLowerCase()));
@@ -907,11 +906,14 @@
     function saveData() {
       localStorage.setItem('mcll_users', JSON.stringify(usersData));
       localStorage.setItem('mcll_current_user', JSON.stringify(currentUser));
+      localStorage.setItem('mcll_removed_players', JSON.stringify(removedPlayersList));
     }
 
     function ensurePlayerExists(name) {
       if (!name) return;
       const cleanName = name.trim();
+      if (removedPlayersList.includes(cleanName.toLowerCase())) return;
+
       let existing = playersData.find(p => p.name && p.name.toLowerCase() === cleanName.toLowerCase());
       if (!existing) {
         playersData.push({
@@ -961,7 +963,6 @@
     }
 
     function init() {
-      // Automatyczne upewnienie się, że każdy twórca i weryfikator znajduje się w stats viewer (ignorując wielkość liter)
       levelsData.forEach(lvl => {
         if (lvl.creator) ensurePlayerExists(lvl.creator);
         if (lvl.verifier) ensurePlayerExists(lvl.verifier);
@@ -1378,7 +1379,7 @@
       await saveCloudData();
       renderAdminPendingSection();
       init();
-      alert('Submission accepted and user synchronized with stats viewer!');
+      alert('Submission accepted!');
     }
 
     async function declineSubmission(id) {
@@ -1513,18 +1514,45 @@
 
     async function removeLevel(id) {
       if (!confirm('Are you sure you want to delete this level?')) return;
+      const lvl = levelsData.find(l => l.id === id);
+      if (lvl) {
+        const titleLower = lvl.title.toLowerCase();
+        // Usuń ten poziom z listy ukończonych u wszystkich graczy (usuwając punkty z nim związane)
+        playersData.forEach(p => {
+          if (p.completed) {
+            p.completed = p.completed.filter(c => c.toLowerCase() !== titleLower);
+          }
+        });
+      }
       levelsData = levelsData.filter(l => l.id !== id);
       await saveCloudData();
       renderAdminManageSection();
       init();
+      alert('Level and its related player points/records have been removed!');
     }
 
     async function removePlayer(name) {
-      if (!confirm(`Are you sure you want to remove player "${name}"?`)) return;
-      playersData = playersData.filter(p => p.name.toLowerCase() !== name.toLowerCase());
+      if (!confirm(`Are you sure you want to permanently remove player "${name}"?`)) return;
+      const lowerName = name.toLowerCase();
+
+      if (!removedPlayersList.includes(lowerName)) {
+        removedPlayersList.push(lowerName);
+      }
+
+      playersData = playersData.filter(p => p.name && p.name.toLowerCase() !== lowerName);
+
+      // Usuń wszystkie rekordy tego gracza z poziomów
+      levelsData.forEach(lvl => {
+        if (lvl.records) {
+          lvl.records = lvl.records.filter(r => r.player && r.player.toLowerCase() !== lowerName);
+        }
+      });
+
+      saveData();
       await saveCloudData();
       renderAdminManageSection();
       init();
+      alert(`Player "${name}" and all their records have been permanently removed!`);
     }
 
     async function handleRecordSubmit(e) {
