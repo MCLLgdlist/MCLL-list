@@ -872,6 +872,12 @@
         }
       }
 
+      // Automatyczna aktualizacja v2: Bloody space 2 -> EfjjC
+      let bs2 = levelsData.find(l => l.title && l.title.toLowerCase() === 'bloody space 2');
+      if (bs2 && bs2.verifier && bs2.verifier.toLowerCase() === 'blakburd-') {
+        bs2.verifier = 'EfjjC';
+      }
+
       cleanUpRemovedPlayersFromRecords(removedPlayersList);
       init();
     }
@@ -947,12 +953,12 @@
 
           let bestPct = 0;
 
-          // 1. Sprawdzamy czy jest weryfikatorem (weryfikator dostaje 100% punktów)
+          // 1. Sprawdzamy czy jest weryfikatorem
           if (lvl.verifier && lvl.verifier.toLowerCase() === pNameLower) {
             bestPct = 100;
           }
 
-          // 2. Sprawdzamy rekordy poziomu
+          // 2. Sprawdzamy rekordy
           if (lvl.records) {
             const playerRec = lvl.records.find(r => r.player && r.player.toLowerCase() === pNameLower);
             if (playerRec) {
@@ -963,12 +969,10 @@
             }
           }
 
-          // Dynamiczne naliczanie punktów
           if (bestPct === 100) {
             completedLevels.push(lvl.title);
             totalPoints += maxLvlPoints;
           } else if (rank <= 10 && bestPct >= 56) {
-            // Dla Top 10 przyznawana jest proporcjonalna część punktów za procent >= 56%
             const partialPoints = Math.round((bestPct / 100) * maxLvlPoints);
             totalPoints += partialPoints;
             progressRecords.push({ level: lvl.title, percent: bestPct });
@@ -1544,7 +1548,7 @@
       await saveCloudData();
       renderAdminManageSection();
       init();
-      alert(`All level information and verifier status updated globally! Points transferred from ${oldVerifier || 'N/A'} to ${newVerifier}. 🎃`);
+      alert(`All level information updated globally! Verifier changed to ${newVerifier}. 🎃`);
     }
 
     async function removeLevel(id) {
@@ -1750,7 +1754,7 @@
 
         <h3 style="color: var(--accent-cyan);">Completed Levels (${p.completed ? p.completed.length : 0})</h3>
         <div class="info-meta">
-          ${p.completed && p.completed.length > 0 ? p.completed.map(l => `<div>• 100% on <b>${l}</b></div>`).join('') : 'None'}
+          ${p.completed && p.completed.length > 0 ? p.completed.map(l => `<div>• <b>${l}</b></div>`).join('') : 'None'}
         </div>
 
         <h3 style="color: var(--accent-cyan);">Progress Records (${p.progressRecords ? p.progressRecords.length : 0})</h3>
