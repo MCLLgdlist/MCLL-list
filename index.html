@@ -846,15 +846,29 @@
     let currentSubTab = 'main';
 
     async function loadData() {
+      // 1. Domyślnie ładujemy z lokalnego pliku json
+      try {
+        const res = await fetch('./data.json?v=' + Date.now(), { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          levelsData = data.levels || [];
+          playersData = data.players || [];
+        }
+      } catch (err) {
+        console.error('Failed to load data.json', err);
+      }
+
+      // 2. Dołączamy / aktualizujemy dane z npoint.io, jeśli są bogatsze
       try {
         const subRes = await fetch(NPOINT_URL + '?nocache=' + Date.now(), { cache: "no-store" });
         if (subRes.ok) {
           const subData = await subRes.json();
           pendingSubmissions = subData.zgloszenia || [];
-          if (subData.levels && subData.levels.length > 0) {
+          
+          if (subData.levels && subData.levels.length > levelsData.length) {
             levelsData = subData.levels;
           }
-          if (subData.players && subData.players.length > 0) {
+          if (subData.players && subData.players.length > playersData.length) {
             playersData = subData.players;
           }
         }
@@ -862,22 +876,9 @@
         console.error('Failed to load data from cloud', err);
       }
 
-      if (levelsData.length === 0) {
-        try {
-          const res = await fetch('./data.json?v=' + Date.now(), { cache: "no-store" });
-          if (res.ok) {
-            const data = await res.json();
-            levelsData = data.levels || [];
-            playersData = data.players || [];
-          }
-        } catch (err) {
-          console.error('Failed to load data.json', err);
-        }
-      }
-
-      // Automatyczna aktualizacja v2: Bloody space 2 -> EfjjC
+      // Wymuszona poprawka: Bloody space 2 verifier -> EfjjC
       let bs2 = levelsData.find(l => l.title && l.title.toLowerCase() === 'bloody space 2');
-      if (bs2 && bs2.verifier && bs2.verifier.toLowerCase() === 'blakburd-') {
+      if (bs2) {
         bs2.verifier = 'EfjjC';
       }
 
@@ -956,12 +957,10 @@
 
           let bestPct = 0;
 
-          // 1. Sprawdzamy czy jest weryfikatorem
           if (lvl.verifier && lvl.verifier.toLowerCase() === pNameLower) {
             bestPct = 100;
           }
 
-          // 2. Sprawdzamy rekordy
           if (lvl.records) {
             const playerRec = lvl.records.find(r => r.player && r.player.toLowerCase() === pNameLower);
             if (playerRec) {
@@ -1641,7 +1640,7 @@
       if(!container) return;
       container.innerHTML = '';
       if(!list || list.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No levels found. 👻</div>`;
+        container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No levels found. ghost</div>`;
         return;
       }
       list.forEach((lvl) => {
