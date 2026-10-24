@@ -846,44 +846,79 @@
     let currentSubTab = 'main';
 
     async function loadData() {
-      // 1. Domyślnie ładujemy z lokalnego pliku json
+      let fileLevels = [];
+      let filePlayers = [];
+
+      // 1. Ładujemy lokalne dane z pliku data.json jeśli istnieje
       try {
         const res = await fetch('./data.json?v=' + Date.now(), { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
-          levelsData = data.levels || [];
-          playersData = data.players || [];
+          fileLevels = data.levels || [];
+          filePlayers = data.players || [];
         }
       } catch (err) {
         console.error('Failed to load data.json', err);
       }
 
-      // 2. Dołączamy / aktualizujemy dane z npoint.io, jeśli są bogatsze
+      let cloudLevels = [];
+      let cloudPlayers = [];
+
+      // 2. Pobieramy dane z npoint.io
       try {
         const subRes = await fetch(NPOINT_URL + '?nocache=' + Date.now(), { cache: "no-store" });
         if (subRes.ok) {
           const subData = await subRes.json();
           pendingSubmissions = subData.zgloszenia || [];
-          
-          if (subData.levels && subData.levels.length > levelsData.length) {
-            levelsData = subData.levels;
-          }
-          if (subData.players && subData.players.length > playersData.length) {
-            playersData = subData.players;
-          }
+          cloudLevels = subData.levels || [];
+          cloudPlayers = subData.players || [];
         }
       } catch (err) {
         console.error('Failed to load data from cloud', err);
       }
 
-      // Wymuszona poprawka: Bloody space 2 verifier -> EfjjC
+      // 3. ŁĄCZENIE POZIOMÓW (Unia)
+      let mergedLevels = [...cloudLevels];
+      let needsCloudUpdate = false;
+
+      fileLevels.forEach(fLvl => {
+        const exists = mergedLevels.some(cLvl => 
+          (cLvl.id && fLvl.id && cLvl.id === fLvl.id) || 
+          (cLvl.title && fLvl.title && cLvl.title.toLowerCase() === fLvl.title.toLowerCase())
+        );
+        if (!exists) {
+          mergedLevels.push(fLvl);
+          needsCloudUpdate = true; // Flaga: odnaleźliśmy brakujący poziom, zapiszemy go do npoint!
+        }
+      });
+
+      levelsData = mergedLevels.length > 0 ? mergedLevels : fileLevels;
+
+      // Łączenie graczy
+      let mergedPlayers = [...cloudPlayers];
+      filePlayers.forEach(fP => {
+        const exists = mergedPlayers.some(cP => cP.name && fP.name && cP.name.toLowerCase() === fP.name.toLowerCase());
+        if (!exists) {
+          mergedPlayers.push(fP);
+          needsCloudUpdate = true;
+        }
+      });
+      playersData = mergedPlayers;
+
+      // Podmiana verifiera dla Bloody Space 2
       let bs2 = levelsData.find(l => l.title && l.title.toLowerCase() === 'bloody space 2');
-      if (bs2) {
+      if (bs2 && bs2.verifier !== 'EfjjC') {
         bs2.verifier = 'EfjjC';
+        needsCloudUpdate = true;
       }
 
       cleanUpRemovedPlayersFromRecords(removedPlayersList);
       init();
+
+      // Jeśli baza w npoint była niekompletna, automatycznie synchronizujemy i uzupełniamy ją w chmurze!
+      if (needsCloudUpdate) {
+        saveCloudData();
+      }
     }
 
     function cleanUpRemovedPlayersFromRecords(removedList) {
@@ -1640,7 +1675,7 @@
       if(!container) return;
       container.innerHTML = '';
       if(!list || list.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No levels found. ghost</div>`;
+        container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No levels found. 👻</div>`;
         return;
       }
       list.forEach((lvl) => {
