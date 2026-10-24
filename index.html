@@ -407,6 +407,7 @@
       font-weight: bold;
       text-decoration: underline;
       font-size: 13px;
+      cursor: pointer;
     }
     .proof-link:hover { color: var(--text-primary); }
 
@@ -846,79 +847,20 @@
     let currentSubTab = 'main';
 
     async function loadData() {
-      let fileLevels = [];
-      let filePlayers = [];
-
-      // 1. Ładujemy lokalne dane z pliku data.json jeśli istnieje
-      try {
-        const res = await fetch('./data.json?v=' + Date.now(), { cache: "no-store" });
-        if (res.ok) {
-          const data = await res.json();
-          fileLevels = data.levels || [];
-          filePlayers = data.players || [];
-        }
-      } catch (err) {
-        console.error('Failed to load data.json', err);
-      }
-
-      let cloudLevels = [];
-      let cloudPlayers = [];
-
-      // 2. Pobieramy dane z npoint.io
       try {
         const subRes = await fetch(NPOINT_URL + '?nocache=' + Date.now(), { cache: "no-store" });
         if (subRes.ok) {
           const subData = await subRes.json();
           pendingSubmissions = subData.zgloszenia || [];
-          cloudLevels = subData.levels || [];
-          cloudPlayers = subData.players || [];
+          levelsData = subData.levels || [];
+          playersData = subData.players || [];
         }
       } catch (err) {
         console.error('Failed to load data from cloud', err);
       }
 
-      // 3. ŁĄCZENIE POZIOMÓW (Unia)
-      let mergedLevels = [...cloudLevels];
-      let needsCloudUpdate = false;
-
-      fileLevels.forEach(fLvl => {
-        const exists = mergedLevels.some(cLvl => 
-          (cLvl.id && fLvl.id && cLvl.id === fLvl.id) || 
-          (cLvl.title && fLvl.title && cLvl.title.toLowerCase() === fLvl.title.toLowerCase())
-        );
-        if (!exists) {
-          mergedLevels.push(fLvl);
-          needsCloudUpdate = true; // Flaga: odnaleźliśmy brakujący poziom, zapiszemy go do npoint!
-        }
-      });
-
-      levelsData = mergedLevels.length > 0 ? mergedLevels : fileLevels;
-
-      // Łączenie graczy
-      let mergedPlayers = [...cloudPlayers];
-      filePlayers.forEach(fP => {
-        const exists = mergedPlayers.some(cP => cP.name && fP.name && cP.name.toLowerCase() === fP.name.toLowerCase());
-        if (!exists) {
-          mergedPlayers.push(fP);
-          needsCloudUpdate = true;
-        }
-      });
-      playersData = mergedPlayers;
-
-      // Podmiana verifiera dla Bloody Space 2
-      let bs2 = levelsData.find(l => l.title && l.title.toLowerCase() === 'bloody space 2');
-      if (bs2 && bs2.verifier !== 'EfjjC') {
-        bs2.verifier = 'EfjjC';
-        needsCloudUpdate = true;
-      }
-
       cleanUpRemovedPlayersFromRecords(removedPlayersList);
       init();
-
-      // Jeśli baza w npoint była niekompletna, automatycznie synchronizujemy i uzupełniamy ją w chmurze!
-      if (needsCloudUpdate) {
-        saveCloudData();
-      }
     }
 
     function cleanUpRemovedPlayersFromRecords(removedList) {
@@ -1567,7 +1509,6 @@
       lvl.title = document.getElementById(`edit-title-${id}`).value.trim();
       lvl.creator = document.getElementById(`edit-creator-${id}`).value.trim();
       
-      const oldVerifier = lvl.verifier;
       const newVerifier = document.getElementById(`edit-verifier-${id}`).value.trim();
       lvl.verifier = newVerifier;
 
@@ -1685,7 +1626,9 @@
 
         const card = document.createElement('div');
         card.className = 'pointercrate-card';
+        card.style.cursor = 'pointer';
         card.onclick = () => openLevelView(lvl.id);
+        
         card.innerHTML = `
           <div class="pointercrate-thumb-wrapper">
             <img class="pointercrate-thumb" src="${thumbUrl}" alt="${lvl.title}">
@@ -1711,12 +1654,15 @@
       document.getElementById('lvl-title').innerText = lvl.title;
       
       let recordsHtml = lvl.records && lvl.records.length > 0 
-        ? lvl.records.map(r => `
-            <div style="padding: 6px 0; display:flex; align-items:center;">
-              <strong style="color:var(--accent-cyan);">${r.player}</strong> - ${r.percent || 100}%
-              ${r.video ? `<a class="proof-link" href="${r.video}" target="_blank">(proof)</a>` : ''}
-            </div>
-          `).join('')
+        ? lvl.records.map(r => {
+            const proofLink = r.video || r.url || r.link || r.proof || '';
+            return `
+              <div style="padding: 6px 0; display:flex; align-items:center; flex-wrap:wrap; gap: 6px;">
+                <strong style="color:var(--accent-cyan);">${r.player}</strong> - ${r.percent || 100}%
+                ${proofLink ? `<a href="${proofLink}" target="_blank" rel="noopener noreferrer" class="proof-link">(proof / link)</a>` : ''}
+              </div>
+            `;
+          }).join('')
         : '<div style="color: var(--text-muted);">No records yet. 👻</div>';
 
       document.getElementById('lvl-details').innerHTML = `
