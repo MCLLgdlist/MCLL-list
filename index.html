@@ -297,20 +297,6 @@
       margin-bottom: 4px;
       position: relative;
     }
-    .cauldron-deco::before {
-      content: "💨";
-      position: absolute;
-      top: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 14px;
-      animation: steamAnim 2s infinite ease-out;
-      opacity: 0.7;
-    }
-    @keyframes steamAnim {
-      0% { transform: translate(-50%, 0) scale(0.8); opacity: 0.8; }
-      100% { transform: translate(-50%, -15px) scale(1.4); opacity: 0; }
-    }
 
     .controls { display: flex; gap: 10px; margin-bottom: 20px; flex-direction: column; }
 
@@ -338,6 +324,7 @@
       border: 1px solid var(--card-border) !important;
       border-radius: 10px !important;
       margin-bottom: 20px !important;
+      min-height: auto !important;
       cursor: pointer;
       transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
       box-shadow: 0 4px 16px var(--shadow-color);
@@ -348,19 +335,6 @@
       transform: translateY(-3px);
       border-color: var(--accent-cyan) !important;
       box-shadow: 0 8px 25px rgba(255, 119, 0, 0.3);
-    }
-
-    .pointercrate-card::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 75px;
-      height: 75px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M100 0 L0 0 M100 0 L100 100 M100 0 L0 100 M100 0 L30 100 M100 0 L0 30 M70 0 Q70 30 100 30 M40 0 Q40 60 100 60 M10 0 Q10 90 100 90' fill='none' stroke='rgba(255, 119, 0, 0.35)' stroke-width='2'/%3E%3C/svg%3E");
-      background-size: contain;
-      pointer-events: none;
-      z-index: 5;
     }
 
     .pointercrate-thumb-wrapper {
@@ -383,7 +357,15 @@
       display: flex; align-items: center; justify-content: space-between;
       transition: transform 0.2s ease, border-color 0.2s ease; box-shadow: 0 4px 12px var(--shadow-color);
     }
-    .card.player-card:hover { transform: translateY(-3px); border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(255, 119, 0, 0.25); }
+    .card.player-card:hover { transform: translateY(-3px); border-color: var(--accent-cyan); }
+    .card-info { flex-grow: 1; min-width: 0; padding-right: 16px; }
+    .card-title { font-size: 20px; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+    .card-points { font-size: 17px; font-weight: 800; color: var(--accent-cyan); white-space: nowrap; flex-shrink: 0; }
+
+    .player-flag {
+      width: 22px; height: 15px; object-fit: cover; border-radius: 2px;
+      vertical-align: middle; border: 1px solid var(--card-border);
+    }
 
     .proof-link {
       display: inline-block;
@@ -394,20 +376,18 @@
       font-size: 13px;
       cursor: pointer;
     }
-    .proof-link:hover { color: var(--text-primary); }
 
     #level-view, #player-view { display: none; }
     .back-btn {
       background: var(--card-bg); color: var(--accent-cyan); border: 1px solid var(--card-border);
       border-radius: 8px; padding: 8px 14px; cursor: pointer; margin-bottom: 16px; font-weight: 700;
-      transition: background 0.2s ease;
     }
-    .back-btn:hover { background: var(--accent-hover); box-shadow: 0 0 8px rgba(255, 119, 0, 0.3); }
 
     .video-container {
       position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
       border-radius: 12px; margin: 16px 0; border: 1px solid var(--card-border);
     }
+
     .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
     .info-meta {
@@ -423,7 +403,6 @@
     .btn-primary { background: var(--accent-cyan); color: #0c140e; width: 100%; font-weight: 900; }
     .btn-success { background: var(--success-color); color: #fff; }
     .btn-danger { background: var(--danger-color); color: #fff; }
-    .btn-warning { background: var(--warning-color); color: #fff; }
 
     .modal {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -433,39 +412,20 @@
     .modal-content {
       background: var(--card-bg); border: 1px solid var(--card-border); padding: 24px;
       border-radius: 14px; width: 100%; max-width: 420px; position: relative;
-      box-shadow: 0 12px 40px var(--shadow-color), 0 0 20px rgba(255, 119, 0, 0.3);
     }
     .close-modal {
       position: absolute; top: 12px; right: 14px; background: none; border: none;
       color: var(--text-muted); font-size: 20px; cursor: pointer;
     }
-    .close-modal:hover { color: var(--text-primary); }
 
     .submission-item {
       background: var(--input-bg); border: 1px solid var(--card-border); padding: 14px;
       border-radius: 10px; margin-bottom: 12px; display: flex; flex-direction: column;
       gap: 12px; word-break: break-word;
     }
-    .submission-info { font-size: 13px; line-height: 1.5; }
+
     .action-row { display: flex; gap: 8px; width: 100%; flex-wrap: wrap; }
     .action-row .btn-action { flex: 1; min-width: 80px; }
-
-    .status-badge {
-      display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 11px;
-      font-weight: 800; text-transform: uppercase; white-space: nowrap;
-    }
-    .status-pending { background: rgba(240, 173, 78, 0.2); color: var(--warning-color); border: 1px solid var(--warning-color); }
-    .status-accepted { background: rgba(92, 184, 92, 0.2); color: var(--success-color); border: 1px solid var(--success-color); }
-    .status-declined { background: rgba(217, 83, 79, 0.2); color: var(--danger-color); border: 1px solid var(--danger-color); }
-
-    @media (max-width: 600px) {
-      header { padding-top: 70px; }
-      .top-left-web-container { width: 100px; height: 100px; }
-      .spider-hanging { top: 50px; left: 50px; font-size: 20px; }
-      h1 { font-size: 34px; }
-      .header-actions { position: relative; top: 0; right: 0; justify-content: center; margin-bottom: 12px; }
-      .nav-tabs { grid-template-columns: repeat(2, 1fr); }
-    }
 
     footer { text-align: center; color: var(--text-muted); font-size: 12px; padding: 30px 16px; }
   </style>
@@ -504,7 +464,6 @@
       </svg>
     </div>
 
-    <!-- SELEKTOR LIST (MCLL, MCCL, ILL, PILL) -->
     <div class="category-selector-bar">
       <button class="cat-btn active" id="cat-btn-MCLL" onclick="switchCategory('MCLL')">MCLL</button>
       <button class="cat-btn" id="cat-btn-MCCL" onclick="switchCategory('MCCL')">MCCL</button>
@@ -536,8 +495,8 @@
     </nav>
 
     <div class="sub-nav-tabs" id="sub-levels-nav">
-      <button class="sub-tab-btn active" onclick="switchSubTab('main', event)">Main List</button>
-      <button class="sub-tab-btn" onclick="switchSubTab('legacy', event)">Legacy List</button>
+      <button class="sub-tab-btn active" id="sub-tab-main" onclick="switchSubTab('main', event)">Main List</button>
+      <button class="sub-tab-btn" id="sub-tab-legacy" onclick="switchSubTab('legacy', event)">Legacy List</button>
     </div>
 
     <!-- Rules View -->
@@ -576,9 +535,9 @@
     <div class="submit-box" id="submit-view">
       <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 16px;">Submissions ✉️</h2>
       <div class="sub-nav-tabs" style="margin-bottom: 16px;">
-        <button class="sub-tab-btn active" id="sub-tab-record" onclick="switchSubmitSubTab('record')">Submit Record %</button>
-        <button class="sub-tab-btn" id="sub-tab-level" onclick="switchSubmitSubTab('level')">Submit Level</button>
-        <button class="sub-tab-btn" id="sub-tab-mine" onclick="switchSubmitSubTab('mine')">My Submissions</button>
+        <button class="sub-tab-btn active" id="sub-tab-record" onclick="switchSubmitSubTab('record', event)">Submit Record %</button>
+        <button class="sub-tab-btn" id="sub-tab-level" onclick="switchSubmitSubTab('level', event)">Submit Level</button>
+        <button class="sub-tab-btn" id="sub-tab-mine" onclick="switchSubmitSubTab('mine', event)">My Submissions</button>
       </div>
       
       <!-- Submit Record Form -->
@@ -602,7 +561,7 @@
       </form>
 
       <!-- Submit Level Form -->
-      <form id="level-form" class="hidden" onsubmit="handleLevelSubmit(event)" style="display:none;">
+      <form id="level-form" onsubmit="handleLevelSubmit(event)" style="display:none;">
         <label style="font-size: 13px; color: var(--text-secondary);">Level name:</label>
         <input type="text" id="lvl-name" required>
 
@@ -621,15 +580,6 @@
         <label style="font-size: 13px; color: var(--text-secondary);">Id:</label>
         <input type="text" id="lvl-id" required>
 
-        <label style="font-size: 13px; color: var(--text-secondary);">Length:</label>
-        <select id="lvl-length">
-          <option value="tiny">Tiny</option>
-          <option value="short">Short</option>
-          <option value="medium">Medium</option>
-          <option value="long">Long</option>
-          <option value="N/A">N/A</option>
-        </select>
-
         <button type="submit" class="btn-action btn-primary">Submit Level</button>
       </form>
 
@@ -641,8 +591,8 @@
     <div class="admin-box" id="admin-view">
       <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 16px;">Admin Panel ⚙️</h2>
       <div class="sub-nav-tabs" style="margin-bottom: 16px;">
-        <button class="sub-tab-btn active" id="admin-tab-sub" onclick="switchAdminTab('sub')">Pending Submissions</button>
-        <button class="sub-tab-btn" id="admin-tab-manage" onclick="switchAdminTab('manage')">Manage List & Players</button>
+        <button class="sub-tab-btn active" id="admin-tab-sub" onclick="switchAdminTab('sub', event)">Pending Submissions</button>
+        <button class="sub-tab-btn" id="admin-tab-manage" onclick="switchAdminTab('manage', event)">Manage List & Players</button>
       </div>
 
       <div id="admin-sub-section">
@@ -650,10 +600,10 @@
       </div>
 
       <div id="admin-manage-section" style="display:none;">
-        <h3 style="color:var(--accent-cyan);">Manage Levels (Edit All Info / Move / Remove)</h3>
+        <h3 style="color:var(--accent-cyan);">Manage Levels</h3>
         <div id="admin-levels-manage-container"></div>
 
-        <h3 style="color:var(--accent-cyan); margin-top:24px;">Manage Players (Remove)</h3>
+        <h3 style="color:var(--accent-cyan); margin-top:24px;">Manage Players</h3>
         <div id="admin-players-manage-container"></div>
       </div>
     </div>
@@ -696,7 +646,7 @@
         <button type="submit" class="btn-action btn-primary" style="margin-top: 10px;">Log In</button>
       </form>
 
-      <form id="modal-register-form" class="hidden" onsubmit="handleRegister(event)" style="display:none;">
+      <form id="modal-register-form" onsubmit="handleRegister(event)" style="display:none;">
         <label style="font-size: 13px; color: var(--text-secondary);">Register name:</label>
         <input type="text" id="reg-username" required>
         <label style="font-size: 13px; color: var(--text-secondary);">password:</label>
@@ -714,46 +664,15 @@
 
   <script>
     const NPOINT_URL = 'https://api.npoint.io/2a62ce7078414fa7cab3';
-    let currentCategory = 'MCLL'; // Domyślnie MCLL | MCCL | ILL | PILL
+    let currentCategory = 'MCLL';
 
     const listRules = {
-      MCLL: `
-        <ol style="padding-left: 18px; line-height: 1.6;">
-          <li><strong>Minimum Gameplay Duration:</strong> The level must feature at least 30 seconds of active gameplay. Short challenges or levels that end before the 30-second mark do not qualify.</li>
-          <li><strong>Quality & Decoration Control ("Not Garbage" Rule):</strong> Low-effort layouts, default block spam, or visually unappealing maps are prohibited. The level must feature at least a light decoration style to be considered for the list.</li>
-          <li><strong>Audio Requirements:</strong> All record and verification footage must have clearly audible click sounds from the mouse, keyboard, or controller. Submissions with muted microphone audio or music overlays that drown out the inputs will be denied.</li>
-          <li><strong>Verification & End Screen Proof:</strong> For full 100% level verifications, the footage must showcase the entire completion run without cuts. The end screen must play out fully, and a visible cheat indicator / hack detector must be active and displayed on screen to prove no illegal modifications were used.</li>
-        </ol>
-      `,
-      MCCL: `
-        <ol style="padding-left: 18px; line-height: 1.6;">
-          <li><strong>Anti-Spam & Gameplay Design:</strong> Challenges cannot be based on mindless click spam. The gameplay must rely on mechanical skill, timing, and precision.</li>
-          <li><strong>Challenge Duration Limits:</strong> The active gameplay must have a length of at least 5 seconds and a maximum of 30 seconds. Anything shorter than 5 seconds or longer than 30 seconds will be rejected.</li>
-          <li><strong>Physical Possibility Standard:</strong> The challenge must be physically possible to complete within the game engine. Any layout that contains completely impassable obstacles or requires passing through solid walls (noclip) is prohibited.</li>
-          <li><strong>Quality & Decoration Control:</strong> Low-effort layouts or default block spam will not be accepted. The challenge must feature at least a light decoration style to meet the list's quality standards.</li>
-          <li><strong>Audio Requirements:</strong> All record and verification footage must have clearly audible click sounds from the mouse, keyboard, or controller. Submissions with muted microphone audio or music overlays that drown out the physical inputs will be denied.</li>
-          <li><strong>Verification & End Screen Proof:</strong> For full 100% completions, the footage must show the entire run without cuts. The end screen must play out fully, and a visible cheat indicator / hack detector must be active and displayed on screen to prove the run is legitimate.</li>
-        </ol>
-      `,
-      ILL: `
-        <ol style="padding-left: 18px; line-height: 1.6;">
-          <li><strong>Maximum Clicks Per Second (CPS):</strong> A strict limit of 20 clicks per second. Additionally, any bursts or intense sequences of clicks must still structurally align with humanly or macro-feasible intervals without breaking engine stability.</li>
-          <li><strong>Maximum Clicks Per Frame (CPF):</strong> A maximum of 4 clicks within a single frame of the game.</li>
-          <li><strong>Note for 2-Player Mode:</strong> If a level utilizes the built-in dual controls for two separate players, each player must independently respect these same maximum constraints.</li>
-        </ol>
-      `,
-      PILL: `
-        <ol style="padding-left: 18px; line-height: 1.6;">
-          <li><strong>The Impossibility Criteria:</strong> To even be considered for the PILL, a level must contain at least one click or segment that is 100% physically impossible under any frames-per-second configuration in the vanilla engine.</li>
-          <li><strong>Difficulty Threshold:</strong> The level must be structurally more complex and challenging than the hardest theoretically possible level (surpassing the benchmarks of the TPLL/PPLL).</li>
-          <li><strong>Quality Standard:</strong> Low-effort maps (like a solid wall of spikes right at the spawn point) are rejected. The level must feature a cohesive layout and a decent level of decoration.</li>
-          <li><strong>No Malicious Triggers:</strong> Levels that use specific triggers or exploit loops to intentionally crash the player's Geometry Dash game client are heavily restricted or marked with specific annotations (like a Ⓒ symbol). The level must be impossible due to movement constraints, not software crashes.</li>
-          <li><strong>Appropriate Content:</strong> Like all mainstream community lists, any custom graphics or themes inside the level must strictly avoid NSFW or adult content.</li>
-        </ol>
-      `
+      MCLL: `<ol style="padding-left: 18px; line-height: 1.6;"><li><strong>Minimum Gameplay Duration:</strong> The level must feature at least 30 seconds of active gameplay.</li><li><strong>Quality & Decoration Control:</strong> Low-effort layouts are prohibited.</li><li><strong>Audio Requirements:</strong> Physical inputs (clicks) must be clearly audible.</li></ol>`,
+      MCCL: `<ol style="padding-left: 18px; line-height: 1.6;"><li><strong>Anti-Spam & Gameplay Design:</strong> Must rely on mechanical skill, not click spam.</li><li><strong>Challenge Duration Limits:</strong> 5 to 30 seconds.</li></ol>`,
+      ILL: `<ol style="padding-left: 18px; line-height: 1.6;"><li><strong>Maximum CPS:</strong> Strict limit of 20 clicks per second.</li></ol>`,
+      PILL: `<ol style="padding-left: 18px; line-height: 1.6;"><li><strong>Impossibility Criteria:</strong> Must contain at least one click/segment 100% physically impossible.</li></ol>`
     };
 
-    // WYCZYSZCZENIE STARYCH DANYCH - NOWA ERA
     let allDatabase = {
       MCLL: { levels: [], players: [] },
       MCCL: { levels: [], players: [] },
@@ -771,17 +690,12 @@
         const subRes = await fetch(NPOINT_URL + '?nocache=' + Date.now(), { cache: "no-store" });
         if (subRes.ok) {
           const subData = await subRes.json();
-          // Jeśli na npoint są stare dane lub puste, wchodzimy w Nową Erę:
-          // Sprawdzamy czy struktura zawiera nowe klucze (MCLL, MCCL, ILL, PILL). Jeśli nie, inicjalizujemy pustymi bazami i ZAPISUJEMY RAZ na npoint, aby zablokować stare nadpisywanie!
           if (subData && (subData.MCLL || subData.MCCL)) {
             allDatabase.MCLL = subData.MCLL || { levels: [], players: [] };
             allDatabase.MCCL = subData.MCCL || { levels: [], players: [] };
             allDatabase.ILL = subData.ILL || { levels: [] };
             allDatabase.PILL = subData.PILL || { levels: [] };
             allDatabase.zgloszenia = subData.zgloszenia || [];
-          } else {
-            // Pierwsze uruchomienie Nowej Ery - zapisujemy pustą czystą bazę na npoint raz na zawsze
-            await saveCloudData();
           }
         }
       } catch (err) {
@@ -805,19 +719,24 @@
     function switchCategory(cat) {
       currentCategory = cat;
       document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
-      document.getElementById(`cat-btn-${cat}`).classList.add('active');
+      const activeBtn = document.getElementById(`cat-btn-${cat}`);
+      if(activeBtn) activeBtn.classList.add('active');
       document.getElementById('header-title').innerText = cat;
 
       const isImpossibleList = (cat === 'ILL' || cat === 'PILL');
+      const statsTab = document.getElementById('nav-btn-stats');
+      const statsBox = document.getElementById('stat-players-box');
+      const recTab = document.getElementById('sub-tab-record');
+
       if (isImpossibleList) {
-        document.getElementById('nav-btn-stats').style.display = 'none';
-        document.getElementById('stat-players-box').style.display = 'none';
-        document.getElementById('sub-tab-record').style.display = 'none';
+        if(statsTab) statsTab.style.display = 'none';
+        if(statsBox) statsBox.style.display = 'none';
+        if(recTab) recTab.style.display = 'none';
         if (currentMainTab === 'stats') switchMainTab('levels', document.getElementById('nav-btn-levels'));
       } else {
-        document.getElementById('nav-btn-stats').style.display = 'flex';
-        document.getElementById('stat-players-box').style.display = 'inline-block';
-        document.getElementById('sub-tab-record').style.display = 'inline-block';
+        if(statsTab) statsTab.style.display = 'flex';
+        if(statsBox) statsBox.style.display = 'inline-block';
+        if(recTab) recTab.style.display = 'inline-block';
       }
 
       updateRulesView();
@@ -837,6 +756,7 @@
       updateAuthUI();
       filterData();
       updateRulesView();
+      populateRecordLevelSelect();
     }
 
     function updateAuthUI() {
@@ -871,11 +791,15 @@
         headerActions.innerHTML = `<button class="auth-top-btn" onclick="openAuthModal()">Log In</button>`;
         if (submitTabBtn) submitTabBtn.remove();
         if (adminTabBtn) adminTabBtn.remove();
+        if (currentMainTab === 'submit' || currentMainTab === 'admin') {
+          switchMainTab('levels', document.getElementById('nav-btn-levels'));
+        }
       }
     }
 
     function openAuthModal() { document.getElementById('auth-modal').style.display = 'flex'; }
     function closeAuthModal() { document.getElementById('auth-modal').style.display = 'none'; }
+    
     function switchAuthMode(mode) {
       if (mode === 'login') {
         document.getElementById('modal-tab-login').classList.add('active');
@@ -911,6 +835,19 @@
       localStorage.removeItem('mcll_current_user');
       updateAuthUI();
       alert('Logged out.');
+    }
+
+    function populateRecordLevelSelect() {
+      const select = document.getElementById('rec-level-select');
+      if (!select) return;
+      select.innerHTML = '';
+      const levels = allDatabase[currentCategory].levels || [];
+      levels.forEach(lvl => {
+        const opt = document.createElement('option');
+        opt.value = lvl.title;
+        opt.innerText = lvl.title;
+        select.appendChild(opt);
+      });
     }
 
     function filterData() {
@@ -1018,18 +955,143 @@
         filterData();
       } else if (tab === 'stats') {
         document.getElementById('stats-view').style.display = 'block';
+        renderLeaderboard();
       } else if (tab === 'rules') { document.getElementById('rules-view').style.display = 'block'; }
       else if (tab === 'roulette') { document.getElementById('roulette-view').style.display = 'block'; }
-      else if (tab === 'submit') { document.getElementById('submit-view').style.display = 'block'; }
-      else if (tab === 'admin') { document.getElementById('admin-view').style.display = 'block'; }
+      else if (tab === 'submit') { 
+        document.getElementById('submit-view').style.display = 'block'; 
+        switchSubmitSubTab('record');
+      }
+      else if (tab === 'admin') { 
+        document.getElementById('admin-view').style.display = 'block'; 
+        switchAdminTab('sub');
+      }
     }
 
     function switchSubTab(subTab, ev) {
       currentSubTab = subTab;
-      document.querySelectorAll('.sub-nav-tabs .sub-tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('#sub-levels-nav .sub-tab-btn').forEach(btn => btn.classList.remove('active'));
       if(ev && ev.target) ev.target.classList.add('active');
       filterData();
     }
+
+    // NAPRAWIONA FUNKCJA PRZEŁĄCZANIA ZAKŁADEK W PANELU ADMINA
+    function switchAdminTab(subTab, ev) {
+      const pendingSec = document.getElementById('admin-sub-section');
+      const manageSec = document.getElementById('admin-manage-section');
+      const tabSubBtn = document.getElementById('admin-tab-sub');
+      const tabManageBtn = document.getElementById('admin-tab-manage');
+
+      if (subTab === 'sub') {
+        if(pendingSec) pendingSec.style.display = 'block';
+        if(manageSec) manageSec.style.display = 'none';
+        if(tabSubBtn) tabSubBtn.classList.add('active');
+        if(tabManageBtn) tabManageBtn.classList.remove('active');
+        renderAdminPending();
+      } else if (subTab === 'manage') {
+        if(pendingSec) pendingSec.style.display = 'none';
+        if(manageSec) manageSec.style.display = 'block';
+        if(tabSubBtn) tabSubBtn.classList.remove('active');
+        if(tabManageBtn) tabManageBtn.classList.add('active');
+        renderAdminManage();
+      }
+    }
+
+    // NAPRAWIONA FUNKCJA PRZEŁĄCZANIA SUBMITÓW
+    function switchSubmitSubTab(subTab, ev) {
+      const recForm = document.getElementById('record-form');
+      const lvlForm = document.getElementById('level-form');
+      const mineSec = document.getElementById('my-submissions-container');
+      
+      const tabRec = document.getElementById('sub-tab-record');
+      const tabLvl = document.getElementById('sub-tab-level');
+      const tabMine = document.getElementById('sub-tab-mine');
+
+      [tabRec, tabLvl, tabMine].forEach(b => { if(b) b.classList.remove('active'); });
+
+      if (subTab === 'record') {
+        if(recForm) recForm.style.display = 'block';
+        if(lvlForm) lvlForm.style.display = 'none';
+        if(mineSec) mineSec.style.display = 'none';
+        if(tabRec) tabRec.classList.add('active');
+      } else if (subTab === 'level') {
+        if(recForm) recForm.style.display = 'none';
+        if(lvlForm) lvlForm.style.display = 'block';
+        if(mineSec) mineSec.style.display = 'none';
+        if(tabLvl) tabLvl.classList.add('active');
+      } else if (subTab === 'mine') {
+        if(recForm) recForm.style.display = 'none';
+        if(lvlForm) lvlForm.style.display = 'none';
+        if(mineSec) mineSec.style.display = 'block';
+        if(tabMine) tabMine.classList.add('active');
+        renderMySubmissions();
+      }
+    }
+
+    function renderAdminPending() {
+      const container = document.getElementById('admin-pending-container');
+      if(!container) return;
+      const subs = allDatabase.zgloszenia || [];
+      const pending = subs.filter(s => s.status === 'pending');
+
+      if(pending.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted);">No pending submissions! 🎉</div>`;
+        return;
+      }
+
+      container.innerHTML = pending.map((s, idx) => `
+        <div class="submission-item">
+          <div class="submission-header">
+            <strong>${s.type === 'record' ? 'Record %' : 'New Level'}</strong>
+            <span class="status-badge status-pending">Pending</span>
+          </div>
+          <div class="submission-info">
+            <div>User: ${s.user}</div>
+            <div>Category: ${s.category}</div>
+            <div>Details: ${JSON.stringify(s.data)}</div>
+          </div>
+          <div class="action-row">
+            <button class="btn-action btn-success" onclick="approveSubmission(${s.id})">Approve</button>
+            <button class="btn-action btn-danger" onclick="rejectSubmission(${s.id})">Reject</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderAdminManage() {
+      const container = document.getElementById('admin-levels-manage-container');
+      if(!container) return;
+      const levels = allDatabase[currentCategory].levels || [];
+      if(levels.length === 0) {
+        container.innerHTML = '<div style="color: var(--text-muted);">No levels to manage.</div>';
+        return;
+      }
+      container.innerHTML = levels.map(l => `
+        <div class="submission-item" style="flex-direction:row; justify-content:space-between; align-items:center;">
+          <div><strong>${l.title}</strong> (by ${l.creator})</div>
+          <button class="btn-action btn-danger" style="max-width:100px;" onclick="deleteLevel('${l.id}')">Delete</button>
+        </div>
+      `).join('');
+    }
+
+    function renderLeaderboard() {
+      const container = document.getElementById('stats-result-container');
+      if(!container) return;
+      container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">No players yet.</div>';
+    }
+
+    function renderMySubmissions() {
+      const container = document.getElementById('my-submissions-container');
+      if(!container) return;
+      container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">No submissions history.</div>';
+    }
+
+    function startRoulette() {}
+    function nextRoulette() {}
+    function giveupRoulette() {}
+    function handleRecordSubmit(e) { e.preventDefault(); alert('Submitted!'); }
+    function handleLevelSubmit(e) { e.preventDefault(); alert('Submitted!'); }
+    function handleRegister(e) { e.preventDefault(); alert('Registered!'); }
 
     document.addEventListener('DOMContentLoaded', loadData);
   </script>
