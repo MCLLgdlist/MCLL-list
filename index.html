@@ -10,12 +10,12 @@
   <style>
     :root {
       --bg-color: #070d09;
-      --bg-radial: rgba(30, 90, 40, 0.18);
+      --bg-radial: rgba(30, 90, 40, 0.22);
       --text-primary: #e8f5e9;
       --text-secondary: #c29b68;
       --text-muted: #7ca982;
-      --card-bg: rgba(14, 25, 18, 0.9);
-      --card-border: rgba(46, 125, 50, 0.4);
+      --card-bg: rgba(14, 25, 18, 0.92);
+      --card-border: rgba(46, 125, 50, 0.5);
       --header-bg: rgba(10, 16, 12, 0.95);
       --accent-cyan: #c29b68;
       --accent-hover: rgba(194, 155, 104, 0.25);
@@ -29,16 +29,20 @@
     * { box-sizing: border-box; }
 
     @keyframes assemblePage {
-      0% {
-        opacity: 0;
-        transform: translateY(25px) scale(0.98);
-        filter: blur(4px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        filter: blur(0);
-      }
+      0% { opacity: 0; transform: translateY(25px) scale(0.98); filter: blur(4px); }
+      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+
+    @keyframes goldShine {
+      0% { color: #ffd700; text-shadow: 0 0 8px rgba(255,215,0,0.6); }
+      50% { color: #ffea75; text-shadow: 0 0 16px rgba(255,215,0,0.9), 0 0 5px #fff; }
+      100% { color: #ffd700; text-shadow: 0 0 8px rgba(255,215,0,0.6); }
+    }
+
+    @keyframes whaleSwim {
+      0% { transform: translateX(0px); }
+      50% { transform: translateX(6px) translateY(-2px); }
+      100% { transform: translateX(0px); }
     }
 
     body {
@@ -46,8 +50,8 @@
       background-color: var(--bg-color);
       background-image: 
         radial-gradient(at 50% 20%, var(--bg-radial) 0px, transparent 65%),
-        linear-gradient(to bottom, rgba(7, 13, 9, 0.8), rgba(5, 10, 7, 0.95)),
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Cpath d='M20 300 L20 120 L50 90 L50 300 Z M80 300 L80 60 L120 40 L120 300 Z M180 300 L180 150 L220 120 L220 300 Z M250 300 L250 80 L280 100 L280 300 Z' fill='%23111c13' opacity='0.4'/%3E%3Cpath d='M35 150 Q40 180 30 220 M100 80 Q90 130 110 180 M200 170 Q210 220 190 260' stroke='%232e7d32' stroke-width='2' fill='none' opacity='0.25'/%3E%3C/svg%3E");
+        linear-gradient(to bottom, rgba(7, 13, 9, 0.75), rgba(5, 10, 7, 0.92)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Cpath d='M15 300 L15 100 L45 70 L45 300 Z M75 300 L75 40 L115 20 L115 300 Z M175 300 L175 130 L215 100 L215 300 Z M245 300 L245 60 L285 80 L285 300 Z' fill='%2317261a' opacity='0.65'/%3E%3Cpath d='M30 150 Q45 190 25 240 M90 70 Q75 130 95 190 M195 150 Q210 200 185 250' stroke='%23388e3c' stroke-width='2.5' fill='none' opacity='0.4'/%3E%3C/svg%3E");
       background-size: 100% 100%, 100% 100%, 300px 300px;
       color: var(--text-primary);
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -56,6 +60,18 @@
       overflow-x: hidden;
       animation: assemblePage 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+
+    body::before, body::after {
+      content: '🌿 🍃 🌿';
+      position: fixed;
+      font-size: 24px;
+      z-index: 999;
+      opacity: 0.65;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+    }
+    body::before { top: 10px; left: 10px; }
+    body::after { top: 10px; right: 10px; }
 
     header {
       position: relative;
@@ -105,23 +121,21 @@
     h1::before {
       content: '🌿 🍃 🌿';
       position: absolute;
-      top: -16px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 18px;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.9));
-      letter-spacing: 12px;
+      left: -65px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      letter-spacing: 2px;
     }
-    
+
     h1::after {
-      content: '🌱 🌿 🍃 🌿 🌱';
+      content: '🌿 🍃 🌿';
       position: absolute;
-      bottom: -14px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 15px;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.9));
-      letter-spacing: 6px;
+      right: -65px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      letter-spacing: 2px;
     }
 
     .category-selector-bar {
@@ -204,7 +218,6 @@
       transition: all 0.2s ease;
     }
 
-    .tab-btn svg { width: 14px; height: 14px; fill: currentColor; }
     .tab-btn.active { background: var(--accent-cyan); color: #0c140e; box-shadow: 0 0 12px rgba(194, 155, 104, 0.5); }
 
     .sub-tab-btn {
@@ -305,70 +318,106 @@
     .card.player-card {
       position: relative;
       background: var(--card-bg);
-      border-radius: 12px;
-      margin: 14px 0;
-      padding: 18px 22px;
+      border-radius: 14px;
+      margin: 18px 0;
+      padding: 22px 26px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 4px 16px var(--shadow-color);
+      box-shadow: 0 6px 20px var(--shadow-color);
       transition: all 0.3s ease;
+      min-height: 90px;
     }
 
     .player-card.frame-halloween {
       border: 2px dashed #ff7700 !important;
-      background: linear-gradient(135deg, rgba(35, 20, 10, 0.95), rgba(18, 31, 22, 0.9)) !important;
-      box-shadow: 0 0 15px rgba(255, 119, 0, 0.4), inset 0 0 10px rgba(255, 119, 0, 0.2);
+      background: linear-gradient(135deg, rgba(35, 20, 10, 0.96), rgba(18, 31, 22, 0.92)) !important;
+      box-shadow: 0 0 18px rgba(255, 119, 0, 0.5), inset 0 0 12px rgba(255, 119, 0, 0.25);
     }
     .player-card.frame-halloween::before {
-      content: '🕷️ 👻 🕸️';
+      content: '🕸️ 🕷️ 🎃 🦇 🕸️';
       position: absolute;
-      top: -10px;
-      right: 15px;
-      font-size: 14px;
+      top: -12px;
+      right: 20px;
+      font-size: 15px;
       background: #121f16;
-      padding: 0 6px;
-      border-radius: 4px;
+      padding: 2px 8px;
+      border-radius: 6px;
       border: 1px solid #ff7700;
     }
 
     .player-card.frame-morska {
       border: 2px solid #00b4d8 !important;
-      background: linear-gradient(135deg, rgba(10, 30, 45, 0.95), rgba(18, 31, 22, 0.9)) !important;
-      box-shadow: 0 0 15px rgba(0, 180, 216, 0.4), inset 0 0 10px rgba(0, 180, 216, 0.2);
+      background: linear-gradient(180deg, rgba(10, 30, 45, 0.85) 50%, rgba(0, 80, 120, 0.55) 50%) !important;
+      box-shadow: 0 0 18px rgba(0, 180, 216, 0.5), inset 0 0 15px rgba(0, 180, 216, 0.3);
     }
     .player-card.frame-morska::before {
-      content: '🐳 🌊 ⚓';
+      content: '🌊 🐳 🌊 ⚓';
       position: absolute;
-      top: -10px;
-      right: 15px;
-      font-size: 14px;
-      background: #121f16;
-      padding: 0 6px;
-      border-radius: 4px;
+      top: -12px;
+      right: 20px;
+      font-size: 15px;
+      background: #0a1e2d;
+      padding: 2px 8px;
+      border-radius: 6px;
       border: 1px solid #00b4d8;
+      animation: whaleSwim 3s ease-in-out infinite;
     }
 
     .player-card.frame-gold {
       border: 2px solid #ffd700 !important;
-      background: linear-gradient(135deg, rgba(40, 35, 10, 0.95), rgba(18, 31, 22, 0.9)) !important;
-      box-shadow: 0 0 18px rgba(255, 215, 0, 0.5), inset 0 0 12px rgba(255, 215, 0, 0.25);
+      background: linear-gradient(135deg, rgba(40, 35, 10, 0.96), rgba(18, 31, 22, 0.92)) !important;
+      box-shadow: 0 0 22px rgba(255, 215, 0, 0.6), inset 0 0 14px rgba(255, 215, 0, 0.3);
     }
     .player-card.frame-gold::before {
       content: '👑 ✨ 🏆';
       position: absolute;
-      top: -10px;
-      right: 15px;
-      font-size: 14px;
-      background: #121f16;
-      padding: 0 6px;
-      border-radius: 4px;
+      top: -12px;
+      right: 20px;
+      font-size: 15px;
+      background: #1f1b0a;
+      padding: 2px 8px;
+      border-radius: 6px;
       border: 1px solid #ffd700;
     }
+    .player-card.frame-gold .player-name-text {
+      animation: goldShine 2.5s infinite;
+      font-weight: 900;
+    }
 
-    .card-title { font-size: 20px; font-weight: 800; color: var(--text-secondary); display: flex; align-items: center; gap: 10px; }
-    .card-points { font-size: 17px; font-weight: 800; color: var(--text-primary); }
-    .player-flag { width: 24px; height: 16px; object-fit: cover; border-radius: 2px; border: 1px solid var(--card-border); }
+    .card-title { font-size: 21px; font-weight: 800; color: var(--text-secondary); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .card-points { font-size: 18px; font-weight: 800; color: var(--text-primary); }
+    .player-flag { width: 26px; height: 18px; object-fit: cover; border-radius: 2px; border: 1px solid var(--card-border); }
+    
+    .player-stats-counters {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+    .player-stats-counters span { color: var(--accent-cyan); }
+
+    /* Style dla zwycięzców pod poziomem */
+    .victors-box {
+      margin-top: 16px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .victor-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      font-size: 14px;
+      font-weight: 700;
+      border-bottom: 1px solid rgba(194, 155, 104, 0.1);
+    }
+    .victor-item:last-child { border-bottom: none; }
+    .victor-gold { color: #ffd700; text-shadow: 0 0 6px rgba(255,215,0,0.5); }
+    .victor-silver { color: #c0c0c0; text-shadow: 0 0 6px rgba(192,192,192,0.5); }
+    .victor-bronze { color: #cd7f32; text-shadow: 0 0 6px rgba(205,127,50,0.5); }
 
     .history-table-container {
       width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; overflow: hidden; border-radius: 8px; border: 1px solid var(--card-border);
@@ -497,9 +546,9 @@
         <label style="font-size: 13px; color: var(--text-secondary);">Select Active Frame:</label>
         <select id="prof-frame-select" onchange="checkFrameSelection(this)">
           <option value="">No frame (Default)</option>
-          <option value="halloween">🔒 🕷️ 👻 Halloween (Spiders & Ghosts)</option>
-          <option value="morska">🔒 🐳 🌊 Marine (Whale & Water)</option>
-          <option value="gold">🔒 👑 ✨ Gold (Golden style)</option>
+          <option value="halloween">🔒 🕷️ 🎃 Halloween Frame Preview</option>
+          <option value="morska">🔒 🌊 🐳 Marine Frame Preview</option>
+          <option value="gold">🔒 👑 ✨ Gold Frame Preview</option>
         </select>
         <button type="submit" class="btn-action btn-primary" style="margin-top: 10px;">Save Profile Changes</button>
       </form>
@@ -552,12 +601,12 @@
       <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 16px;">Admin Panel ⚙️</h2>
       <div class="sub-nav-tabs" style="margin-bottom: 16px;">
         <button class="sub-tab-btn active" id="admin-tab-sub" onclick="switchAdminTab('sub', event)">Pending Submissions</button>
-        <button class="sub-tab-btn" id="admin-tab-frames" onclick="switchAdminTab('frames', event)">Manage User Frames</button>
+        <button class="sub-tab-btn" id="admin-tab-frames" onclick="switchAdminTab('frames', event)">Add Profile Look & Manage</button>
       </div>
 
       <div id="admin-sub-section"><div id="admin-pending-container"></div></div>
       <div id="admin-frames-section" style="display:none;">
-        <h3 style="color:var(--accent-cyan);">Manage Player Frame Access</h3>
+        <h3 style="color:var(--accent-cyan);">Manage Players, Frames & Completions</h3>
         <div id="admin-frames-container"></div>
       </div>
     </div>
@@ -694,13 +743,11 @@
       const levelSubTabBtn = document.getElementById('sub-tab-level');
 
       if (isImpossible) {
-        // W ILL i PILL tylko Submit Level
         recordSubTabBtn.style.display = 'none';
         recordForm.style.display = 'none';
         levelSubTabBtn.classList.add('active');
         levelForm.style.display = 'block';
       } else {
-        // W MCLL i MCCL oba widoczne
         recordSubTabBtn.style.display = 'inline-block';
       }
     }
@@ -821,7 +868,10 @@
           country: country,
           points: 0,
           activeFrame: '',
-          allowedFrames: []
+          allowedFrames: [],
+          completed: 0,
+          verified: 0,
+          created: 0
         });
       }
 
@@ -876,9 +926,9 @@
           opt.disabled = !isAllowed;
           
           let cleanText = "";
-          if (val === 'halloween') cleanText = "🕷️ 👻 🕸️ Halloween (Spiders & Ghosts)";
-          if (val === 'morska') cleanText = "🐳 🌊 ⚓ Marine (Whale & Water)";
-          if (val === 'gold') cleanText = "👑 ✨ 🏆 Gold (Golden style)";
+          if (val === 'halloween') cleanText = "🕷️ 🎃 🦇 Halloween Frame Preview";
+          if (val === 'morska') cleanText = "🌊 🐳 ⚓ Marine Frame Preview";
+          if (val === 'gold') cleanText = "👑 ✨ 🏆 Gold Frame Preview";
 
           opt.text = (isAllowed ? '🔓 ' : '🔒 ') + cleanText;
         }
@@ -888,7 +938,7 @@
     function checkFrameSelection(selectElem) {
       const selectedOption = selectElem.options[selectElem.selectedIndex];
       if (selectedOption.disabled) {
-        alert('This frame is locked! Contact the administrator to find out how to unlock it.');
+        alert('This frame is locked! Contact the administrator to unlock it.');
         selectElem.value = '';
       }
     }
@@ -904,7 +954,7 @@
       const u = (allDatabase.users || []).find(x => x.name.toLowerCase() === oldName.toLowerCase());
       if (u) u.name = newName;
 
-      ['MCLL', 'MCCL'].forEach(cat => {
+      ['MCLL', 'MCCL', 'ILL', 'PILL'].forEach(cat => {
         if (allDatabase[cat] && allDatabase[cat].players) {
           const p = allDatabase[cat].players.find(x => x.name.toLowerCase() === oldName.toLowerCase());
           if (p) {
@@ -935,10 +985,15 @@
         const frameClass = p.activeFrame ? `frame-${p.activeFrame}` : '';
         return `
           <div class="card player-card ${frameClass}">
-            <div class="card-title">
-              #${idx + 1} 
-              ${p.country ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country}.png" alt="${p.country}">` : ''}
-              ${p.name}
+            <div>
+              <div class="card-title">
+                #${idx + 1} 
+                ${p.country ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country}.png" alt="${p.country}">` : ''}
+                <span class="player-name-text">${p.name}</span>
+              </div>
+              <div class="player-stats-counters">
+                Completed: <span>${p.completed || 0}</span> | Verified: <span>${p.verified || 0}</span> | Created: <span>${p.created || 0}</span>
+              </div>
             </div>
             <div class="card-points">${p.points || 0} pts</div>
           </div>
@@ -958,17 +1013,21 @@
       container.innerHTML = players.map(p => `
         <div class="submission-item">
           <div><strong>${p.name}</strong> (Country: ${p.country || 'none'})</div>
-          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-            <label><input type="checkbox" ${p.allowedFrames && p.allowedFrames.includes('halloween') ? 'checked' : ''} onchange="toggleUserFrame('${p.name}', 'halloween', this.checked)"> Halloween</label>
-            <label><input type="checkbox" ${p.allowedFrames && p.allowedFrames.includes('morska') ? 'checked' : ''} onchange="toggleUserFrame('${p.name}', 'morska', this.checked)"> Marine</label>
-            <label><input type="checkbox" ${p.allowedFrames && p.allowedFrames.includes('gold') ? 'checked' : ''} onchange="toggleUserFrame('${p.name}', 'gold', this.checked)"> Gold</label>
+          <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+            <label><input type="checkbox" ${p.allowedFrames && p.allowedFrames.includes('halloween') ? 'checked' : ''} onchange="toggleUserFrame('${p.name}', 'halloween', this.checked)"> Halloween Frame</label>
+            <label><input type="checkbox" ${p.allowedFrames && p.allowedFrames.includes('morska') ? 'checked' : ''} onchange="toggleUserFrame('${p.name}', 'morska', this.checked)"> Marine Frame</label>
+            <label><input type="checkbox" ${p.allowedFrames && p.allowedFrames.includes('gold') ? 'checked' : ''} onchange="toggleUserFrame('${p.name}', 'gold', this.checked)"> Gold Frame</label>
+          </div>
+          <div class="action-row" style="margin-top: 8px;">
+            <button class="btn-action btn-danger" onclick="deletePlayer('${p.name}')">Delete Player</button>
+            <button class="btn-action btn-danger" onclick="deletePlayerCompletion('${p.name}')">Delete Completion</button>
           </div>
         </div>
       `).join('');
     }
 
     async function toggleUserFrame(playerName, frameName, isAllowed) {
-      ['MCLL', 'MCCL'].forEach(cat => {
+      ['MCLL', 'MCCL', 'ILL', 'PILL'].forEach(cat => {
         if (allDatabase[cat] && allDatabase[cat].players) {
           const p = allDatabase[cat].players.find(x => x.name.toLowerCase() === playerName.toLowerCase());
           if (p) {
@@ -984,6 +1043,35 @@
       });
       await saveCloudData();
       alert(`Updated frame access for player ${playerName}!`);
+    }
+
+    async function deletePlayer(playerName) {
+      if(!confirm(`Are you sure you want to delete player ${playerName}?`)) return;
+      ['MCLL', 'MCCL', 'ILL', 'PILL'].forEach(cat => {
+        if (allDatabase[cat] && allDatabase[cat].players) {
+          allDatabase[cat].players = allDatabase[cat].players.filter(x => x.name.toLowerCase() !== playerName.toLowerCase());
+        }
+      });
+      allDatabase.users = (allDatabase.users || []).filter(u => u.name.toLowerCase() !== playerName.toLowerCase());
+      await saveCloudData();
+      init();
+      renderAdminFrames();
+      alert('Player deleted successfully!');
+    }
+
+    async function deletePlayerCompletion(playerName) {
+      const players = allDatabase[currentCategory].players || [];
+      const p = players.find(x => x.name.toLowerCase() === playerName.toLowerCase());
+      if(!p || (p.completed || 0) <= 0) {
+        alert('Player has no completions to delete.');
+        return;
+      }
+      p.completed -= 1;
+      p.points = Math.max(0, (p.points || 0) - 10);
+      await saveCloudData();
+      init();
+      renderAdminFrames();
+      alert(`Deleted 1 completion for ${playerName}!`);
     }
 
     function switchAdminTab(subTab) {
@@ -1108,6 +1196,17 @@
         `;
       }
 
+      // Generowanie sekcji Wiktorów (First, Second, Third Victor)
+      const victors = lvl.victors || [];
+      let victorsHtml = `
+        <div class="victors-box">
+          <h3 style="color: var(--accent-cyan); margin-top: 0; font-size: 16px;">Level Victors 🏆</h3>
+          <div class="victor-item victor-gold">🥇 First Victor: <span>${victors[0] || 'None'}</span></div>
+          <div class="victor-item victor-silver">🥈 Second Victor: <span>${victors[1] || 'None'}</span></div>
+          <div class="victor-item victor-bronze">🥉 Third Victor: <span>${victors[2] || 'None'}</span></div>
+        </div>
+      `;
+
       document.getElementById('lvl-details').innerHTML = `
         <div class="info-meta">
           <div><strong>GD ID:</strong> ${lvl.gdId || 'N/A'}</div>
@@ -1115,6 +1214,7 @@
           ${lvl.verifier ? `<div><strong>Verified by:</strong> ${lvl.verifier}</div>` : ''}
           <div><strong>Song:</strong> ${lvl.song || 'N/A'}</div>
         </div>
+        ${victorsHtml}
         ${lvl.youtubeId ? `<div class="video-container"><iframe src="https://www.youtube.com/embed/${lvl.youtubeId}" allowfullscreen></iframe></div>` : ''}
         ${historyHtml}
       `;
@@ -1199,6 +1299,28 @@
       document.getElementById('level-form').reset();
     }
 
+    async function handleRecordSubmit(e) {
+      e.preventDefault();
+      if (!currentUser) return;
+      const lvlName = document.getElementById('rec-level-select').value;
+      const percent = document.getElementById('rec-percent').value;
+      const video = document.getElementById('rec-video').value;
+
+      const newSub = {
+        id: Date.now(),
+        user: currentUser.name,
+        type: 'record',
+        category: currentCategory,
+        status: 'pending',
+        data: { level: lvlName, percent, video }
+      };
+      if (!allDatabase.zgloszenia) allDatabase.zgloszenia = [];
+      allDatabase.zgloszenia.push(newSub);
+      await saveCloudData();
+      alert('Record submitted for review!');
+      document.getElementById('record-form').reset();
+    }
+
     function renderAdminPending() {
       const container = document.getElementById('admin-pending-container');
       if(!container) return;
@@ -1209,7 +1331,7 @@
       }
       container.innerHTML = pending.map(s => `
         <div class="submission-item">
-          <div><strong>${s.type}</strong> by ${s.user}</div>
+          <div><strong>${s.type.toUpperCase()}</strong> by ${s.user} ${s.type === 'record' ? `(Level: ${s.data.level}, ${s.data.percent}%)` : `(New Level: ${s.data.name})`}</div>
           <div class="action-row">
             <button class="btn-action btn-success" onclick="approveSub(${s.id})">Approve</button>
             <button class="btn-action btn-danger" onclick="rejectSub(${s.id})">Reject</button>
@@ -1222,13 +1344,13 @@
       const sub = allDatabase.zgloszenia.find(s => s.id === id);
       if(!sub) return;
       sub.status = 'accepted';
-      const cat = sub.category || 'MCLL';
+      const cat = sub.category || currentCategory;
       if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
-      if (!allDatabase[cat].levels) allDatabase[cat].levels = [];
-      const levels = allDatabase[cat].levels;
       const today = new Date().toISOString().split('T')[0];
 
       if (sub.type === 'level') {
+        if (!allDatabase[cat].levels) allDatabase[cat].levels = [];
+        const levels = allDatabase[cat].levels;
         const newLvl = {
           id: 'lvl_' + Date.now(),
           title: sub.data.name,
@@ -1237,6 +1359,7 @@
           youtubeId: extractYoutubeId(sub.data.video),
           song: sub.data.song,
           gdId: sub.data.gdId,
+          victors: [],
           history: [{ date: today, change: '-', newPosition: '#1', reason: 'was placed at top' }]
         };
         levels.forEach((l, idx) => {
@@ -1244,7 +1367,35 @@
           l.history.push({ date: today, change: '↓1', newPosition: `#${idx + 2}`, reason: `${newLvl.title} was added above` });
         });
         levels.unshift(newLvl);
+
+        if (sub.data.creator) {
+          const pl = (allDatabase[cat].players || []).find(p => p.name.toLowerCase() === sub.data.creator.toLowerCase());
+          if (pl) pl.created = (pl.created || 0) + 1;
+        }
+        if (sub.data.verifier) {
+          const pl = (allDatabase[cat].players || []).find(p => p.name.toLowerCase() === sub.data.verifier.toLowerCase());
+          if (pl) pl.verified = (pl.verified || 0) + 1;
+        }
+      } else if (sub.type === 'record') {
+        if (!allDatabase[cat].players) allDatabase[cat].players = [];
+        const pl = allDatabase[cat].players.find(p => p.name.toLowerCase() === sub.user.toLowerCase());
+        if (pl) {
+          pl.completed = (pl.completed || 0) + 1;
+          pl.points = (pl.points || 0) + 10;
+        }
+
+        // Dodanie do zwycięzców poziomu (maksymalnie 3) przy 100%
+        if (sub.data.percent == 100) {
+          const lvl = (allDatabase[cat].levels || []).find(l => l.title.toLowerCase() === sub.data.level.toLowerCase());
+          if (lvl) {
+            if (!lvl.victors) lvl.victors = [];
+            if (!lvl.victors.includes(sub.user) && lvl.victors.length < 3) {
+              lvl.victors.push(sub.user);
+            }
+          }
+        }
       }
+
       await saveCloudData();
       init();
       renderAdminPending();
