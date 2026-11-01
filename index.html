@@ -41,13 +41,8 @@
 
     @keyframes whaleSwim {
       0% { transform: translateX(0px) translateY(0px); }
-      50% { transform: translateX(12px) translateY(-4px); }
+      50% { transform: translateX(10px) translateY(-3px); }
       100% { transform: translateX(0px) translateY(0px); }
-    }
-
-    @keyframes candleFlicker {
-      0%, 100% { opacity: 0.9; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(0.95); }
     }
 
     body {
@@ -300,7 +295,7 @@
     .pointercrate-title { font-size: 22px; font-weight: 800; color: var(--text-primary); }
     .pointercrate-publisher { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
 
-    /* KARTY GRACZY Z NOWOCZESNYMI, DOPRACOWANYMI GRAFIKAMI SVG */
+    /* KARTY GRACZY Z NOWOCZESNYMI, DOPRACOWANYMI GRAFIKAMI SVG WEDŁUG SZKICÓW */
     .card.player-card {
       position: relative;
       background: var(--card-bg);
@@ -315,68 +310,68 @@
       min-height: 90px;
     }
 
-    /* Halloween Frame: Lepsze pajęczyny, ulepszona dynia z wcięciami, nietoperz oraz płonąca świeca */
+    /* Halloween Frame: Poprawiona pajęczyna w lewym górnym rogu, świeca, dynia 3D oraz nietoperz z prawej strony */
     .player-card.frame-halloween {
       border: 2px dashed #ff7700 !important;
       background: linear-gradient(135deg, rgba(35, 18, 8, 0.96), rgba(18, 31, 22, 0.92)) !important;
       box-shadow: 0 0 22px rgba(255, 119, 0, 0.5), inset 0 0 12px rgba(255, 119, 0, 0.25);
     }
-    /* Gęsta, elegancka pajęczyna w lewym górnym rogu */
+    /* Poprawiona pajęczyna w lewym górnym rogu */
     .player-card.frame-halloween::before {
       content: "";
       position: absolute;
       top: 0;
       left: 0;
-      width: 70px;
-      height: 70px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath d='M0 0 L80 40 M0 40 L80 0 M40 0 L40 80 M0 20 L80 20 M20 0 L20 80' stroke='%23ff9933' stroke-width='1.2' opacity='0.75'/%3E%3Cpath d='M0 10 Q20 10 40 40 Q70 20 80 0' fill='none' stroke='%23ff9933' stroke-width='1' opacity='0.75'/%3E%3Cpath d='M0 30 Q30 30 40 40 Q50 70 80 80' fill='none' stroke='%23ff9933' stroke-width='1' opacity='0.75'/%3E%3C/svg%3E");
+      width: 65px;
+      height: 65px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 70 70'%3E%3Cpath d='M0 0 L70 35 M0 35 L70 0 M35 0 L35 70 M0 15 L70 15 M15 0 L15 70' stroke='%23ffa500' stroke-width='1.1' opacity='0.8'/%3E%3Cpath d='M0 8 Q20 8 35 35 Q50 20 70 0' fill='none' stroke='%23ffa500' stroke-width='0.9' opacity='0.8'/%3E%3Cpath d='M0 25 Q25 25 35 35 Q45 55 70 70' fill='none' stroke='%23ffa500' stroke-width='0.9' opacity='0.8'/%3E%3C/svg%3E");
       background-size: contain;
       pointer-events: none;
     }
-    /* Dynia z wcięciami, nietoperz i płonąca świeca w prawym dolnym rogu */
+    /* Świeca, dynia 3D (mniej widoczna) oraz nietoperz w prawym rogu */
     .player-card.frame-halloween::after {
       content: "";
       position: absolute;
-      bottom: 2px;
-      right: 12px;
-      width: 90px;
-      height: 40px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 50'%3E%3C!-- Świeca z płomieniem --%3E%3Crect x='10' y='20' width='12' height='22' fill='%23eee' rx='2'/%3E%3Cellipse cx='16' cy='18' rx='4' ry='6' fill='%23ffaa00'/%3E%3Cpath d='M14 12 Q16 4 18 12 Z' fill='%23ff4400'/%3E%3C!-- Lepsza dynia z wcięciami --%3E%3Cellipse cx='55' cy='28' rx='20' ry='15' fill='%23ff6600'/%3E%3Cpath d='M45 15 Q55 22 65 15' stroke='%23cc4400' stroke-width='2' fill='none'/%3E%3Cpath d='M52 13 L58 13 L58 18 L52 18 Z' fill='%23336600'/%3E%3Cpolygon points='47,24 51,24 49,29' fill='%23221100'/%3E%3Cpolygon points='61,24 65,24 63,29' fill='%23221100'/%3E%3Cpolygon points='56,31 54,36 58,36' fill='%23221100'/%3E%3C!-- Nietoperz --%3E%3Cpath d='M95 15 Q100 8 105 15 Q102 22 95 18 Q88 22 85 15 Q90 8 95 15 Z' fill='%23111'/%3E%3C/svg%3E");
+      bottom: 4px;
+      right: 14px;
+      width: 100px;
+      height: 45px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 130 50'%3E%3C!-- Świeca --%3E%3Crect x='5' y='22' width='10' height='20' fill='%23e0e0e0' rx='1'/%3E%3Cellipse cx='10' cy='20' rx='3' ry='5' fill='%23ffaa00'/%3E%3Cpath d='M9 14 Q10 7 11 14 Z' fill='%23ff3300'/%3E%3C!-- Dynia 3D (mniej widoczna, bardziej elegancka) --%3E%3Cpath d='M42 22 Q52 14 62 22 Q68 32 62 40 Q52 44 42 40 Q36 32 42 22 Z' fill='%23ff6600' opacity='0.75'/%3E%3Cpath d='M52 17 Q52 23 52 39' stroke='%23cc4400' stroke-width='1.5' fill='none' opacity='0.75'/%3E%3Cpath d='M50 14 L54 14 L54 17 L50 17 Z' fill='%23336600' opacity='0.8'/%3E%3Cpolygon points='43,26 47,26 45,31' fill='%23111' opacity='0.8'/%3E%3Cpolygon points='57,26 61,26 59,31' fill='%23111' opacity='0.8'/%3E%3C!-- Nietoperz w prawym rogu --%3E%3Cpath d='M95 16 Q102 8 110 16 Q105 24 95 20 Q85 24 80 16 Q88 8 95 16 Z' fill='%231a1a1a'/%3E%3C/svg%3E");
       background-size: contain;
       background-repeat: no-repeat;
       pointer-events: none;
     }
 
-    /* Marine Frame: Faliste obramowanie, piękne fale, wieloryb tryskający wodą */
+    /* Marine Frame: Faliste obramowanie, usunięta górna fala, dodane fale wewnątrz i wieloryb tryskający wodą z prawej */
     .player-card.frame-morska {
       border: 3px solid #00b4d8 !important;
       border-radius: 24px 10px 24px 10px !important;
       background: linear-gradient(180deg, rgba(8, 30, 48, 0.9) 50%, rgba(0, 90, 145, 0.7) 50%) !important;
       box-shadow: 0 0 22px rgba(0, 180, 216, 0.6), inset 0 0 16px rgba(0, 180, 216, 0.35);
     }
-    /* Wieloryb tryskający wodą */
+    /* Wieloryb tryskający wodą po prawej stronie */
     .player-card.frame-morska::before {
       content: "";
       position: absolute;
       bottom: 6px;
       right: 20px;
-      width: 65px;
+      width: 60px;
       height: 35px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 40'%3E%3C!-- Piękny kształt wieloryba --%3E%3Cpath d='M10 25 Q35 8 70 22 Q60 35 35 30 Q15 32 10 25 Z' fill='%2370d6ff'/%3E%3Cpath d='M5 23 L2 18 L10 21 Z' fill='%2370d6ff'/%3E%3Ccircle cx='55' cy='18' r='2' fill='%23070d09'/%3E%3C!-- Tryskająca woda --%3E%3Cpath d='M42 12 Q45 2 40 -2 M42 12 Q48 4 52 -1 M42 12 Q36 4 32 -1' stroke='%23caf0f8' stroke-width='2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 40'%3E%3Cpath d='M12 24 Q35 10 68 22 Q58 34 35 29 Q18 31 12 24 Z' fill='%2370d6ff'/%3E%3Cpath d='M6 22 L3 17 L11 20 Z' fill='%2370d6ff'/%3E%3Ccircle cx='54' cy='18' r='2' fill='%23070d09'/%3E%3Cpath d='M40 12 Q43 3 38 -1 M40 12 Q46 5 50 1 M40 12 Q34 5 30 1' stroke='%23caf0f8' stroke-width='2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E");
       background-size: contain;
       background-repeat: no-repeat;
       animation: whaleSwim 3.5s ease-in-out infinite;
       pointer-events: none;
     }
-    /* Ulepszone, płynne fale na górze */
+    /* Dodatkowe fale wewnątrz karty (bez górnej brzydkiej fali z lewej) */
     .player-card.frame-morska::after {
       content: "";
       position: absolute;
-      top: 4px;
-      left: 10px;
-      width: 80px;
-      height: 18px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 25'%3E%3Cpath d='M0 12 Q25 2 50 12 Q75 22 100 12' stroke='%2300b4d8' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      bottom: 8px;
+      left: 15px;
+      width: 120px;
+      height: 15px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 20'%3E%3Cpath d='M0 10 Q20 0 40 10 Q60 20 80 10 Q100 0 120 10' stroke='%2300b4d8' stroke-width='2' fill='none' opacity='0.6'/%3E%3C/svg%3E");
       background-size: contain;
       pointer-events: none;
     }
