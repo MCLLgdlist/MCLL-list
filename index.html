@@ -46,6 +46,12 @@
       100% { transform: translateX(0px) translateY(0px); }
     }
 
+    @keyframes floatGhost {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-4px); }
+      100% { transform: translateY(0px); }
+    }
+
     body {
       margin: 0;
       background-color: var(--bg-color);
@@ -328,34 +334,40 @@
       min-height: 90px;
     }
 
-    /* Halloween Frame */
+    /* Halloween Frame - Dokładnie jak na przesłanym wzorcu ze Stocku / grafice */
     .player-card.frame-halloween {
-      border: 2px dashed #ff7700 !important;
-      background: linear-gradient(135deg, rgba(35, 18, 8, 0.96), rgba(18, 31, 22, 0.92)) !important;
-      box-shadow: 0 0 24px rgba(255, 119, 0, 0.55), inset 0 0 14px rgba(255, 119, 0, 0.3);
+      border: 2px solid #ff7700 !important;
+      background: radial-gradient(circle at 75% 40%, rgba(100, 20, 10, 0.85) 0%, rgba(20, 10, 15, 0.96) 60%),
+                  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 100'%3E%3Cpath d='M120 50 Q130 20 145 50 Q160 10 170 50 Z' fill='%23220d05' opacity='0.5'/%3E%3C/svg%3E") !important;
+      box-shadow: 0 0 25px rgba(255, 100, 0, 0.5), inset 0 0 20px rgba(0, 0, 0, 0.8);
+      overflow: hidden;
     }
+    /* Lewa strona: pajęczyna i uśmiechnięta dynia Halloween */
     .player-card.frame-halloween::before {
       content: "";
       position: absolute;
       top: 0;
       left: 0;
-      width: 75px;
-      height: 75px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath d='M0 0 L80 40 M0 40 L80 0 M40 0 L40 80 M0 20 L80 20 M20 0 L20 80' stroke='%23ff9900' stroke-width='1.2' opacity='0.85'/%3E%3Cpath d='M0 10 Q25 10 40 40 Q55 25 80 0' fill='none' stroke='%23ff9900' stroke-width='1' opacity='0.85'/%3E%3Cpath d='M0 30 Q30 30 40 40 Q50 60 80 80' fill='none' stroke='%23ff9900' stroke-width='1' opacity='0.85'/%3E%3C/svg%3E");
-      background-size: contain;
+      width: 140px;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 100'%3E%3C!-- Pajęczyna w lewym górnym rogu --%3E%3Cpath d='M0 0 L50 40 M0 30 L65 15 M30 0 L20 60 M0 60 L40 0' stroke='%23ff9900' stroke-width='0.8' opacity='0.7'/%3E%3Cpath d='M0 15 Q25 10 40 40 Q25 25 60 0' fill='none' stroke='%23ff9900' stroke-width='0.7' opacity='0.7'/%3E%3Cpath d='M0 45 Q35 35 40 40 Q55 60 80 40' fill='none' stroke='%23ff9900' stroke-width='0.7' opacity='0.7'/%3E%3C!-- Dynia Halloween z twarzą --%3E%3Cpath d='M25 65 Q12 52 24 40 Q38 32 52 40 Q64 52 51 65 Q38 78 25 65 Z' fill='%23ff6600'/%3E%3Cellipse cx='38' cy='36' rx='3' ry='5' fill='%232d6a00'/%3E%3Cpolygon points='30,48 35,48 32,54' fill='%23111'/%3E%3Cpolygon points='42,48 47,48 44,54' fill='%23111'/%3E%3Cpolygon points='38,57 35,62 41,62' fill='%23111'/%3E%3Cpath d='M31 63 Q38 68 45 63' stroke='%23111' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+      background-size: cover;
+      background-repeat: no-repeat;
       pointer-events: none;
     }
+    /* Prawa strona: krwawy księżyc, zamek, cmentarz, nietoperze i duch */
     .player-card.frame-halloween::after {
       content: "";
       position: absolute;
-      bottom: 4px;
-      right: 14px;
-      width: 110px;
-      height: 48px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 130 50'%3E%3Crect x='6' y='20' width='9' height='22' fill='%23f0f0f0' rx='1'/%3E%3Cellipse cx='10.5' cy='18' rx='2.5' ry='4' fill='%23ffaa00'/%3E%3Cpath d='M9.5 11 Q10.5 4 11.5 11 Z' fill='%23ff3300'/%3E%3Cpath d='M44 20 Q54 12 64 20 Q70 30 64 38 Q54 42 44 38 Q38 30 44 20 Z' fill='%23ff6600' opacity='0.7'/%3E%3Cpath d='M54 15 Q54 21 54 37' stroke='%23b33600' stroke-width='1.5' fill='none' opacity='0.7'/%3E%3Cpath d='M52 12 L56 12 L56 15 L52 15 Z' fill='%232e5214' opacity='0.85'/%3E%3Cpolygon points='45,24 49,24 47,29' fill='%23111' opacity='0.85'/%3E%3Cpolygon points='59,24 63,24 61,29' fill='%23111' opacity='0.85'/%3E%3Cpath d='M96 14 Q103 6 111 14 Q106 22 96 18 Q86 22 81 14 Q89 6 96 14 Z' fill='%231a1a1a'/%3E%3C/svg%3E");
-      background-size: contain;
+      top: 0;
+      right: 0;
+      width: 480px;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 100'%3E%3C!-- Krwawy księżyc w tle --%3E%3Ccircle cx='340' cy='45' r='30' fill='%23ff3300' opacity='0.85'/%3E%3Ccircle cx='340' cy='45' r='30' fill='url(%23moonGrad)' opacity='0.6'/%3E%3Cdefs%3E%3CradialGradient id='moonGrad' cx='35%' cy='35%'%3E%3Cstop offset='0%27 stop-color='%23ffcc00'/%3E%3Cstop offset='100%27 stop-color='%23990000'/%3E%3C/radialGradient%3E%3C/defs%3E%3C!-- Zamek i cmentarz (sylwetka) --%3E%3Cpath d='M150 100 L150 70 L160 50 L165 70 L180 35 L195 70 L210 45 L220 70 L250 100 Z' fill='%230f0608'/%3E%3Cpath d='M350 100 L350 65 L365 40 L380 65 L410 45 L420 100 Z' fill='%230f0608'/%3E%3C!-- Nagrobki i krzyże na cmentarzu --%3E%3Crect x='270' y='80' width='8' height='20' fill='%230b0406' rx='2'/%3E%3Crect x='290' y='75' width='10' height='25' fill='%230b0406' rx='4'/%3E%3Cpolygon points='315,95 325,95 320,70' fill='%230b0406'/%3E%3C!-- Lecące nietoperze --%3E%3Cpath d='M235 35 Q243 28 250 35 Q245 40 235 35 Z M250 35 Q258 28 265 35 Q260 40 250 35 Z' fill='%23111'/%3E%3Cpath d='M295 25 Q301 20 308 25 Q304 30 295 25 Z M308 25 Q314 20 321 25 Q317 30 308 25 Z' fill='%23111'/%3E%3C!-- Duch po prawej stronie --%3E%3Cg transform='translate(400, 40)'%3E%3Cpath d='M15 0 Q30 -10 45 0 Q50 25 45 50 Q40 55 35 50 Q30 55 25 50 Q20 55 15 50 Q10 55 5 50 Q0 25 15 0 Z' fill='%23f2f2f2' opacity='0.9'/%3E%3Ccircle cx='18' cy='20' r='3' fill='%23111'/%3E%3Ccircle cx='32' cy='20' r='3' fill='%23111'/%3E%3Cellipse cx='25' cy='28' rx='3' ry='4' fill='%23111'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: cover;
       background-repeat: no-repeat;
       pointer-events: none;
+      animation: floatGhost 3.5s ease-in-out infinite;
     }
 
     /* Marine Frame */
@@ -401,8 +413,8 @@
       font-weight: 900;
     }
 
-    .card-title { font-size: 21px; font-weight: 800; color: var(--text-secondary); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-    .card-points { font-size: 18px; font-weight: 800; color: var(--text-primary); }
+    .card-title { font-size: 21px; font-weight: 800; color: var(--text-secondary); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; z-index: 2; position: relative; }
+    .card-points { font-size: 18px; font-weight: 800; color: var(--text-primary); z-index: 2; position: relative; }
     .player-flag { width: 26px; height: 18px; object-fit: cover; border-radius: 2px; border: 1px solid var(--card-border); }
     
     .player-stats-counters {
@@ -410,6 +422,8 @@
       color: var(--text-muted);
       margin-top: 4px;
       font-weight: 600;
+      z-index: 2;
+      position: relative;
     }
     .player-stats-counters span { color: var(--accent-cyan); }
 
@@ -724,6 +738,25 @@
           }
         }
       } catch (err) { console.error('Failed to load data', err); }
+      
+      // Sprawdzenie i automatyczne dodanie szymipka do MCCL oraz MCLL jeśli go tam nie ma
+      ['MCLL', 'MCCL'].forEach(cat => {
+        if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
+        if (!allDatabase[cat].players) allDatabase[cat].players = [];
+        if (!allDatabase[cat].players.some(p => p.name.toLowerCase() === 'szymipek')) {
+          allDatabase[cat].players.push({
+            name: 'szymipek',
+            country: 'pl',
+            points: 0,
+            activeFrame: '',
+            allowedFrames: [],
+            completed: 0,
+            verified: 0,
+            created: 0
+          });
+        }
+      });
+
       init();
     }
 
