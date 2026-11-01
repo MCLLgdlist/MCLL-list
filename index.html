@@ -39,12 +39,6 @@
       100% { color: #ffd700; text-shadow: 0 0 8px rgba(255,215,0,0.6); }
     }
 
-    @keyframes whaleSwim {
-      0% { transform: translateX(0px); }
-      50% { transform: translateX(10px) translateY(-3px); }
-      100% { transform: translateX(0px); }
-    }
-
     body {
       margin: 0;
       background-color: var(--bg-color);
@@ -295,7 +289,7 @@
     .pointercrate-title { font-size: 22px; font-weight: 800; color: var(--text-primary); }
     .pointercrate-publisher { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
 
-    /* KARTY GRACZY (BEZ ZNACZNIKÓW W PRAWYM GÓRNYM ROGU) */
+    /* PROFESJONALNY STYL KART GRACZY (BEZ DZIWNYCH ZNACZNIKÓW) */
     .card.player-card {
       position: relative;
       background: var(--card-bg);
@@ -310,49 +304,20 @@
       min-height: 90px;
     }
 
-    /* Halloween Frame: Pajęczyny, pająk, dynia, nietoperz na rogach (Szkic 3) */
+    /* Halloween Frame: Czysty, elegancki styl mroczny z pomarańczową ramką */
     .player-card.frame-halloween {
-      border: 2px dashed #ff7700 !important;
-      border-radius: 20px !important;
-      background: linear-gradient(135deg, rgba(35, 20, 10, 0.96), rgba(18, 31, 22, 0.92)) !important;
-      box-shadow: 0 0 18px rgba(255, 119, 0, 0.5), inset 0 0 12px rgba(255, 119, 0, 0.25);
-    }
-    .player-card.frame-halloween::before {
-      content: '🕸️🕷️';
-      position: absolute;
-      top: -10px;
-      left: 10px;
-      font-size: 16px;
-    }
-    .player-card.frame-halloween::after {
-      content: '🎃🦇';
-      position: absolute;
-      bottom: -10px;
-      right: 15px;
-      font-size: 16px;
+      border: 2px solid #ff7700 !important;
+      border-radius: 14px !important;
+      background: linear-gradient(135deg, rgba(35, 15, 5, 0.96), rgba(18, 25, 20, 0.92)) !important;
+      box-shadow: 0 0 20px rgba(255, 119, 0, 0.35), inset 0 0 10px rgba(255, 119, 0, 0.15);
     }
 
-    /* Marine Frame: Falowana ramka, woda do połowy, wieloryb (Szkic 2) */
+    /* Marine Frame: Czysty, elegancki styl oceaniczny z błękitną ramką i gradientem głębi wody */
     .player-card.frame-morska {
-      border: 3px solid #00b4d8 !important;
-      border-radius: 25px 10px 25px 10px !important;
-      background: linear-gradient(180deg, rgba(10, 30, 45, 0.85) 50%, rgba(0, 90, 140, 0.7) 50%) !important;
-      box-shadow: 0 0 18px rgba(0, 180, 216, 0.5), inset 0 0 15px rgba(0, 180, 216, 0.3);
-    }
-    .player-card.frame-morska::before {
-      content: '🐳';
-      position: absolute;
-      bottom: 8px;
-      right: 25px;
-      font-size: 20px;
-      animation: whaleSwim 3s ease-in-out infinite;
-    }
-    .player-card.frame-morska::after {
-      content: '🌊';
-      position: absolute;
-      top: 5px;
-      left: 15px;
-      font-size: 14px;
+      border: 2px solid #00b4d8 !important;
+      border-radius: 14px !important;
+      background: linear-gradient(180deg, rgba(8, 25, 40, 0.9) 50%, rgba(0, 60, 95, 0.75) 50%) !important;
+      box-shadow: 0 0 20px rgba(0, 180, 216, 0.35), inset 0 0 12px rgba(0, 180, 216, 0.2);
     }
 
     /* Gold Frame: Złoty styl i mieniący się nick */
@@ -360,7 +325,7 @@
       border: 2px solid #ffd700 !important;
       border-radius: 14px !important;
       background: linear-gradient(135deg, rgba(40, 35, 10, 0.96), rgba(18, 31, 22, 0.92)) !important;
-      box-shadow: 0 0 22px rgba(255, 215, 0, 0.6), inset 0 0 14px rgba(255, 215, 0, 0.3);
+      box-shadow: 0 0 22px rgba(255, 215, 0, 0.5), inset 0 0 14px rgba(255, 215, 0, 0.25);
     }
     .player-card.frame-gold .player-name-text {
       animation: goldShine 2.5s infinite;
@@ -527,9 +492,9 @@
         <label style="font-size: 13px; color: var(--text-secondary);">Select Active Frame:</label>
         <select id="prof-frame-select" onchange="checkFrameSelection(this)">
           <option value="">No frame (Default)</option>
-          <option value="halloween">🔒 🕸️ 🕷️ Halloween Frame Preview</option>
-          <option value="morska">🔒 🌊 🐳 Marine Frame Preview</option>
-          <option value="gold">🔒 👑 ✨ Gold Frame Preview</option>
+          <option value="halloween">🔒 Halloween Frame Preview</option>
+          <option value="morska">🔒 Marine Frame Preview</option>
+          <option value="gold">🔒 Gold Frame Preview</option>
         </select>
         <button type="submit" class="btn-action btn-primary" style="margin-top: 10px;">Save Profile Changes</button>
       </form>
@@ -907,9 +872,9 @@
           opt.disabled = !isAllowed;
           
           let cleanText = "";
-          if (val === 'halloween') cleanText = "🕸️ 🕷️ Halloween Frame Preview";
-          if (val === 'morska') cleanText = "🌊 🐳 Marine Frame Preview";
-          if (val === 'gold') cleanText = "👑 ✨ Gold Frame Preview";
+          if (val === 'halloween') cleanText = "Halloween Frame Preview";
+          if (val === 'morska') cleanText = "Marine Frame Preview";
+          if (val === 'gold') cleanText = "Gold Frame Preview";
 
           opt.text = (isAllowed ? '🔓 ' : '🔒 ') + cleanText;
         }
