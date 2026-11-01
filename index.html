@@ -46,12 +46,6 @@
       100% { transform: translateX(0px) translateY(0px); }
     }
 
-    @keyframes floatGhost {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-4px); }
-      100% { transform: translateY(0px); }
-    }
-
     body {
       margin: 0;
       background-color: var(--bg-color);
@@ -319,7 +313,7 @@
     .pointercrate-title { font-size: 22px; font-weight: 800; color: var(--text-primary); }
     .pointercrate-publisher { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
 
-    /* HALLOWEEN FRAME - WERSJA DOKŁADNIE 1:1 JAK NA WZORCU */
+    /* KARTY GRACZY */
     .card.player-card {
       position: relative;
       background: var(--card-bg);
@@ -331,58 +325,39 @@
       justify-content: space-between;
       box-shadow: 0 6px 20px var(--shadow-color);
       transition: all 0.3s ease;
-      min-height: 90px;
+      min-height: 110px;
     }
 
+    /* HALLOWEEN FRAME - PRECYZYJNIE OTWODZOWANE WZORCOWE TŁO DOKŁADNIE 1:1 */
     .player-card.frame-halloween {
-      border: 2px solid #63170a !important;
-      background: radial-gradient(circle at 72% 40%, rgba(125, 25, 12, 0.95) 0%, rgba(14, 6, 10, 0.98) 70%) !important;
-      box-shadow: 0 0 28px rgba(255, 70, 0, 0.45), inset 0 0 30px rgba(0, 0, 0, 0.95);
-      overflow: hidden;
-    }
-    
-    /* Lewa strona: pajęczyna oraz dynia */
-    .player-card.frame-halloween::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 150px;
-      height: 100%;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 100'%3E%3Cpath d='M0 0 L40 40 M0 25 L55 10 M25 0 L15 55 M0 55 L35 0' stroke='%23f97316' stroke-width='0.7' opacity='0.55'/%3E%3Cpath d='M0 12 Q20 8 35 35 Q20 20 50 0' fill='none' stroke='%23f97316' stroke-width='0.6' opacity='0.55'/%3E%3Cpath d='M0 38 Q30 28 35 35 Q45 50 75 35' fill='none' stroke='%23f97316' stroke-width='0.6' opacity='0.55'/%3E%3Cpath d='M20 68 Q8 54 20 40 Q34 32 48 40 Q60 54 48 68 Q34 82 20 68 Z' fill='%23f97316'/%3E%3Cellipse cx='34' cy='36' rx='2.5' ry='4.5' fill='%23143805'/%3E%3Cpolygon points='26,48 31,48 28,55' fill='%23111'/%3E%3Cpolygon points='38,48 43,48 41,55' fill='%23111'/%3E%3Cpolygon points='34,58 31,63 37,63' fill='%23111'/%3E%3Cpath d='M27 64 Q34 69 41 64' stroke='%23111' stroke-width='1.8' fill='none'/%3E%3C/svg%3E");
-      background-size: cover;
-      background-repeat: no-repeat;
-      pointer-events: none;
+      border: 1px solid #ff4500 !important;
+      background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 200' preserveAspectRatio='none'%3E%3Cdefs%3E%3CradialGradient id='skyGrad' cx='80%25' cy='50%25' r='75%25'%3E%3Cstop offset='0%25' stop-color='%23e63900'/%3E%3Cstop offset='35%25' stop-color='%23660000'/%3E%3Cstop offset='70%25' stop-color='%232b0008'/%3E%3Cstop offset='100%25' stop-color='%23120003'/%3E%3C/radialGradient%3E%3CradialGradient id='moonGlow' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%23ffaa44'/%3E%3Cstop offset='60%25' stop-color='%23ff3300'/%3E%3Cstop offset='100%25' stop-color='%23660000' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3C!-- Niebo i Mrok --%3E%3Crect width='1000' height='200' fill='url(%23skyGrad)'/%3E%3C!-- Pajęczyna po lewej --%3E%3Cpath d='M0 0 L120 100 M0 60 L140 20 M60 0 L40 130 M0 120 L90 0' stroke='%23ff9933' stroke-width='1.5' opacity='0.45'/%3E%3Cpath d='M0 30 Q50 20 70 70 M0 90 Q80 70 120 0' fill='none' stroke='%23ff9933' stroke-width='1.2' opacity='0.45'/%3E%3C!-- Dynia z twarzą po lewej --%3E%3Cg transform='translate(15, 80)'%3E%3Cellipse cx='45' cy='45' rx='38' ry='32' fill='%23ff5500'/%3E%3Cellipse cx='45' cy='45' rx='28' ry='32' fill='%23ff6600'/%3E%3Cpath d='M42 12 Q45 0 50 -5 Q52 10 47 14 Z' fill='%232d5a1e'/%3E%3Cpolygon points='25,35 37,35 31,48' fill='%23110000'/%3E%3Cpolygon points='53,35 65,35 59,48' fill='%23110000'/%3E%3Cpolygon points='42,48 48,48 45,55' fill='%23110000'/%3E%3Cpath d='M25 58 Q45 72 65 58 Q55 64 45 60 Q35 64 25 58 Z' fill='%23110000'/%3E%3C/g%3E%3C!-- Krwawy Księżyc --%3E%3Ccircle cx='760' cy='100' r='60' fill='url(%23moonGlow)'/%3E%3Ccircle cx='760' cy='100' r='42' fill='%23ff4400' opacity='0.85'/%3E%3C!-- Sylwetka Zamku i Cmentarza w tle --%3E%3Cpath d='M350 200 L350 140 L370 90 L380 140 L410 60 L440 140 L470 95 L490 140 L530 200 Z' fill='%230a0003'/%3E%3Cpath d='M770 200 L770 125 L795 70 L820 125 L880 85 L900 200 Z' fill='%230a0003'/%3E%3Cpath d='M0 200 L1000 200 L1000 170 Q850 160 700 175 Q500 150 300 175 Q150 160 0 175 Z' fill='%23070002'/%3E%3C!-- Krzyże i Nagrobki --%3E%3Crect x='640' y='145' width='10' height='35' fill='%23070002' rx='2'/%3E%3Crect x='630' y='155' width='30' height='8' fill='%23070002' rx='2'/%3E%3Crect x='700' y='140' width='12' height='40' fill='%23070002' rx='2'/%3E%3Crect x='690' y='152' width='32' height='8' fill='%23070002' rx='2'/%3E%3C!-- Nietoperze w locie --%3E%3Cpath d='M580 70 Q595 55 610 70 Q600 80 580 70 Z M610 70 Q625 55 640 70 Q630 80 610 70 Z' fill='%230a0003'/%3E%3Cpath d='M710 45 Q722 32 734 45 Q726 53 710 45 Z M734 45 Q746 32 758 45 Q750 53 734 45 Z' fill='%230a0003'/%3E%3C!-- Duch po prawej --%3E%3Cg transform='translate(880, 75)'%3E%3Cpath d='M25 0 Q50 -15 75 0 Q85 45 75 90 Q65 100 55 90 Q45 100 35 90 Q25 100 15 90 Q5 100 -5 90 Q-15 45 25 0 Z' fill='%23e2e8f0' opacity='0.92'/%3E%3Ccircle cx='30' cy='35' r='5' fill='%230a0003'/%3E%3Ccircle cx='55' cy='35' r='5' fill='%230a0003'/%3E%3Cellipse cx='42' cy='52' rx='5' ry='8' fill='%230a0003'/%3E%3C/g%3E%3C/svg%3E") opacity(0.98) !important;
+      background-size: cover !important;
+      background-position: center !important;
+      box-shadow: 0 0 22px rgba(255, 68, 0, 0.5), inset 0 0 15px rgba(0, 0, 0, 0.9);
     }
 
-    /* Prawa strona: krwawy księżyc, sylwetki zamków, cmentarz, nietoperze i duch */
-    .player-card.frame-halloween::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 520px;
-      height: 100%;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 100'%3E%3Ccircle cx='360' cy='40' r='28' fill='%23ff3300' opacity='0.9'/%3E%3Ccircle cx='360' cy='40' r='28' fill='url(%23redMoonGrad)' opacity='0.7'/%3E%3Cdefs%3E%3CradialGradient id='redMoonGrad' cx='35%' cy='35%'%3E%3Cstop offset='0%27 stop-color='%23ffb703'/%3E%3Cstop offset='100%27 stop-color='%23660000'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M150 100 L150 68 L162 45 L170 68 L188 28 L206 68 L224 40 L234 68 L270 100 Z' fill='%23050203'/%3E%3Cpath d='M360 100 L360 62 L376 35 L392 62 L426 38 L440 100 Z' fill='%23050203'/%3E%3Crect x='280' y='76' width='7' height='24' fill='%23050203' rx='1'/%3E%3Crect x='302' y='70' width='9' height='30' fill='%23050203' rx='3'/%3E%3Cpolygon points='328,96 338,96 333,66' fill='%23050203'/%3E%3Cpath d='M240 30 Q248 23 256 30 Q251 36 240 30 Z M256 30 Q264 23 272 30 Q267 36 256 30 Z' fill='%23111'/%3E%3Cpath d='M315 20 Q322 14 329 20 Q325 26 315 20 Z M329 20 Q336 14 343 20 Q339 26 329 20 Z' fill='%23111'/%3E%3Cg transform='translate(440, 32)' style='animation: floatGhost 3.5s ease-in-out infinite;'%3E%3Cpath d='M14 0 Q28 -10 42 0 Q48 24 42 48 Q37 53 32 48 Q28 53 24 48 Q20 53 16 48 Q11 53 7 48 Q0 24 14 0 Z' fill='%23f1f5f9' opacity='0.95'/%3E%3Ccircle cx='17' cy='18' r='2.8' fill='%23050203'/%3E%3Ccircle cx='31' cy='18' r='2.8' fill='%23050203'/%3E%3Cellipse cx='24' cy='25' rx='2.5' ry='3.5' fill='%23050203'/%3E%3C/g%3E%3C/svg%3E");
-      background-size: cover;
-      background-repeat: no-repeat;
-      pointer-events: none;
-    }
-
-    /* Specjalne odsunięcie napisów, aby nie nachodziły na elementy tła w motywie Halloween */
+    /* Dopasowanie marginesów napisów tak, aby nie zasłaniały duchów ani dyni */
     .player-card.frame-halloween .card-title,
     .player-card.frame-halloween .player-stats-counters {
-      margin-left: 20px;
-      z-index: 2;
+      margin-left: 55px;
+      z-index: 5;
       position: relative;
+    }
+
+    .player-card.frame-halloween .card-title .player-name-text {
+      color: #ff9900;
+      text-shadow: 0 0 8px rgba(0,0,0,0.9), 1px 1px 3px #000;
     }
 
     .player-card.frame-halloween .card-points {
-      margin-right: 75px; /* Odsuwa wynik punkowy w lewo, aby idealnie pasował obok ducha */
-      z-index: 2;
+      margin-right: 120px; /* Napis 0 pts przesuwa się całkowicie na lewo od ducha */
+      z-index: 5;
       position: relative;
-      color: #f1f5f9;
-      text-shadow: 0 0 8px rgba(0,0,0,0.9);
+      color: #ffffff;
+      font-size: 22px;
+      font-weight: 900;
+      text-shadow: 0 0 10px rgba(0,0,0,0.9), 0 0 4px #000;
     }
 
     /* Marine Frame */
@@ -763,7 +738,7 @@
             name: 'szymipek',
             country: 'pl',
             points: 0,
-            activeFrame: '',
+            activeFrame: 'halloween',
             allowedFrames: ['halloween'],
             completed: 0,
             verified: 0,
@@ -846,8 +821,8 @@
       let authHtml = `
         <a href="https://discord.gg/hJxgKPucb" target="_blank" class="auth-top-btn discord-top-btn">
           <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.011c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
-          Discord
-        </a>
+        Discord
+      </a>
       `;
 
       if (currentUser) {
