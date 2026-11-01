@@ -39,6 +39,12 @@
       100% { color: #ffd700; text-shadow: 0 0 8px rgba(255,215,0,0.6); }
     }
 
+    @keyframes whaleSwim {
+      0% { transform: translateX(0px); }
+      50% { transform: translateX(8px) translateY(-3px); }
+      100% { transform: translateX(0px); }
+    }
+
     body {
       margin: 0;
       background-color: var(--bg-color);
@@ -289,7 +295,7 @@
     .pointercrate-title { font-size: 22px; font-weight: 800; color: var(--text-primary); }
     .pointercrate-publisher { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
 
-    /* PROFESJONALNY STYL KART GRACZY (BEZ DZIWNYCH ZNACZNIKÓW) */
+    /* KARTY GRACZY Z GRAFIKAMI SVG OPARTYMI NA SZKICACH */
     .card.player-card {
       position: relative;
       background: var(--card-bg);
@@ -304,28 +310,73 @@
       min-height: 90px;
     }
 
-    /* Halloween Frame: Czysty, elegancki styl mroczny z pomarańczową ramką */
+    /* Halloween Frame - bazowane na Szkicu 3 (pajęczyny, pająk, dynia, nietoperz jako grafika wektorowa SVG) */
     .player-card.frame-halloween {
-      border: 2px solid #ff7700 !important;
-      border-radius: 14px !important;
-      background: linear-gradient(135deg, rgba(35, 15, 5, 0.96), rgba(18, 25, 20, 0.92)) !important;
-      box-shadow: 0 0 20px rgba(255, 119, 0, 0.35), inset 0 0 10px rgba(255, 119, 0, 0.15);
+      border: 2px dashed #ff7700 !important;
+      background: linear-gradient(135deg, rgba(35, 18, 8, 0.96), rgba(18, 31, 22, 0.92)) !important;
+      box-shadow: 0 0 20px rgba(255, 119, 0, 0.5), inset 0 0 12px rgba(255, 119, 0, 0.25);
+    }
+    .player-card.frame-halloween::before {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 45px;
+      height: 45px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'%3E%3Cpath d='M0 0 L50 25 M0 25 L50 0 M25 0 L25 50' stroke='%23ff7700' stroke-width='1.2' opacity='0.7'/%3E%3Ccircle cx='25' cy='25' r='12' fill='none' stroke='%23ff7700' stroke-width='1' stroke-dasharray='3,2'/%3E%3Ccircle cx='25' cy='25' r='4' fill='%23ff7700'/%3E%3C/svg%3E");
+      background-size: contain;
+      pointer-events: none;
+    }
+    .player-card.frame-halloween::after {
+      content: "";
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      width: 45px;
+      height: 35px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 40'%3E%3Cellipse cx='30' cy='25' rx='15' ry='12' fill='%23ff7700'/%3E%3Cpath d='M25 12 L30 5 L35 12 Z' fill='%2344aa44'/%3E%3Cpath d='M10 10 Q30 -5 50 10' stroke='%23331100' stroke-width='3' fill='none'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      pointer-events: none;
     }
 
-    /* Marine Frame: Czysty, elegancki styl oceaniczny z błękitną ramką i gradientem głębi wody */
+    /* Marine Frame - bazowane na Szkicu 2 (falowana ramka, woda do połowy, pływający wieloryb SVG) */
     .player-card.frame-morska {
       border: 2px solid #00b4d8 !important;
-      border-radius: 14px !important;
-      background: linear-gradient(180deg, rgba(8, 25, 40, 0.9) 50%, rgba(0, 60, 95, 0.75) 50%) !important;
-      box-shadow: 0 0 20px rgba(0, 180, 216, 0.35), inset 0 0 12px rgba(0, 180, 216, 0.2);
+      border-radius: 18px !important;
+      background: linear-gradient(180deg, rgba(10, 25, 40, 0.85) 50%, rgba(0, 80, 130, 0.65) 50%) !important;
+      box-shadow: 0 0 20px rgba(0, 180, 216, 0.5), inset 0 0 15px rgba(0, 180, 216, 0.3);
+    }
+    .player-card.frame-morska::before {
+      content: "";
+      position: absolute;
+      bottom: 8px;
+      right: 20px;
+      width: 45px;
+      height: 25px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 30'%3E%3Cpath d='M5 20 Q30 5 55 20 Q45 28 30 22 Q15 28 5 20 Z' fill='%2390e0ef'/%3E%3Cpath d='M30 12 Q35 2 32 -2 M30 12 Q25 2 28 -2' stroke='%2390e0ef' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      animation: whaleSwim 3s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .player-card.frame-morska::after {
+      content: "";
+      position: absolute;
+      top: 6px;
+      left: 10px;
+      width: 35px;
+      height: 15px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 20'%3E%3Cpath d='M0 10 Q10 0 20 10 Q30 20 40 10' stroke='%2300b4d8' stroke-width='3' fill='none'/%3E%3C/svg%3E");
+      background-size: contain;
+      pointer-events: none;
     }
 
-    /* Gold Frame: Złoty styl i mieniący się nick */
+    /* Gold Frame - Złoty styl i mieniący się nick */
     .player-card.frame-gold {
       border: 2px solid #ffd700 !important;
-      border-radius: 14px !important;
       background: linear-gradient(135deg, rgba(40, 35, 10, 0.96), rgba(18, 31, 22, 0.92)) !important;
-      box-shadow: 0 0 22px rgba(255, 215, 0, 0.5), inset 0 0 14px rgba(255, 215, 0, 0.25);
+      box-shadow: 0 0 22px rgba(255, 215, 0, 0.6), inset 0 0 14px rgba(255, 215, 0, 0.3);
     }
     .player-card.frame-gold .player-name-text {
       animation: goldShine 2.5s infinite;
