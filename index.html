@@ -6,52 +6,65 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>MCLL - Classic Green & Pyramids Edition</title>
+  <title>MCLL - Heliopolis Edition</title>
   <style>
     :root {
-      --bg-color: #0c140e;
-      --bg-radial: rgba(46, 125, 50, 0.15);
+      --bg-color: #070d09;
+      --bg-radial: rgba(30, 90, 40, 0.18);
       --text-primary: #e8f5e9;
-      --text-secondary: #d4a373;
-      --text-muted: #81c784;
-      --card-bg: rgba(18, 31, 22, 0.9);
+      --text-secondary: #c29b68;
+      --text-muted: #7ca982;
+      --card-bg: rgba(14, 25, 18, 0.9);
       --card-border: rgba(46, 125, 50, 0.4);
-      --header-bg: rgba(12, 20, 14, 0.95);
-      --accent-cyan: #d4a373;
-      --accent-hover: rgba(212, 163, 115, 0.25);
-      --input-bg: rgba(15, 26, 18, 0.9);
-      --shadow-color: rgba(0, 0, 0, 0.8);
+      --header-bg: rgba(10, 16, 12, 0.95);
+      --accent-cyan: #c29b68;
+      --accent-hover: rgba(194, 155, 104, 0.25);
+      --input-bg: rgba(12, 22, 15, 0.9);
+      --shadow-color: rgba(0, 0, 0, 0.9);
       --badge-bg: rgba(46, 125, 50, 0.15);
-      --badge-border: rgba(46, 125, 50, 0.4);
       --danger-color: #ff3333;
       --success-color: #44cc44;
-      --warning-color: #ffaa00;
     }
 
     * { box-sizing: border-box; }
+
+    @keyframes assemblePage {
+      0% {
+        opacity: 0;
+        transform: translateY(25px) scale(0.98);
+        filter: blur(4px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+      }
+    }
 
     body {
       margin: 0;
       background-color: var(--bg-color);
       background-image: 
-        radial-gradient(at 50% 0%, var(--bg-radial) 0px, transparent 70%),
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath d='M40 5 L75 75 L5 75 Z' fill='none' stroke='rgba(46, 125, 50, 0.08)' stroke-width='1.5'/%3E%3C/svg%3E");
-      background-size: 100% 100%, 80px 80px;
+        radial-gradient(at 50% 20%, var(--bg-radial) 0px, transparent 65%),
+        linear-gradient(to bottom, rgba(7, 13, 9, 0.8), rgba(5, 10, 7, 0.95)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Cpath d='M20 300 L20 120 L50 90 L50 300 Z M80 300 L80 60 L120 40 L120 300 Z M180 300 L180 150 L220 120 L220 300 Z M250 300 L250 80 L280 100 L280 300 Z' fill='%23111c13' opacity='0.4'/%3E%3Cpath d='M35 150 Q40 180 30 220 M100 80 Q90 130 110 180 M200 170 Q210 220 190 260' stroke='%232e7d32' stroke-width='2' fill='none' opacity='0.25'/%3E%3C/svg%3E");
+      background-size: 100% 100%, 100% 100%, 300px 300px;
       color: var(--text-primary);
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       min-height: 100vh;
       position: relative;
       overflow-x: hidden;
+      animation: assemblePage 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     header {
       position: relative;
-      padding: 40px 16px 20px 16px;
+      padding: 45px 16px 22px 16px;
       text-align: center;
       background: var(--header-bg);
       backdrop-filter: blur(12px);
       border-bottom: 2px solid var(--accent-cyan);
-      box-shadow: 0 10px 30px var(--shadow-color), 0 0 15px rgba(212, 163, 115, 0.15);
+      box-shadow: 0 10px 30px var(--shadow-color), 0 0 20px rgba(46, 125, 50, 0.2);
     }
 
     .header-actions {
@@ -76,22 +89,46 @@
       transition: all 0.2s ease;
     }
 
-    .auth-top-btn:hover { background: var(--accent-hover); box-shadow: 0 0 10px rgba(212, 163, 115, 0.4); }
+    .auth-top-btn:hover { background: var(--accent-hover); box-shadow: 0 0 10px rgba(194, 155, 104, 0.4); }
 
     h1 {
       margin: 0 0 6px;
-      font-size: 44px;
+      font-size: 48px;
       font-weight: 900;
-      letter-spacing: 3px;
+      letter-spacing: 4px;
       color: var(--text-secondary);
-      text-shadow: 0 0 20px rgba(212, 163, 115, 0.4);
+      text-shadow: 0 0 25px rgba(46, 125, 50, 0.6), 2px 2px 4px rgba(0,0,0,0.8);
+      position: relative;
+      display: inline-block;
+    }
+
+    h1::before {
+      content: '🌿 🍃 🌿';
+      position: absolute;
+      top: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 18px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.9));
+      letter-spacing: 12px;
+    }
+    
+    h1::after {
+      content: '🌱 🌿 🍃 🌿 🌱';
+      position: absolute;
+      bottom: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 15px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.9));
+      letter-spacing: 6px;
     }
 
     .category-selector-bar {
       display: flex;
       justify-content: center;
       gap: 8px;
-      margin: 14px 0 12px 0;
+      margin: 18px 0 12px 0;
       flex-wrap: wrap;
     }
 
@@ -111,7 +148,7 @@
       background: var(--accent-cyan);
       color: #0c140e;
       border-color: var(--accent-cyan);
-      box-shadow: 0 0 12px rgba(212, 163, 115, 0.5);
+      box-shadow: 0 0 12px rgba(194, 155, 104, 0.5);
     }
 
     .stats-counter-bar {
@@ -124,6 +161,7 @@
       font-size: 12px;
       font-weight: 700;
       box-shadow: 0 0 10px rgba(46, 125, 50, 0.15);
+      margin-top: 6px;
     }
 
     .stat-item span { color: var(--accent-cyan); }
@@ -167,7 +205,7 @@
     }
 
     .tab-btn svg { width: 14px; height: 14px; fill: currentColor; }
-    .tab-btn.active { background: var(--accent-cyan); color: #0c140e; box-shadow: 0 0 12px rgba(212, 163, 115, 0.5); }
+    .tab-btn.active { background: var(--accent-cyan); color: #0c140e; box-shadow: 0 0 12px rgba(194, 155, 104, 0.5); }
 
     .sub-tab-btn {
       background: var(--card-bg);
@@ -185,7 +223,7 @@
       border-color: var(--accent-cyan);
       color: var(--accent-cyan);
       background: var(--badge-bg);
-      box-shadow: 0 0 8px rgba(212, 163, 115, 0.3);
+      box-shadow: 0 0 8px rgba(194, 155, 104, 0.3);
     }
 
     .rules-box, .roulette-box, .stats-box, .submit-box, .admin-box, .profile-box {
@@ -214,7 +252,7 @@
       transition: border-color 0.2s ease;
     }
 
-    input:focus, select:focus, textarea:focus { border-color: var(--accent-cyan); box-shadow: 0 0 8px rgba(212, 163, 115, 0.4); }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent-cyan); box-shadow: 0 0 8px rgba(194, 155, 104, 0.4); }
 
     .pointercrate-card {
       position: relative;
@@ -236,7 +274,7 @@
     .pointercrate-card:hover {
       transform: translateY(-2px);
       border-color: var(--accent-cyan) !important;
-      box-shadow: 0 8px 25px rgba(212, 163, 115, 0.25);
+      box-shadow: 0 8px 25px rgba(194, 155, 104, 0.25);
     }
 
     .pointercrate-thumb-wrapper {
@@ -250,7 +288,7 @@
     .pointercrate-thumb { width: 100%; height: 100%; object-fit: cover; }
     .pointercrate-overlay {
       position: absolute; top: 0; right: 0; bottom: 0; left: 0;
-      background: linear-gradient(to right, rgba(18,31,22,0.1) 0%, rgba(18,31,22,0.85) 100%);
+      background: linear-gradient(to right, rgba(14,25,18,0.1) 0%, rgba(14,25,18,0.85) 100%);
     }
 
     .pointercrate-content {
@@ -336,7 +374,7 @@
       width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; overflow: hidden; border-radius: 8px; border: 1px solid var(--card-border);
     }
     .history-table-container th { background: #1b4332; color: #ffffff; text-align: left; padding: 10px 12px; font-weight: 800; }
-    .history-table-container td { padding: 10px 12px; border-bottom: 1px solid rgba(212, 163, 115, 0.15); }
+    .history-table-container td { padding: 10px 12px; border-bottom: 1px solid rgba(194, 155, 104, 0.15); }
     .history-row-up { background: rgba(34, 70, 45, 0.6); color: #d4edda; }
     .history-row-down { background: rgba(75, 30, 35, 0.6); color: #f8d7da; }
     .history-row-neutral { background: rgba(50, 45, 30, 0.6); color: #fff3cd; }
@@ -363,7 +401,7 @@
       cursor: pointer; transition: opacity 0.2s;
     }
     .btn-action:hover, .btn-roulette:hover { opacity: 0.9; }
-    .btn-primary { background: var(--accent-cyan); color: #0c140e; width: 100%; font-weight: 900; }
+    .btn-primary { background: var(--accent-cyan); color: #070d09; width: 100%; font-weight: 900; }
     .btn-success { background: var(--success-color); color: #fff; }
     .btn-danger { background: var(--danger-color); color: #fff; }
 
@@ -459,9 +497,9 @@
         <label style="font-size: 13px; color: var(--text-secondary);">Select Active Frame:</label>
         <select id="prof-frame-select" onchange="checkFrameSelection(this)">
           <option value="">No frame (Default)</option>
-          <option value="halloween" data-frame="halloween">🔒 1. Halloween (Spiders & Ghosts)</option>
-          <option value="morska" data-frame="morska">🔒 2. Marine (Whale & Water)</option>
-          <option value="gold" data-frame="gold">🔒 3. Gold (Golden style)</option>
+          <option value="halloween">🔒 🕷️ 👻 Halloween (Spiders & Ghosts)</option>
+          <option value="morska">🔒 🐳 🌊 Marine (Whale & Water)</option>
+          <option value="gold">🔒 👑 ✨ Gold (Golden style)</option>
         </select>
         <button type="submit" class="btn-action btn-primary" style="margin-top: 10px;">Save Profile Changes</button>
       </form>
@@ -470,7 +508,7 @@
     <!-- Submit View -->
     <div class="submit-box" id="submit-view">
       <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 16px;">Submissions ✉️</h2>
-      <div class="sub-nav-tabs" style="margin-bottom: 16px;">
+      <div class="sub-nav-tabs" style="margin-bottom: 16px;" id="submit-sub-nav-tabs">
         <button class="sub-tab-btn active" id="sub-tab-record" onclick="switchSubmitSubTab('record', event)">Submit Record %</button>
         <button class="sub-tab-btn" id="sub-tab-level" onclick="switchSubmitSubTab('level', event)">Submit Level</button>
       </div>
@@ -491,7 +529,6 @@
         
         <div id="creator-container">
           <label style="font-size: 13px; color: var(--text-secondary);" id="creator-label">Creator:</label>
-          <!-- Dynamicznie zamieniane na input lub select w zależności od kategorii -->
           <div id="creator-input-wrapper"></div>
         </div>
 
@@ -578,7 +615,7 @@
     </div>
   </div>
 
-  <footer>&copy; 2026 MCLL List Network</footer>
+  <footer>&copy; 2026 MCLL List Network - Heliopolis Edition</footer>
 
   <script>
     const NPOINT_URL = 'https://api.npoint.io/2a62ce7078414fa7cab3';
@@ -646,6 +683,41 @@
       filterData();
       setupLevelFormFields();
       populateRecordLevelSelect();
+      updateSubmitTabVisibility();
+    }
+
+    function updateSubmitTabVisibility() {
+      const isImpossible = (currentCategory === 'ILL' || currentCategory === 'PILL');
+      const recordForm = document.getElementById('record-form');
+      const levelForm = document.getElementById('level-form');
+      const recordSubTabBtn = document.getElementById('sub-tab-record');
+      const levelSubTabBtn = document.getElementById('sub-tab-level');
+
+      if (isImpossible) {
+        // W ILL i PILL tylko Submit Level
+        recordSubTabBtn.style.display = 'none';
+        recordForm.style.display = 'none';
+        levelSubTabBtn.classList.add('active');
+        levelForm.style.display = 'block';
+      } else {
+        // W MCLL i MCCL oba widoczne
+        recordSubTabBtn.style.display = 'inline-block';
+      }
+    }
+
+    function switchSubmitSubTab(subTab, ev) {
+      const recordForm = document.getElementById('record-form');
+      const levelForm = document.getElementById('level-form');
+      document.querySelectorAll('#submit-view .sub-nav-tabs .sub-tab-btn').forEach(b => b.classList.remove('active'));
+      if(ev && ev.target) ev.target.classList.add('active');
+
+      if (subTab === 'record') {
+        recordForm.style.display = 'block';
+        levelForm.style.display = 'none';
+      } else {
+        recordForm.style.display = 'none';
+        levelForm.style.display = 'block';
+      }
     }
 
     function updateAuthUI() {
@@ -802,7 +874,13 @@
           if (val === '') continue;
           const isAllowed = allowed.includes(val);
           opt.disabled = !isAllowed;
-          opt.text = (isAllowed ? '🔓 ' : '🔒 ') + opt.text.replace(/^[🔓🔒]\s*/, '');
+          
+          let cleanText = "";
+          if (val === 'halloween') cleanText = "🕷️ 👻 🕸️ Halloween (Spiders & Ghosts)";
+          if (val === 'morska') cleanText = "🐳 🌊 ⚓ Marine (Whale & Water)";
+          if (val === 'gold') cleanText = "👑 ✨ 🏆 Gold (Golden style)";
+
+          opt.text = (isAllowed ? '🔓 ' : '🔒 ') + cleanText;
         }
       }
     }
@@ -931,12 +1009,10 @@
       const isImpossible = (currentCategory === 'ILL' || currentCategory === 'PILL');
 
       if (isImpossible) {
-        // W ILL i PILL brak Stats -> zwykłe pole tekstowe creator, brak verifier
         creatorLabel.innerText = "Creator:";
         creatorWrapper.innerHTML = `<input type="text" id="lvl-creator" required placeholder="Enter creator name">`;
         verifierContainer.style.display = 'none';
       } else {
-        // W MCLL i MCCL -> wybór z graczy Stats oraz pole verifier
         creatorLabel.innerText = "Creator (Select from Stats):";
         creatorWrapper.innerHTML = `<select id="lvl-creator" required></select>`;
         verifierContainer.style.display = 'block';
