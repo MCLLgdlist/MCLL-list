@@ -87,20 +87,11 @@
       text-shadow: 0 0 20px rgba(212, 163, 115, 0.4);
     }
 
-    .sub {
-      color: var(--text-muted);
-      font-weight: 700;
-      font-size: 12px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-
     .category-selector-bar {
       display: flex;
       justify-content: center;
       gap: 8px;
-      margin: 10px 0 12px 0;
+      margin: 14px 0 12px 0;
       flex-wrap: wrap;
     }
 
@@ -197,7 +188,7 @@
       box-shadow: 0 0 8px rgba(212, 163, 115, 0.3);
     }
 
-    .rules-box, .roulette-box, .stats-box, .submit-box, .admin-box {
+    .rules-box, .roulette-box, .stats-box, .submit-box, .admin-box, .profile-box {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 14px;
@@ -224,9 +215,7 @@
     }
 
     input:focus, select:focus, textarea:focus { border-color: var(--accent-cyan); box-shadow: 0 0 8px rgba(212, 163, 115, 0.4); }
-    textarea { resize: vertical; min-height: 80px; }
 
-    /* Układ kart poziomów jak na Obrazku 1 */
     .pointercrate-card {
       position: relative;
       display: flex !important;
@@ -275,31 +264,84 @@
     .pointercrate-title { font-size: 22px; font-weight: 800; color: var(--text-primary); }
     .pointercrate-publisher { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
 
-    /* Tabela historii zmian (Obrazek 2 Style) */
-    .history-table-container {
-      width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; overflow: hidden; border-radius: 8px; border: 1px solid var(--card-border);
-    }
-    .history-table-container th {
-      background: #1b4332; color: #ffffff; text-align: left; padding: 10px 12px; font-weight: 800;
-    }
-    .history-table-container td {
-      padding: 10px 12px; border-bottom: 1px solid rgba(212, 163, 115, 0.15);
-    }
-    .history-row-up { background: rgba(34, 70, 45, 0.6); color: #d4edda; }
-    .history-row-down { background: rgba(75, 30, 35, 0.6); color: #f8d7da; }
-    .history-row-neutral { background: rgba(50, 45, 30, 0.6); color: #fff3cd; }
-
     .card.player-card {
-      background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; margin: 12px 0; padding: 16px 20px;
-      display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px var(--shadow-color);
+      position: relative;
+      background: var(--card-bg);
+      border-radius: 12px;
+      margin: 14px 0;
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 16px var(--shadow-color);
+      transition: all 0.3s ease;
     }
+
+    .player-card.frame-halloween {
+      border: 2px dashed #ff7700 !important;
+      background: linear-gradient(135deg, rgba(35, 20, 10, 0.95), rgba(18, 31, 22, 0.9)) !important;
+      box-shadow: 0 0 15px rgba(255, 119, 0, 0.4), inset 0 0 10px rgba(255, 119, 0, 0.2);
+    }
+    .player-card.frame-halloween::before {
+      content: '🕷️ 👻 🕸️';
+      position: absolute;
+      top: -10px;
+      right: 15px;
+      font-size: 14px;
+      background: #121f16;
+      padding: 0 6px;
+      border-radius: 4px;
+      border: 1px solid #ff7700;
+    }
+
+    .player-card.frame-morska {
+      border: 2px solid #00b4d8 !important;
+      background: linear-gradient(135deg, rgba(10, 30, 45, 0.95), rgba(18, 31, 22, 0.9)) !important;
+      box-shadow: 0 0 15px rgba(0, 180, 216, 0.4), inset 0 0 10px rgba(0, 180, 216, 0.2);
+    }
+    .player-card.frame-morska::before {
+      content: '🐳 🌊 ⚓';
+      position: absolute;
+      top: -10px;
+      right: 15px;
+      font-size: 14px;
+      background: #121f16;
+      padding: 0 6px;
+      border-radius: 4px;
+      border: 1px solid #00b4d8;
+    }
+
+    .player-card.frame-gold {
+      border: 2px solid #ffd700 !important;
+      background: linear-gradient(135deg, rgba(40, 35, 10, 0.95), rgba(18, 31, 22, 0.9)) !important;
+      box-shadow: 0 0 18px rgba(255, 215, 0, 0.5), inset 0 0 12px rgba(255, 215, 0, 0.25);
+    }
+    .player-card.frame-gold::before {
+      content: '👑 ✨ 🏆';
+      position: absolute;
+      top: -10px;
+      right: 15px;
+      font-size: 14px;
+      background: #121f16;
+      padding: 0 6px;
+      border-radius: 4px;
+      border: 1px solid #ffd700;
+    }
+
     .card-title { font-size: 20px; font-weight: 800; color: var(--text-secondary); display: flex; align-items: center; gap: 10px; }
     .card-points { font-size: 17px; font-weight: 800; color: var(--text-primary); }
     .player-flag { width: 24px; height: 16px; object-fit: cover; border-radius: 2px; border: 1px solid var(--card-border); }
 
-    .proof-link { display: inline-block; margin-left: 8px; color: var(--accent-cyan); font-weight: bold; text-decoration: underline; font-size: 13px; cursor: pointer; }
+    .history-table-container {
+      width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; overflow: hidden; border-radius: 8px; border: 1px solid var(--card-border);
+    }
+    .history-table-container th { background: #1b4332; color: #ffffff; text-align: left; padding: 10px 12px; font-weight: 800; }
+    .history-table-container td { padding: 10px 12px; border-bottom: 1px solid rgba(212, 163, 115, 0.15); }
+    .history-row-up { background: rgba(34, 70, 45, 0.6); color: #d4edda; }
+    .history-row-down { background: rgba(75, 30, 35, 0.6); color: #f8d7da; }
+    .history-row-neutral { background: rgba(50, 45, 30, 0.6); color: #fff3cd; }
 
-    #level-view, #player-view { display: none; }
+    #level-view { display: none; }
     .back-btn {
       background: var(--card-bg); color: var(--accent-cyan); border: 1px solid var(--card-border);
       border-radius: 8px; padding: 8px 14px; cursor: pointer; margin-bottom: 16px; font-weight: 700;
@@ -309,7 +351,6 @@
       position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
       border-radius: 12px; margin: 16px 0; border: 1px solid var(--card-border);
     }
-
     .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
     .info-meta {
@@ -319,17 +360,16 @@
 
     .btn-action, .btn-roulette {
       padding: 10px 18px; font-size: 14px; font-weight: 800; border-radius: 10px; border: none;
-      cursor: pointer; transition: opacity 0.2s, transform 0.1s;
+      cursor: pointer; transition: opacity 0.2s;
     }
-    .btn-action:hover, .btn-roulette:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-action:hover, .btn-roulette:hover { opacity: 0.9; }
     .btn-primary { background: var(--accent-cyan); color: #0c140e; width: 100%; font-weight: 900; }
     .btn-success { background: var(--success-color); color: #fff; }
     .btn-danger { background: var(--danger-color); color: #fff; }
 
     .modal {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000;
-      padding: 12px; backdrop-filter: blur(6px);
+      background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; padding: 12px;
     }
     .modal-content {
       background: var(--card-bg); border: 1px solid var(--card-border); padding: 24px;
@@ -342,17 +382,10 @@
 
     .submission-item {
       background: var(--input-bg); border: 1px solid var(--card-border); padding: 14px;
-      border-radius: 10px; margin-bottom: 12px; display: flex; flex-direction: column;
-      gap: 12px; word-break: break-word;
+      border-radius: 10px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px;
     }
-
     .action-row { display: flex; gap: 8px; width: 100%; flex-wrap: wrap; }
     .action-row .btn-action { flex: 1; min-width: 80px; }
-
-    .status-badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
-    .status-pending { background: rgba(255, 152, 0, 0.2); color: var(--warning-color); border: 1px solid var(--warning-color); }
-    .status-accepted { background: rgba(76, 175, 80, 0.2); color: var(--success-color); border: 1px solid var(--success-color); }
-    .status-declined { background: rgba(244, 67, 54, 0.2); color: var(--danger-color); border: 1px solid var(--danger-color); }
 
     footer { text-align: center; color: var(--text-muted); font-size: 12px; padding: 30px 16px; }
   </style>
@@ -369,7 +402,6 @@
       <button class="cat-btn" id="cat-btn-PILL" onclick="switchCategory('PILL')">PILL</button>
     </div>
 
-    <div class="sub">Classic Green & Pyramids GD List</div>
     <div class="stats-counter-bar">
       <div class="stat-item">Levels: <span id="stat-levels">0</span></div>
       <div class="stat-item" id="stat-players-box">Players: <span id="stat-players">0</span></div>
@@ -378,18 +410,13 @@
 
   <div class="wrap">
     <nav class="nav-tabs" id="main-nav-tabs">
-      <button class="tab-btn active" id="nav-btn-levels" onclick="switchMainTab('levels', event)">
-        <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg> Levels
-      </button>
-      <button class="tab-btn" id="nav-btn-stats" onclick="switchMainTab('stats', event)">
-        <svg viewBox="0 0 24 24"><path d="M16 11V3H8v8H2v10h20V11h-6zm-6-6h4v14h-4V5zm-6 8h4v6H4v-6zm16 6h-4v-4h4v4z"/></svg> Stats
-      </button>
-      <button class="tab-btn" id="nav-btn-rules" onclick="switchMainTab('rules', event)">
-        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg> Rules
-      </button>
-      <button class="tab-btn" id="nav-btn-roulette" onclick="switchMainTab('roulette', event)">
-        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm1-13h-2v6h6v-2h-4z"/></svg> Roulette
-      </button>
+      <button class="tab-btn active" id="nav-btn-levels" onclick="switchMainTab('levels', event)">Levels</button>
+      <button class="tab-btn" id="nav-btn-stats" onclick="switchMainTab('stats', event)">Stats</button>
+      <button class="tab-btn" id="nav-btn-rules" onclick="switchMainTab('rules', event)">Rules</button>
+      <button class="tab-btn" id="nav-btn-roulette" onclick="switchMainTab('roulette', event)">Roulette</button>
+      <button class="tab-btn" id="nav-btn-profile" onclick="switchMainTab('profile', event)" style="display:none;">Edit Profile</button>
+      <button class="tab-btn" id="nav-btn-submit" onclick="switchMainTab('submit', event)" style="display:none;">Submit</button>
+      <button class="tab-btn" id="nav-btn-admin" onclick="switchMainTab('admin', event)" style="display:none;">Admin Panel</button>
     </nav>
 
     <div class="sub-nav-tabs" id="sub-levels-nav">
@@ -406,24 +433,38 @@
     <!-- Stats View -->
     <div class="stats-box" id="stats-view">
       <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 16px;">Player Leaderboard 🏆</h2>
-      <div style="display: flex; gap: 10px; flex-direction: column; margin-bottom: 16px;">
-        <input type="text" id="stats-search-input" placeholder="Search player..." oninput="renderLeaderboard()">
-      </div>
+      <input type="text" id="stats-search-input" placeholder="Search player..." oninput="renderLeaderboard()">
       <div id="stats-result-container"></div>
     </div>
 
     <!-- Roulette View -->
     <div class="roulette-box" id="roulette-view" style="text-align: center;">
       <h2 style="color: var(--accent-cyan); margin-top:0;">Level Roulette 🎲</h2>
-      <div id="roulette-target-text" style="font-size: 22px; font-weight: 800; margin: 20px 0; min-height: 50px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px;">
-        Click Start to begin!
-      </div>
-      <div id="roulette-video-wrapper" style="display:none; margin-bottom: 16px;"></div>
+      <div id="roulette-target-text" style="font-size: 22px; font-weight: 800; margin: 20px 0; min-height: 50px;">Click Start to begin!</div>
       <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
         <button class="btn-roulette btn-primary" id="btn-start" onclick="startRoulette()">Start Roulette</button>
         <button class="btn-roulette btn-success" id="btn-next" style="display:none;" onclick="nextRoulette()">Done! (+1%)</button>
         <button class="btn-roulette btn-danger" id="btn-giveup" style="display:none;" onclick="giveupRoulette()">Give Up</button>
       </div>
+    </div>
+
+    <!-- Edit Profile View -->
+    <div class="profile-box" id="profile-view">
+      <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 16px;">Edit Profile & Frames 🛡️</h2>
+      <form onsubmit="handleProfileUpdate(event)">
+        <label style="font-size: 13px; color: var(--text-secondary);">New Nickname:</label>
+        <input type="text" id="prof-nickname" required>
+        <label style="font-size: 13px; color: var(--text-secondary);">Country Flag Code (e.g. pl, us, de):</label>
+        <input type="text" id="prof-country" maxlength="2" required>
+        <label style="font-size: 13px; color: var(--text-secondary);">Select Active Frame:</label>
+        <select id="prof-frame-select" onchange="checkFrameSelection(this)">
+          <option value="">No frame (Default)</option>
+          <option value="halloween" data-frame="halloween">🔒 1. Halloween (Spiders & Ghosts)</option>
+          <option value="morska" data-frame="morska">🔒 2. Marine (Whale & Water)</option>
+          <option value="gold" data-frame="gold">🔒 3. Gold (Golden style)</option>
+        </select>
+        <button type="submit" class="btn-action btn-primary" style="margin-top: 10px;">Save Profile Changes</button>
+      </form>
     </div>
 
     <!-- Submit View -->
@@ -432,7 +473,6 @@
       <div class="sub-nav-tabs" style="margin-bottom: 16px;">
         <button class="sub-tab-btn active" id="sub-tab-record" onclick="switchSubmitSubTab('record', event)">Submit Record %</button>
         <button class="sub-tab-btn" id="sub-tab-level" onclick="switchSubmitSubTab('level', event)">Submit Level</button>
-        <button class="sub-tab-btn" id="sub-tab-mine" onclick="switchSubmitSubTab('mine', event)">My Submissions</button>
       </div>
       
       <form id="record-form" onsubmit="handleRecordSubmit(event)">
@@ -440,7 +480,7 @@
         <select id="rec-level-select" required></select>
         <label style="font-size: 13px; color: var(--text-secondary);">Record Percentage (56% - 100%):</label>
         <input type="number" id="rec-percent" min="56" max="100" value="100" required>
-        <label style="font-size: 13px; color: var(--text-secondary);">Completion / Progress Video:</label>
+        <label style="font-size: 13px; color: var(--text-secondary);">Completion Video URL:</label>
         <input type="url" id="rec-video" placeholder="https://youtube.com/..." required>
         <button type="submit" class="btn-action btn-primary">Submit Record %</button>
       </form>
@@ -448,20 +488,26 @@
       <form id="level-form" onsubmit="handleLevelSubmit(event)" style="display:none;">
         <label style="font-size: 13px; color: var(--text-secondary);">Level name:</label>
         <input type="text" id="lvl-name" required>
-        <label style="font-size: 13px; color: var(--text-secondary);">Creator (Wybierz z graczy Stats):</label>
-        <select id="lvl-creator" required></select>
-        <label style="font-size: 13px; color: var(--text-secondary);">Verifier (Wybierz z graczy Stats):</label>
-        <select id="lvl-verifier" required></select>
+        
+        <div id="creator-container">
+          <label style="font-size: 13px; color: var(--text-secondary);" id="creator-label">Creator:</label>
+          <!-- Dynamicznie zamieniane na input lub select w zależności od kategorii -->
+          <div id="creator-input-wrapper"></div>
+        </div>
+
+        <div id="verifier-container">
+          <label style="font-size: 13px; color: var(--text-secondary);">Verifier (Select from Stats):</label>
+          <select id="lvl-verifier" required></select>
+        </div>
+
         <label style="font-size: 13px; color: var(--text-secondary);">Verification video link:</label>
         <input type="url" id="lvl-video" required>
         <label style="font-size: 13px; color: var(--text-secondary);">Song:</label>
         <input type="text" id="lvl-song" required>
-        <label style="font-size: 13px; color: var(--text-secondary);">Id:</label>
+        <label style="font-size: 13px; color: var(--text-secondary);">ID:</label>
         <input type="text" id="lvl-id" required>
         <button type="submit" class="btn-action btn-primary">Submit Level</button>
       </form>
-
-      <div id="my-submissions-container" style="display:none;"></div>
     </div>
 
     <!-- Admin Panel View -->
@@ -469,16 +515,13 @@
       <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 16px;">Admin Panel ⚙️</h2>
       <div class="sub-nav-tabs" style="margin-bottom: 16px;">
         <button class="sub-tab-btn active" id="admin-tab-sub" onclick="switchAdminTab('sub', event)">Pending Submissions</button>
-        <button class="sub-tab-btn" id="admin-tab-manage" onclick="switchAdminTab('manage', event)">Manage List & Positions</button>
+        <button class="sub-tab-btn" id="admin-tab-frames" onclick="switchAdminTab('frames', event)">Manage User Frames</button>
       </div>
 
-      <div id="admin-sub-section">
-        <div id="admin-pending-container"></div>
-      </div>
-
-      <div id="admin-manage-section" style="display:none;">
-        <h3 style="color:var(--accent-cyan);">Manage Levels & Reorder Positions</h3>
-        <div id="admin-levels-manage-container"></div>
+      <div id="admin-sub-section"><div id="admin-pending-container"></div></div>
+      <div id="admin-frames-section" style="display:none;">
+        <h3 style="color:var(--accent-cyan);">Manage Player Frame Access</h3>
+        <div id="admin-frames-container"></div>
       </div>
     </div>
 
@@ -494,25 +537,17 @@
       <h2 id="lvl-title" style="color: var(--text-primary); margin-top: 0; font-size: 28px;"></h2>
       <div id="lvl-details"></div>
     </div>
-
-    <div id="player-view">
-      <button class="back-btn" onclick="closeView()">← Back to Leaderboard</button>
-      <h2 id="pl-name" style="color: var(--text-primary); margin-top: 0; font-size: 28px;"></h2>
-      <div id="pl-details"></div>
-    </div>
   </div>
 
-  <!-- Auth Modal (Login / Register / Change Password) -->
+  <!-- Auth Modal -->
   <div class="modal" id="auth-modal">
     <div class="modal-content">
       <button class="close-modal" onclick="closeAuthModal()">&times;</button>
       <div style="display: flex; gap: 6px; margin-bottom: 20px;">
-        <button class="sub-tab-btn active" id="modal-tab-login" onclick="switchAuthMode('login')" style="flex:1; padding:6px 4px;">Log In</button>
-        <button class="sub-tab-btn" id="modal-tab-register" onclick="switchAuthMode('register')" style="flex:1; padding:6px 4px;">Register</button>
-        <button class="sub-tab-btn" id="modal-tab-chpass" onclick="switchAuthMode('chpass')" style="flex:1; padding:6px 4px;">Change Pass</button>
+        <button class="sub-tab-btn active" id="modal-tab-login" onclick="switchAuthMode('login')" style="flex:1;">Log In</button>
+        <button class="sub-tab-btn" id="modal-tab-register" onclick="switchAuthMode('register')" style="flex:1;">Register</button>
       </div>
 
-      <!-- Login Form (Tylko nick i hasło) -->
       <form id="modal-login-form" onsubmit="handleLogin(event)">
         <label style="font-size: 13px; color: var(--text-secondary);">Username (Nick):</label>
         <input type="text" id="login-username" required>
@@ -521,18 +556,16 @@
         <button type="submit" class="btn-action btn-primary" style="margin-top: 10px;">Log In</button>
       </form>
 
-      <!-- Register Form (Nick, Hasło, Flaga kraju) -->
       <form id="modal-register-form" onsubmit="handleRegister(event)" style="display:none;">
         <label style="font-size: 13px; color: var(--text-secondary);">Username (Nick):</label>
         <input type="text" id="reg-username" required>
         <label style="font-size: 13px; color: var(--text-secondary);">Password:</label>
         <input type="password" id="reg-password" required>
-        <label style="font-size: 13px; color: var(--text-secondary);">Country flag code (np. pl, us, de):</label>
+        <label style="font-size: 13px; color: var(--text-secondary);">Country flag code (e.g. pl, us, de):</label>
         <input type="text" id="reg-country" maxlength="2" required>
         <button type="submit" class="btn-action btn-primary" style="margin-top: 10px;">Register</button>
       </form>
 
-      <!-- Change Password Form -->
       <form id="modal-chpass-form" onsubmit="handleChangePassword(event)" style="display:none;">
         <label style="font-size: 13px; color: var(--text-secondary);">Username (Nick):</label>
         <input type="text" id="ch-username" required>
@@ -545,20 +578,11 @@
     </div>
   </div>
 
-  <footer>
-    &copy; 2026 MCLL List Network • Classic Edition
-  </footer>
+  <footer>&copy; 2026 MCLL List Network</footer>
 
   <script>
     const NPOINT_URL = 'https://api.npoint.io/2a62ce7078414fa7cab3';
     let currentCategory = 'MCLL';
-
-    const listRules = {
-      MCLL: `<ol style="padding-left: 18px; line-height: 1.6;"><li><strong>Minimum Gameplay Duration:</strong> The level must feature at least 30 seconds of active gameplay.</li><li><strong>Quality & Decoration Control:</strong> Low-effort layouts are prohibited.</li><li><strong>Audio Requirements:</strong> Physical inputs (clicks) must be clearly audible.</li></ol>`,
-      MCCL: `<ol style="padding-left: 18px; line-height: 1.6;"><li><strong>Anti-Spam & Gameplay Design:</strong> Must rely on mechanical skill, not click spam.</li><li><strong>Challenge Duration Limits:</strong> 5 to 30 seconds.</li></ol>`,
-      ILL: `<ol style="padding-left: 18px; line-height: 1.6;"><li><strong>Maximum CPS:</strong> Strict limit of 20 clicks per second.</li></ol>`,
-      PILL: `<ol style="padding-left: 18px; line-height: 1.6;"><li><strong>Impossibility Criteria:</strong> Must contain at least one click/segment 100% physically impossible.</li></ol>`
-    };
 
     let allDatabase = {
       MCLL: { levels: [], players: [] },
@@ -591,9 +615,7 @@
             if(!allDatabase.users) allDatabase.users = [];
           }
         }
-      } catch (err) {
-        console.error('Failed to load data from cloud', err);
-      }
+      } catch (err) { console.error('Failed to load data', err); }
       init();
     }
 
@@ -604,41 +626,15 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(allDatabase)
         });
-      } catch (err) {
-        console.error('Failed to save data to cloud', err);
-      }
+      } catch (err) { console.error('Failed to save data', err); }
     }
 
     function switchCategory(cat) {
       currentCategory = cat;
       document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
-      const activeBtn = document.getElementById(`cat-btn-${cat}`);
-      if(activeBtn) activeBtn.classList.add('active');
+      document.getElementById(`cat-btn-${cat}`).classList.add('active');
       document.getElementById('header-title').innerText = cat;
-
-      const isImpossibleList = (cat === 'ILL' || cat === 'PILL');
-      const statsTab = document.getElementById('nav-btn-stats');
-      const statsBox = document.getElementById('stat-players-box');
-      const recTab = document.getElementById('sub-tab-record');
-
-      if (isImpossibleList) {
-        if(statsTab) statsTab.style.display = 'none';
-        if(statsBox) statsBox.style.display = 'none';
-        if(recTab) recTab.style.display = 'none';
-        if (currentMainTab === 'stats') switchMainTab('levels', document.getElementById('nav-btn-levels'));
-      } else {
-        if(statsTab) statsTab.style.display = 'flex';
-        if(statsBox) statsBox.style.display = 'inline-block';
-        if(recTab) recTab.style.display = 'inline-block';
-      }
-
-      updateRulesView();
       init();
-    }
-
-    function updateRulesView() {
-      document.getElementById('rules-title').innerText = `${currentCategory} Rules 📜`;
-      document.getElementById('rules-content').innerHTML = listRules[currentCategory] || '';
     }
 
     function init() {
@@ -648,50 +644,34 @@
 
       updateAuthUI();
       filterData();
-      updateRulesView();
-      populateCreatorVerifierSelects();
+      setupLevelFormFields();
       populateRecordLevelSelect();
     }
 
     function updateAuthUI() {
       const headerActions = document.getElementById('header-actions');
-      const navTabs = document.getElementById('main-nav-tabs');
-      if (!headerActions || !navTabs) return;
-
-      let submitTabBtn = document.getElementById('nav-btn-submit');
-      let adminTabBtn = document.getElementById('nav-btn-admin');
+      const submitBtn = document.getElementById('nav-btn-submit');
+      const adminBtn = document.getElementById('nav-btn-admin');
+      const profileBtn = document.getElementById('nav-btn-profile');
 
       if (currentUser) {
         headerActions.innerHTML = `
           <button class="auth-top-btn" onclick="openAuthModalForChPass()">Change Password</button>
           <button class="auth-top-btn" onclick="handleLogout()">Logout (${currentUser.name})</button>
         `;
-        if (!submitTabBtn) {
-          submitTabBtn = document.createElement('button');
-          submitTabBtn.className = 'tab-btn';
-          submitTabBtn.id = 'nav-btn-submit';
-          submitTabBtn.innerHTML = 'Submit';
-          submitTabBtn.onclick = (e) => switchMainTab('submit', e);
-          navTabs.appendChild(submitTabBtn);
-        }
-        if (currentUser.isAdmin) {
-          if (!adminTabBtn) {
-            adminTabBtn = document.createElement('button');
-            adminTabBtn.className = 'tab-btn';
-            adminTabBtn.id = 'nav-btn-admin';
-            adminTabBtn.innerHTML = 'Admin Panel';
-            adminTabBtn.onclick = (e) => switchMainTab('admin', e);
-            navTabs.appendChild(adminTabBtn);
-          }
-        } else if (adminTabBtn) { adminTabBtn.remove(); }
+        submitBtn.style.display = 'block';
+        profileBtn.style.display = 'block';
+        if (currentUser.isAdmin) adminBtn.style.display = 'block';
+        else adminBtn.style.display = 'none';
       } else {
         headerActions.innerHTML = `
           <button class="auth-top-btn" onclick="openAuthModal('login')">Log In</button>
           <button class="auth-top-btn" onclick="openAuthModal('register')">Register</button>
         `;
-        if (submitTabBtn) submitTabBtn.remove();
-        if (adminTabBtn) adminTabBtn.remove();
-        if (currentMainTab === 'submit' || currentMainTab === 'admin') {
+        submitBtn.style.display = 'none';
+        adminBtn.style.display = 'none';
+        profileBtn.style.display = 'none';
+        if (['submit', 'admin', 'profile'].includes(currentMainTab)) {
           switchMainTab('levels', document.getElementById('nav-btn-levels'));
         }
       }
@@ -715,8 +695,7 @@
         if(f) f.style.display = (m === 'chpass') ? 'block' : 'none';
       });
       if(currentUser) {
-        const uField = document.getElementById('ch-username');
-        if(uField) uField.value = currentUser.name;
+        document.getElementById('ch-username').value = currentUser.name;
       }
     }
 
@@ -740,10 +719,7 @@
         currentUser = { name: 'admin', isAdmin: true };
       } else {
         const user = (allDatabase.users || []).find(u => u.name.toLowerCase() === name.toLowerCase() && u.password === pass);
-        if (!user) {
-          alert('Invalid username or password!');
-          return;
-        }
+        if (!user) { alert('Invalid username or password!'); return; }
         currentUser = { name: user.name, isAdmin: false };
       }
       localStorage.setItem('mcll_current_user', JSON.stringify(currentUser));
@@ -764,17 +740,16 @@
         return;
       }
 
-      // Zapisz użytkownika w bazie uwierzytelniania
-      allDatabase.users.push({ name, password: pass, country });
+      allDatabase.users.push({ name, password: pass, country, allowedFrames: [], activeFrame: '' });
 
-      // Automatycznie dodaj gracza do zakładki Stats (leaderboardu)
       if (!allDatabase[currentCategory].players) allDatabase[currentCategory].players = [];
       if (!allDatabase[currentCategory].players.some(p => p.name.toLowerCase() === name.toLowerCase())) {
         allDatabase[currentCategory].players.push({
           name: name,
           country: country,
           points: 0,
-          completed: []
+          activeFrame: '',
+          allowedFrames: []
         });
       }
 
@@ -793,14 +768,8 @@
       const newPass = document.getElementById('ch-newpass').value;
 
       const user = (allDatabase.users || []).find(u => u.name.toLowerCase() === nick.toLowerCase());
-      if (!user) {
-        alert('User not found!');
-        return;
-      }
-      if (user.password !== oldPass) {
-        alert('Old password is incorrect!');
-        return;
-      }
+      if (!user) { alert('User not found!'); return; }
+      if (user.password !== oldPass) { alert('Old password is incorrect!'); return; }
 
       user.password = newPass;
       await saveCloudData();
@@ -816,22 +785,177 @@
       alert('Logged out.');
     }
 
-    function populateCreatorVerifierSelects() {
-      const cSelect = document.getElementById('lvl-creator');
-      const vSelect = document.getElementById('lvl-verifier');
-      if(!cSelect || !vSelect) return;
-
-      cSelect.innerHTML = '';
-      vSelect.innerHTML = '';
-
+    function populateProfileForm() {
+      if (!currentUser) return;
+      document.getElementById('prof-nickname').value = currentUser.name;
       const players = allDatabase[currentCategory].players || [];
-      players.forEach(p => {
-        cSelect.add(new Option(p.name, p.name));
-        vSelect.add(new Option(p.name, p.name));
+      const p = players.find(x => x.name.toLowerCase() === currentUser.name.toLowerCase());
+      if (p) {
+        document.getElementById('prof-country').value = p.country || '';
+        const select = document.getElementById('prof-frame-select');
+        select.value = p.activeFrame || '';
+
+        const allowed = p.allowedFrames || [];
+        for (let i = 0; i < select.options.length; i++) {
+          const opt = select.options[i];
+          const val = opt.value;
+          if (val === '') continue;
+          const isAllowed = allowed.includes(val);
+          opt.disabled = !isAllowed;
+          opt.text = (isAllowed ? '🔓 ' : '🔒 ') + opt.text.replace(/^[🔓🔒]\s*/, '');
+        }
+      }
+    }
+
+    function checkFrameSelection(selectElem) {
+      const selectedOption = selectElem.options[selectElem.selectedIndex];
+      if (selectedOption.disabled) {
+        alert('This frame is locked! Contact the administrator to find out how to unlock it.');
+        selectElem.value = '';
+      }
+    }
+
+    async function handleProfileUpdate(e) {
+      e.preventDefault();
+      if (!currentUser) return;
+      const newName = document.getElementById('prof-nickname').value.trim();
+      const newCountry = document.getElementById('prof-country').value.trim().toLowerCase();
+      const newFrame = document.getElementById('prof-frame-select').value;
+      const oldName = currentUser.name;
+
+      const u = (allDatabase.users || []).find(x => x.name.toLowerCase() === oldName.toLowerCase());
+      if (u) u.name = newName;
+
+      ['MCLL', 'MCCL'].forEach(cat => {
+        if (allDatabase[cat] && allDatabase[cat].players) {
+          const p = allDatabase[cat].players.find(x => x.name.toLowerCase() === oldName.toLowerCase());
+          if (p) {
+            p.name = newName;
+            p.country = newCountry;
+            p.activeFrame = newFrame;
+          }
+        }
       });
+
+      currentUser.name = newName;
+      localStorage.setItem('mcll_current_user', JSON.stringify(currentUser));
+      await saveCloudData();
+      init();
+      alert('Profile updated successfully!');
+    }
+
+    function renderLeaderboard() {
+      const container = document.getElementById('stats-result-container');
+      if(!container) return;
+      const players = allDatabase[currentCategory].players || [];
       if(players.length === 0) {
-        cSelect.add(new Option('No players in Stats yet', ''));
-        vSelect.add(new Option('No players in Stats yet', ''));
+        container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">No players in Stats yet.</div>';
+        return;
+      }
+
+      container.innerHTML = players.map((p, idx) => {
+        const frameClass = p.activeFrame ? `frame-${p.activeFrame}` : '';
+        return `
+          <div class="card player-card ${frameClass}">
+            <div class="card-title">
+              #${idx + 1} 
+              ${p.country ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country}.png" alt="${p.country}">` : ''}
+              ${p.name}
+            </div>
+            <div class="card-points">${p.points || 0} pts</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderAdminFrames() {
+      const container = document.getElementById('admin-frames-container');
+      if (!container) return;
+      const players = allDatabase[currentCategory].players || [];
+      if (players.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted);">No players to manage.</div>';
+        return;
+      }
+
+      container.innerHTML = players.map(p => `
+        <div class="submission-item">
+          <div><strong>${p.name}</strong> (Country: ${p.country || 'none'})</div>
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <label><input type="checkbox" ${p.allowedFrames && p.allowedFrames.includes('halloween') ? 'checked' : ''} onchange="toggleUserFrame('${p.name}', 'halloween', this.checked)"> Halloween</label>
+            <label><input type="checkbox" ${p.allowedFrames && p.allowedFrames.includes('morska') ? 'checked' : ''} onchange="toggleUserFrame('${p.name}', 'morska', this.checked)"> Marine</label>
+            <label><input type="checkbox" ${p.allowedFrames && p.allowedFrames.includes('gold') ? 'checked' : ''} onchange="toggleUserFrame('${p.name}', 'gold', this.checked)"> Gold</label>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function toggleUserFrame(playerName, frameName, isAllowed) {
+      ['MCLL', 'MCCL'].forEach(cat => {
+        if (allDatabase[cat] && allDatabase[cat].players) {
+          const p = allDatabase[cat].players.find(x => x.name.toLowerCase() === playerName.toLowerCase());
+          if (p) {
+            if (!p.allowedFrames) p.allowedFrames = [];
+            if (isAllowed && !p.allowedFrames.includes(frameName)) {
+              p.allowedFrames.push(frameName);
+            } else if (!isAllowed) {
+              p.allowedFrames = p.allowedFrames.filter(f => f !== frameName);
+              if (p.activeFrame === frameName) p.activeFrame = '';
+            }
+          }
+        }
+      });
+      await saveCloudData();
+      alert(`Updated frame access for player ${playerName}!`);
+    }
+
+    function switchAdminTab(subTab) {
+      const subSec = document.getElementById('admin-sub-section');
+      const frameSec = document.getElementById('admin-frames-section');
+      if (subTab === 'sub') {
+        subSec.style.display = 'block';
+        frameSec.style.display = 'none';
+        renderAdminPending();
+      } else {
+        subSec.style.display = 'none';
+        frameSec.style.display = 'block';
+        renderAdminFrames();
+      }
+    }
+
+    function setupLevelFormFields() {
+      const creatorWrapper = document.getElementById('creator-input-wrapper');
+      const verifierContainer = document.getElementById('verifier-container');
+      const creatorLabel = document.getElementById('creator-label');
+      if (!creatorWrapper || !verifierContainer) return;
+
+      const isImpossible = (currentCategory === 'ILL' || currentCategory === 'PILL');
+
+      if (isImpossible) {
+        // W ILL i PILL brak Stats -> zwykłe pole tekstowe creator, brak verifier
+        creatorLabel.innerText = "Creator:";
+        creatorWrapper.innerHTML = `<input type="text" id="lvl-creator" required placeholder="Enter creator name">`;
+        verifierContainer.style.display = 'none';
+      } else {
+        // W MCLL i MCCL -> wybór z graczy Stats oraz pole verifier
+        creatorLabel.innerText = "Creator (Select from Stats):";
+        creatorWrapper.innerHTML = `<select id="lvl-creator" required></select>`;
+        verifierContainer.style.display = 'block';
+
+        const cSelect = document.getElementById('lvl-creator');
+        const vSelect = document.getElementById('lvl-verifier');
+        if (cSelect && vSelect) {
+          cSelect.innerHTML = '';
+          vSelect.innerHTML = '';
+          const players = allDatabase[currentCategory].players || [];
+          players.forEach(p => {
+            cSelect.add(new Option(p.name, p.name));
+            vSelect.add(new Option(p.name, p.name));
+          });
+          if (players.length === 0) {
+            cSelect.add(new Option('No players in Stats yet', ''));
+            vSelect.add(new Option('No players in Stats yet', ''));
+          }
+        }
       }
     }
 
@@ -840,12 +964,7 @@
       if (!select) return;
       select.innerHTML = '';
       const levels = allDatabase[currentCategory].levels || [];
-      levels.forEach(lvl => {
-        const opt = document.createElement('option');
-        opt.value = lvl.title;
-        opt.innerText = lvl.title;
-        select.appendChild(opt);
-      });
+      levels.forEach(lvl => select.add(new Option(lvl.title, lvl.title)));
     }
 
     function filterData() {
@@ -863,18 +982,15 @@
       if(!container) return;
       container.innerHTML = '';
       if(!list || list.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No levels found in ${currentCategory}.</div>`;
+        container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No levels found.</div>`;
         return;
       }
-
       list.forEach((lvl) => {
         const globalRank = allDatabase[currentCategory].levels.findIndex(l => l.id === lvl.id) + 1;
         const thumbUrl = lvl.youtubeId ? `https://img.youtube.com/vi/${lvl.youtubeId}/mqdefault.jpg` : '';
-
         const card = document.createElement('div');
         card.className = 'pointercrate-card';
         card.onclick = () => openLevelView(lvl.id);
-        
         card.innerHTML = `
           <div class="pointercrate-thumb-wrapper">
             <img class="pointercrate-thumb" src="${thumbUrl}" alt="${lvl.title}">
@@ -898,46 +1014,18 @@
       document.getElementById('level-view').style.display = 'block';
       document.getElementById('lvl-title').innerText = lvl.title;
       
-      let recordsSection = '';
-      if (currentCategory === 'MCLL' || currentCategory === 'MCCL') {
-        let recordsHtml = lvl.records && lvl.records.length > 0 
-          ? lvl.records.map(r => `
-              <div style="padding: 6px 0;">
-                <strong style="color:var(--accent-cyan);">${r.player}</strong> - ${r.percent || 100}%
-                ${r.video ? `<a href="${r.video}" target="_blank" class="proof-link">(proof)</a>` : ''}
-              </div>
-            `).join('')
-          : '<div style="color: var(--text-muted);">No records yet.</div>';
-        
-        recordsSection = `<h3 style="color: var(--accent-cyan); margin-top: 20px;">Records 📜</h3><div class="info-meta">${recordsHtml}</div>`;
-      }
-
       let historyHtml = '';
       if (lvl.history && lvl.history.length > 0) {
         historyHtml = `
           <h3 style="color: var(--accent-cyan); margin-top: 20px;">Level History 📜</h3>
           <table class="history-table-container">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Change</th>
-                <th>New Position</th>
-                <th>Reason</th>
-              </tr>
-            </thead>
+            <thead><tr><th>Date</th><th>Change</th><th>New Position</th><th>Reason</th></tr></thead>
             <tbody>
               ${lvl.history.map(h => {
                 let rowClass = 'history-row-neutral';
                 if(h.change.includes('↑')) rowClass = 'history-row-up';
                 else if(h.change.includes('↓')) rowClass = 'history-row-down';
-                return `
-                  <tr class="${rowClass}">
-                    <td>${h.date}</td>
-                    <td>${h.change}</td>
-                    <td>${h.newPosition}</td>
-                    <td>${h.reason}</td>
-                  </tr>
-                `;
+                return `<tr class="${rowClass}"><td>${h.date}</td><td>${h.change}</td><td>${h.newPosition}</td><td>${h.reason}</td></tr>`;
               }).join('')}
             </tbody>
           </table>
@@ -948,18 +1036,16 @@
         <div class="info-meta">
           <div><strong>GD ID:</strong> ${lvl.gdId || 'N/A'}</div>
           <div><strong>Created by:</strong> ${lvl.creator || 'N/A'}</div>
-          <div><strong>Verified by:</strong> ${lvl.verifier || 'N/A'}</div>
+          ${lvl.verifier ? `<div><strong>Verified by:</strong> ${lvl.verifier}</div>` : ''}
           <div><strong>Song:</strong> ${lvl.song || 'N/A'}</div>
         </div>
         ${lvl.youtubeId ? `<div class="video-container"><iframe src="https://www.youtube.com/embed/${lvl.youtubeId}" allowfullscreen></iframe></div>` : ''}
-        ${recordsSection}
         ${historyHtml}
       `;
     }
 
     function closeView() {
       document.getElementById('level-view').style.display = 'none';
-      document.getElementById('player-view').style.display = 'none';
       document.getElementById('main-content').style.display = 'block';
       document.getElementById('sub-levels-nav').style.display = 'flex';
       document.getElementById('search-controls').style.display = 'flex';
@@ -975,6 +1061,7 @@
       document.getElementById('rules-view').style.display = 'none';
       document.getElementById('stats-view').style.display = 'none';
       document.getElementById('roulette-view').style.display = 'none';
+      document.getElementById('profile-view').style.display = 'none';
       document.getElementById('submit-view').style.display = 'none';
       document.getElementById('admin-view').style.display = 'none';
       document.getElementById('level-view').style.display = 'none';
@@ -989,13 +1076,14 @@
         renderLeaderboard();
       } else if (tab === 'rules') { document.getElementById('rules-view').style.display = 'block'; }
       else if (tab === 'roulette') { document.getElementById('roulette-view').style.display = 'block'; }
-      else if (tab === 'submit') { 
-        document.getElementById('submit-view').style.display = 'block'; 
-        switchSubmitSubTab('record');
+      else if (tab === 'profile') {
+        document.getElementById('profile-view').style.display = 'block';
+        populateProfileForm();
       }
+      else if (tab === 'submit') { document.getElementById('submit-view').style.display = 'block'; }
       else if (tab === 'admin') { 
         document.getElementById('admin-view').style.display = 'block'; 
-        switchAdminTab('sub');
+        renderAdminPending();
       }
     }
 
@@ -1006,299 +1094,13 @@
       filterData();
     }
 
-    function switchAdminTab(subTab) {
-      const pendingSec = document.getElementById('admin-sub-section');
-      const manageSec = document.getElementById('admin-manage-section');
-      const tabSubBtn = document.getElementById('admin-tab-sub');
-      const tabManageBtn = document.getElementById('admin-tab-manage');
-
-      if (subTab === 'sub') {
-        if(pendingSec) pendingSec.style.display = 'block';
-        if(manageSec) manageSec.style.display = 'none';
-        if(tabSubBtn) tabSubBtn.classList.add('active');
-        if(tabManageBtn) tabManageBtn.classList.remove('active');
-        renderAdminPending();
-      } else if (subTab === 'manage') {
-        if(pendingSec) pendingSec.style.display = 'none';
-        if(manageSec) manageSec.style.display = 'block';
-        if(tabSubBtn) tabSubBtn.classList.remove('active');
-        if(tabManageBtn) tabManageBtn.classList.add('active');
-        renderAdminManage();
-      }
-    }
-
-    function switchSubmitSubTab(subTab, ev) {
-      const recForm = document.getElementById('record-form');
-      const lvlForm = document.getElementById('level-form');
-      const mineSec = document.getElementById('my-submissions-container');
-      
-      const tabRec = document.getElementById('sub-tab-record');
-      const tabLvl = document.getElementById('sub-tab-level');
-      const tabMine = document.getElementById('sub-tab-mine');
-
-      [tabRec, tabLvl, tabMine].forEach(b => { if(b) b.classList.remove('active'); });
-
-      if (subTab === 'record') {
-        if(recForm) recForm.style.display = 'block';
-        if(lvlForm) lvlForm.style.display = 'none';
-        if(mineSec) mineSec.style.display = 'none';
-        if(tabRec) tabRec.classList.add('active');
-      } else if (subTab === 'level') {
-        if(recForm) recForm.style.display = 'none';
-        if(lvlForm) lvlForm.style.display = 'block';
-        if(mineSec) mineSec.style.display = 'none';
-        if(tabLvl) tabLvl.classList.add('active');
-      } else if (subTab === 'mine') {
-        if(recForm) recForm.style.display = 'none';
-        if(lvlForm) lvlForm.style.display = 'none';
-        if(mineSec) mineSec.style.display = 'block';
-        if(tabMine) tabMine.classList.add('active');
-        renderMySubmissions();
-      }
-    }
-
-    function getTodayDateStr() {
-      return new Date().toISOString().split('T')[0];
-    }
-
-    function renderAdminPending() {
-      const container = document.getElementById('admin-pending-container');
-      if(!container) return;
-      const subs = allDatabase.zgloszenia || [];
-      const pending = subs.filter(s => s.status === 'pending');
-
-      if(pending.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted);">No pending submissions!</div>`;
-        return;
-      }
-
-      container.innerHTML = pending.map((s) => `
-        <div class="submission-item">
-          <div class="submission-header">
-            <strong>${s.type === 'record' ? 'Record %' : 'New Level'}</strong>
-            <span class="status-badge status-pending">Pending</span>
-          </div>
-          <div class="submission-info">
-            <div><strong>User:</strong> ${s.user}</div>
-            <div><strong>Category:</strong> ${s.category}</div>
-            <div><strong>Details:</strong> ${JSON.stringify(s.data)}</div>
-          </div>
-          <div class="action-row">
-            <button class="btn-action btn-success" onclick="approveSubmission(${s.id})">Approve & Save Global</button>
-            <button class="btn-action btn-danger" onclick="rejectSubmission(${s.id})">Reject</button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    async function approveSubmission(subId) {
-      const sub = (allDatabase.zgloszenia || []).find(s => s.id === subId);
-      if(!sub) return;
-
-      sub.status = 'accepted';
-      const cat = sub.category || 'MCLL';
-      if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
-      if (!allDatabase[cat].levels) allDatabase[cat].levels = [];
-
-      const levels = allDatabase[cat].levels;
-      const dateToday = getTodayDateStr();
-
-      if (sub.type === 'level') {
-        const newLvl = {
-          id: 'lvl_' + Date.now(),
-          title: sub.data.name,
-          creator: sub.data.creator,
-          verifier: sub.data.verifier,
-          youtubeId: extractYoutubeId(sub.data.video),
-          song: sub.data.song,
-          gdId: sub.data.gdId,
-          type: 'main',
-          records: [],
-          history: [{
-            date: dateToday,
-            change: '-',
-            newPosition: '#1',
-            reason: 'was placed at top'
-          }]
-        };
-
-        levels.forEach((lvl, idx) => {
-          if (!lvl.history) lvl.history = [];
-          lvl.history.push({
-            date: dateToday,
-            change: '↓1',
-            newPosition: `#${idx + 2}`,
-            reason: `${newLvl.title} was added above`
-          });
-        });
-
-        levels.unshift(newLvl);
-      } else if (sub.type === 'record') {
-        const lvl = levels.find(l => l.title === sub.data.level);
-        if (lvl) {
-          if (!lvl.records) lvl.records = [];
-          lvl.records.push({
-            player: sub.user,
-            percent: sub.data.percent,
-            video: sub.data.video
-          });
-        }
-      }
-
-      await saveCloudData();
-      init();
-      renderAdminPending();
-      alert('Approved! Saved to database.');
-    }
-
-    async function rejectSubmission(subId) {
-      const sub = (allDatabase.zgloszenia || []).find(s => s.id === subId);
-      if(!sub) return;
-      sub.status = 'declined';
-      await saveCloudData();
-      renderAdminPending();
-      alert('Submission rejected.');
-    }
-
-    function renderAdminManage() {
-      const container = document.getElementById('admin-levels-manage-container');
-      if(!container) return;
-      const levels = allDatabase[currentCategory].levels || [];
-      if(levels.length === 0) {
-        container.innerHTML = '<div style="color: var(--text-muted);">No levels to manage.</div>';
-        return;
-      }
-      container.innerHTML = levels.map((l, idx) => `
-        <div class="submission-item" style="flex-direction:row; justify-content:space-between; align-items:center;">
-          <div>#${idx + 1} - <strong>${l.title}</strong> (by ${l.creator})</div>
-          <div style="display:flex; gap:6px;">
-            <button class="btn-action" style="padding:4px 10px; background:var(--accent-cyan); color:#000;" onclick="moveLevel('${l.id}', 'up')">↑</button>
-            <button class="btn-action" style="padding:4px 10px; background:var(--accent-cyan); color:#000;" onclick="moveLevel('${l.id}', 'down')">↓</button>
-            <button class="btn-action btn-danger" style="padding:4px 10px;" onclick="deleteLevel('${l.id}')">Delete</button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    async function moveLevel(levelId, direction) {
-      const levels = allDatabase[currentCategory].levels || [];
-      const idx = levels.findIndex(l => l.id === levelId);
-      if(idx === -1) return;
-
-      const dateToday = getTodayDateStr();
-
-      if (direction === 'up' && idx > 0) {
-        const curr = levels[idx];
-        const target = levels[idx - 1];
-
-        if(!curr.history) curr.history = [];
-        if(!target.history) target.history = [];
-
-        curr.history.push({ date: dateToday, change: '↑1', newPosition: `#${idx}`, reason: 'was raised up' });
-        target.history.push({ date: dateToday, change: '↓1', newPosition: `#${idx + 1}`, reason: `${curr.title} was moved above` });
-
-        levels[idx] = target;
-        levels[idx - 1] = curr;
-      } else if (direction === 'down' && idx < levels.length - 1) {
-        const curr = levels[idx];
-        const target = levels[idx + 1];
-
-        if(!curr.history) curr.history = [];
-        if(!target.history) target.history = [];
-
-        curr.history.push({ date: dateToday, change: '↓1', newPosition: `#${idx + 2}`, reason: 'was lowered' });
-        target.history.push({ date: dateToday, change: '↑1', newPosition: `#${idx + 1}`, reason: `${curr.title} was moved down past this challenge` });
-
-        levels[idx] = target;
-        levels[idx + 1] = curr;
-      }
-
-      await saveCloudData();
-      renderAdminManage();
-      filterData();
-    }
-
-    async function deleteLevel(levelId) {
-      if(!confirm('Are you sure you want to delete this level?')) return;
-      allDatabase[currentCategory].levels = allDatabase[currentCategory].levels.filter(l => l.id !== levelId);
-      await saveCloudData();
-      init();
-      renderAdminManage();
-      alert('Level deleted.');
-    }
-
-    function renderLeaderboard() {
-      const container = document.getElementById('stats-result-container');
-      if(!container) return;
-      const players = allDatabase[currentCategory].players || [];
-      if(players.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">No players in Stats yet. Register to appear here!</div>';
-        return;
-      }
-
-      container.innerHTML = players.map((p, idx) => `
-        <div class="card player-card">
-          <div class="card-title">
-            #${idx + 1} 
-            ${p.country ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country}.png" alt="${p.country}">` : ''}
-            ${p.name}
-          </div>
-          <div class="card-points">${p.points || 0} pts</div>
-        </div>
-      `).join('');
-    }
-
-    function renderMySubmissions() {
-      const container = document.getElementById('my-submissions-container');
-      if(!container) return;
-      if (!currentUser) {
-        container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">Please log in to view submissions.</div>';
-        return;
-      }
-      const mySubs = (allDatabase.zgloszenia || []).filter(s => s.user === currentUser.name);
-      if (mySubs.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">You have no submissions yet.</div>';
-        return;
-      }
-      container.innerHTML = mySubs.map(s => `
-        <div class="submission-item">
-          <div class="submission-header">
-            <strong>${s.type === 'record' ? 'Record %' : 'Level Submission'}</strong>
-            <span class="status-badge status-${s.status}">${s.status}</span>
-          </div>
-          <div class="submission-info">
-            <div>Category: ${s.category}</div>
-            <div>Details: ${JSON.stringify(s.data)}</div>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    async function handleRecordSubmit(e) {
-      e.preventDefault();
-      if (!currentUser) { alert('You must log in to submit!'); return; }
-      const newSub = {
-        id: Date.now(),
-        user: currentUser.name,
-        type: 'record',
-        category: currentCategory,
-        status: 'pending',
-        data: {
-          level: document.getElementById('rec-level-select').value,
-          percent: document.getElementById('rec-percent').value,
-          video: document.getElementById('rec-video').value
-        }
-      };
-      if (!allDatabase.zgloszenia) allDatabase.zgloszenia = [];
-      allDatabase.zgloszenia.push(newSub);
-      await saveCloudData();
-      alert('Record submitted to Admin Panel!');
-      document.getElementById('record-form').reset();
-    }
-
     async function handleLevelSubmit(e) {
       e.preventDefault();
-      if (!currentUser) { alert('You must log in to submit!'); return; }
+      if (!currentUser) return;
+      const isImpossible = (currentCategory === 'ILL' || currentCategory === 'PILL');
+      const creatorVal = isImpossible ? document.getElementById('lvl-creator').value.trim() : document.getElementById('lvl-creator').value;
+      const verifierVal = isImpossible ? '' : document.getElementById('lvl-verifier').value;
+
       const newSub = {
         id: Date.now(),
         user: currentUser.name,
@@ -1307,8 +1109,8 @@
         status: 'pending',
         data: {
           name: document.getElementById('lvl-name').value,
-          creator: document.getElementById('lvl-creator').value,
-          verifier: document.getElementById('lvl-verifier').value,
+          creator: creatorVal,
+          verifier: verifierVal,
           video: document.getElementById('lvl-video').value,
           song: document.getElementById('lvl-song').value,
           gdId: document.getElementById('lvl-id').value
@@ -1317,13 +1119,72 @@
       if (!allDatabase.zgloszenia) allDatabase.zgloszenia = [];
       allDatabase.zgloszenia.push(newSub);
       await saveCloudData();
-      alert('Level submitted to Admin Panel!');
+      alert('Level submitted for review!');
       document.getElementById('level-form').reset();
+    }
+
+    function renderAdminPending() {
+      const container = document.getElementById('admin-pending-container');
+      if(!container) return;
+      const pending = (allDatabase.zgloszenia || []).filter(s => s.status === 'pending');
+      if(pending.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted); text-align:center;">No pending submissions.</div>';
+        return;
+      }
+      container.innerHTML = pending.map(s => `
+        <div class="submission-item">
+          <div><strong>${s.type}</strong> by ${s.user}</div>
+          <div class="action-row">
+            <button class="btn-action btn-success" onclick="approveSub(${s.id})">Approve</button>
+            <button class="btn-action btn-danger" onclick="rejectSub(${s.id})">Reject</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function approveSub(id) {
+      const sub = allDatabase.zgloszenia.find(s => s.id === id);
+      if(!sub) return;
+      sub.status = 'accepted';
+      const cat = sub.category || 'MCLL';
+      if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
+      if (!allDatabase[cat].levels) allDatabase[cat].levels = [];
+      const levels = allDatabase[cat].levels;
+      const today = new Date().toISOString().split('T')[0];
+
+      if (sub.type === 'level') {
+        const newLvl = {
+          id: 'lvl_' + Date.now(),
+          title: sub.data.name,
+          creator: sub.data.creator,
+          verifier: sub.data.verifier || '',
+          youtubeId: extractYoutubeId(sub.data.video),
+          song: sub.data.song,
+          gdId: sub.data.gdId,
+          history: [{ date: today, change: '-', newPosition: '#1', reason: 'was placed at top' }]
+        };
+        levels.forEach((l, idx) => {
+          if(!l.history) l.history = [];
+          l.history.push({ date: today, change: '↓1', newPosition: `#${idx + 2}`, reason: `${newLvl.title} was added above` });
+        });
+        levels.unshift(newLvl);
+      }
+      await saveCloudData();
+      init();
+      renderAdminPending();
+      alert('Approved successfully!');
+    }
+
+    async function rejectSub(id) {
+      const sub = allDatabase.zgloszenia.find(s => s.id === id);
+      if(sub) sub.status = 'declined';
+      await saveCloudData();
+      renderAdminPending();
     }
 
     function startRoulette() {
       const levels = allDatabase[currentCategory].levels || [];
-      if(levels.length === 0) { alert('No levels available for roulette.'); return; }
+      if(levels.length === 0) { alert('No levels.'); return; }
       rouletteState.active = true;
       rouletteState.currentLevel = levels[Math.floor(Math.random() * levels.length)];
       rouletteState.currentPercent = 0;
@@ -1335,7 +1196,6 @@
       const btnStart = document.getElementById('btn-start');
       const btnNext = document.getElementById('btn-next');
       const btnGiveup = document.getElementById('btn-giveup');
-      
       if(rouletteState.active) {
         btnStart.style.display = 'none';
         btnNext.style.display = 'inline-block';
@@ -1351,18 +1211,11 @@
 
     function nextRoulette() {
       rouletteState.currentPercent += 1;
-      if(rouletteState.currentPercent >= 100) {
-        alert('Congratulations! You completed the roulette!');
-        giveupRoulette();
-      } else {
-        updateRouletteUI();
-      }
+      if(rouletteState.currentPercent >= 100) { alert('Completed!'); giveupRoulette(); }
+      else updateRouletteUI();
     }
 
-    function giveupRoulette() {
-      rouletteState.active = false;
-      updateRouletteUI();
-    }
+    function giveupRoulette() { rouletteState.active = false; updateRouletteUI(); }
 
     document.addEventListener('DOMContentLoaded', loadData);
   </script>
