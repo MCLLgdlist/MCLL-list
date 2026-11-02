@@ -360,7 +360,7 @@
 
     .submission-item {
       background: var(--input-bg); border: 1px solid var(--card-border); padding: 12px;
-      border-radius: 10px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; font-size: 12px;
+      border-radius: 10px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; font-size: 12px;
     }
     .action-row { display: flex; gap: 6px; width: 100%; flex-wrap: wrap; }
     .action-row .btn-action { flex: 1; min-width: 70px; }
@@ -453,13 +453,13 @@
         <input type="text" id="lvl-name" required>
         
         <div id="creator-container">
-          <label style="font-size: 12px; color: var(--text-secondary);" id="creator-label">Creator:</label>
-          <div id="creator-input-wrapper"></div>
+          <label style="font-size: 12px; color: var(--text-secondary);">Creator:</label>
+          <input type="text" id="lvl-creator" required placeholder="Enter creator name">
         </div>
 
         <div id="verifier-container">
           <label style="font-size: 12px; color: var(--text-secondary);">Verifier:</label>
-          <select id="lvl-verifier" required></select>
+          <input type="text" id="lvl-verifier" required placeholder="Enter verifier name">
         </div>
 
         <label style="font-size: 12px; color: var(--text-secondary);">Verification video link:</label>
@@ -482,7 +482,7 @@
 
       <div id="admin-sub-section"><div id="admin-pending-container"></div></div>
       <div id="admin-manage-section" style="display:none;">
-        <h3 style="color:var(--accent-cyan); font-size: 15px;">Edit or Delete Levels in ${currentCategory}</h3>
+        <h3 style="color:var(--accent-cyan); font-size: 15px;">Edit, Move or Delete Levels</h3>
         <div id="admin-levels-manage-container"></div>
       </div>
     </div>
@@ -733,41 +733,7 @@
       updateAuthUI();
       filterData();
       renderRules();
-      setupLevelFormFields();
       populateRecordLevelSelect();
-      updateSubmitTabVisibility();
-    }
-
-    function updateSubmitTabVisibility() {
-      const isImpossible = (currentCategory === 'ILL' || currentCategory === 'PPLL');
-      const recordForm = document.getElementById('record-form');
-      const levelForm = document.getElementById('level-form');
-      const recordSubTabBtn = document.getElementById('sub-tab-record');
-      const levelSubTabBtn = document.getElementById('sub-tab-level');
-
-      if (isImpossible) {
-        recordSubTabBtn.style.display = 'none';
-        recordForm.style.display = 'none';
-        levelSubTabBtn.classList.add('active');
-        levelForm.style.display = 'block';
-      } else {
-        recordSubTabBtn.style.display = 'inline-block';
-      }
-    }
-
-    function switchSubmitSubTab(subTab, ev) {
-      const recordForm = document.getElementById('record-form');
-      const levelForm = document.getElementById('level-form');
-      document.querySelectorAll('#submit-view .sub-nav-tabs .sub-tab-btn').forEach(b => b.classList.remove('active'));
-      if(ev && ev.target) ev.target.classList.add('active');
-
-      if (subTab === 'record') {
-        recordForm.style.display = 'block';
-        levelForm.style.display = 'none';
-      } else {
-        recordForm.style.display = 'none';
-        levelForm.style.display = 'block';
-      }
     }
 
     function updateAuthUI() {
@@ -1018,41 +984,6 @@
       document.getElementById('search-controls').style.display = 'flex';
     }
 
-    function setupLevelFormFields() {
-      const creatorWrapper = document.getElementById('creator-input-wrapper');
-      const verifierContainer = document.getElementById('verifier-container');
-      const creatorLabel = document.getElementById('creator-label');
-      if (!creatorWrapper || !verifierContainer) return;
-
-      const isImpossible = (currentCategory === 'ILL' || currentCategory === 'PPLL');
-
-      if (isImpossible) {
-        creatorLabel.innerText = "Creator:";
-        creatorWrapper.innerHTML = `<input type="text" id="lvl-creator" required placeholder="Enter creator name">`;
-        verifierContainer.style.display = 'none';
-      } else {
-        creatorLabel.innerText = "Creator (Select from Stats):";
-        creatorWrapper.innerHTML = `<select id="lvl-creator" required></select>`;
-        verifierContainer.style.display = 'block';
-
-        const cSelect = document.getElementById('lvl-creator');
-        const vSelect = document.getElementById('lvl-verifier');
-        if (cSelect && vSelect) {
-          cSelect.innerHTML = '';
-          vSelect.innerHTML = '';
-          const players = allDatabase[currentCategory].players || [];
-          players.forEach(p => {
-            cSelect.add(new Option(p.name, p.name));
-            vSelect.add(new Option(p.name, p.name));
-          });
-          if (players.length === 0) {
-            cSelect.add(new Option('No players in Stats yet', ''));
-            vSelect.add(new Option('No players in Stats yet', ''));
-          }
-        }
-      }
-    }
-
     function populateRecordLevelSelect() {
       const select = document.getElementById('rec-level-select');
       if (!select) return;
@@ -1286,9 +1217,8 @@
         return;
       }
 
-      const isImpossible = (currentCategory === 'ILL' || currentCategory === 'PPLL');
-      const creatorVal = isImpossible ? document.getElementById('lvl-creator').value.trim() : document.getElementById('lvl-creator').value;
-      const verifierVal = isImpossible ? '' : document.getElementById('lvl-verifier').value;
+      const creatorVal = document.getElementById('lvl-creator').value.trim();
+      const verifierVal = document.getElementById('lvl-verifier').value.trim();
 
       const newSub = {
         id: Date.now(),
@@ -1342,16 +1272,35 @@
         container.innerHTML = '<div style="color:var(--text-muted); text-align:center;">No pending submissions.</div>';
         return;
       }
-      container.innerHTML = pending.map(s => `
-        <div class="submission-item">
-          <div><strong>${s.type.toUpperCase()}</strong> by ${s.user} (${s.category})</div>
-          ${s.type === 'record' ? `<div>Level: ${s.data.level} (${s.data.percent}%)</div>` : ''}
-          <div class="action-row">
-            <button class="btn-action btn-success" onclick="approveSub(${s.id})">Approve</button>
-            <button class="btn-action btn-danger" onclick="rejectSub(${s.id})">Reject</button>
+      container.innerHTML = pending.map(s => {
+        let detailsHtml = '';
+        if (s.type === 'level') {
+          detailsHtml = `
+            <div><strong>Level Name:</strong> ${s.data.name}</div>
+            <div><strong>Creator:</strong> ${s.data.creator}</div>
+            <div><strong>Verifier:</strong> ${s.data.verifier || 'N/A'}</div>
+            <div><strong>Song:</strong> ${s.data.song} | <strong>ID:</strong> ${s.data.gdId}</div>
+            <div><strong>Video:</strong> <a href="${s.data.video}" target="_blank" style="color:var(--accent-cyan)">${s.data.video}</a></div>
+          `;
+        } else if (s.type === 'record') {
+          detailsHtml = `
+            <div><strong>Level:</strong> ${s.data.level}</div>
+            <div><strong>Record:</strong> ${s.data.percent}%</div>
+            <div><strong>Video Proof:</strong> <a href="${s.data.video}" target="_blank" style="color:var(--accent-cyan)">${s.data.video}</a></div>
+          `;
+        }
+
+        return `
+          <div class="submission-item">
+            <div><strong>${s.type.toUpperCase()}</strong> submitted by <span style="color:var(--accent-cyan);">${s.user}</span> in <strong>${s.category}</strong></div>
+            ${detailsHtml}
+            <div class="action-row" style="margin-top: 6px;">
+              <button class="btn-action btn-success" onclick="approveSub(${s.id})">Approve</button>
+              <button class="btn-action btn-danger" onclick="rejectSub(${s.id})">Reject</button>
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     function renderAdminLevelsList() {
@@ -1362,15 +1311,47 @@
         container.innerHTML = '<div style="color:var(--text-muted); text-align:center;">No levels in this category.</div>';
         return;
       }
-      container.innerHTML = levels.map(l => `
+      container.innerHTML = levels.map((l, index) => `
         <div class="submission-item">
-          <div><strong>${l.title}</strong> by ${l.creator} (ID: ${l.gdId || 'N/A'})</div>
+          <div><strong>#${index + 1} - ${l.title}</strong> by ${l.creator} (ID: ${l.gdId || 'N/A'})</div>
           <div class="action-row">
+            <button class="btn-action btn-success" ${index === 0 ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''} onclick="moveLevel(${index}, -1)">Move Up ⬆️</button>
+            <button class="btn-action btn-success" ${index === levels.length - 1 ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''} onclick="moveLevel(${index}, 1)">Move Down ⬇️</button>
             <button class="btn-action btn-primary" onclick="openEditLevelModal('${l.id}')">Edit Info</button>
-            <button class="btn-action btn-danger" onclick="adminDeleteLevel('${l.id}')">Delete Level</button>
+            <button class="btn-action btn-danger" onclick="adminDeleteLevel('${l.id}')">Delete</button>
           </div>
         </div>
       `).join('');
+    }
+
+    async function moveLevel(index, direction) {
+      const levels = allDatabase[currentCategory].levels || [];
+      const newIndex = index + direction;
+      if (newIndex < 0 || newIndex >= levels.length) return;
+
+      // Zamiana miejscami w tablicy
+      const temp = levels[index];
+      levels[index] = levels[newIndex];
+      levels[newIndex] = temp;
+
+      // Aktualizacja historii pozycjonowania dla obu poziomów
+      const today = new Date().toISOString().split('T')[0];
+      levels.forEach((lvl, idx) => {
+        if (!lvl.history) lvl.history = [];
+        const posStr = `#${idx + 1}`;
+        // Dodaj wpis o zmianie pozycji
+        lvl.history.push({
+          date: today,
+          change: idx === index ? (direction === -1 ? '↑1' : '↓1') : (direction === -1 ? '↓1' : '↑1'),
+          newPosition: posStr,
+          reason: 'moved via admin panel'
+        });
+      });
+
+      recalculateAllPlayerPoints();
+      await saveCloudData();
+      init();
+      renderAdminLevelsList();
     }
 
     async function adminDeleteLevel(lvlId) {
