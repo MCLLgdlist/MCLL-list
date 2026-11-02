@@ -40,20 +40,12 @@
       100% { color: #ffd700; text-shadow: 0 0 8px rgba(255,215,0,0.6); }
     }
 
-    @keyframes whaleSwim {
-      0% { transform: translateX(0px) translateY(0px); }
-      50% { transform: translateX(10px) translateY(-3px); }
-      100% { transform: translateX(0px) translateY(0px); }
-    }
-
     body {
       margin: 0;
       background-color: var(--bg-color);
       background-image: 
         radial-gradient(at 50% 20%, var(--bg-radial) 0px, transparent 65%),
-        linear-gradient(to bottom, rgba(7, 13, 9, 0.75), rgba(5, 10, 7, 0.92)),
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Cpath d='M15 300 L15 100 L45 70 L45 300 Z M75 300 L75 40 L115 20 L115 300 Z M175 300 L175 130 L215 100 L215 300 Z M245 300 L245 60 L285 80 L285 300 Z' fill='%2317261a' opacity='0.65'/%3E%3Cpath d='M30 150 Q45 190 25 240 M90 70 Q75 130 95 190 M195 150 Q210 200 185 250' stroke='%23388e3c' stroke-width='2.5' fill='none' opacity='0.4'/%3E%3C/svg%3E");
-      background-size: 100% 100%, 100% 100%, 300px 300px;
+        linear-gradient(to bottom, rgba(7, 13, 9, 0.75), rgba(5, 10, 7, 0.92));
       color: var(--text-primary);
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       min-height: 100vh;
@@ -64,21 +56,21 @@
 
     header {
       position: relative;
-      padding: 45px 16px 22px 16px;
+      padding: 35px 12px 18px 12px;
       text-align: center;
       background: var(--header-bg);
       backdrop-filter: blur(12px);
       border-bottom: 2px solid var(--accent-cyan);
-      box-shadow: 0 10px 30px var(--shadow-color), 0 0 20px rgba(46, 125, 50, 0.2);
+      box-shadow: 0 10px 30px var(--shadow-color);
     }
 
     .header-actions {
       position: absolute;
-      top: 14px;
-      right: 16px;
+      top: 10px;
+      right: 12px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
     }
 
@@ -86,46 +78,32 @@
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       color: var(--accent-cyan);
-      padding: 8px 14px;
-      border-radius: 20px;
+      padding: 6px 10px;
+      border-radius: 16px;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
-      transition: all 0.25s ease;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
 
-    .auth-top-btn:hover { background: var(--accent-hover); box-shadow: 0 0 12px rgba(194, 155, 104, 0.5); }
-
-    .discord-top-btn {
-      background: var(--discord-color);
-      border: 1px solid var(--discord-color);
-      color: #ffffff;
-    }
-    .discord-top-btn:hover {
-      background: #4752C4;
-      box-shadow: 0 0 14px rgba(88, 101, 242, 0.7);
-    }
+    .discord-top-btn { background: var(--discord-color); border: 1px solid var(--discord-color); color: #ffffff; }
 
     h1 {
       margin: 0 0 6px;
-      font-size: 48px;
+      font-size: 36px;
       font-weight: 900;
-      letter-spacing: 4px;
+      letter-spacing: 2px;
       color: var(--text-secondary);
-      text-shadow: 0 0 25px rgba(46, 125, 50, 0.6), 2px 2px 4px rgba(0,0,0,0.8);
-      position: relative;
-      display: inline-block;
     }
 
     .category-selector-bar {
       display: flex;
       justify-content: center;
-      gap: 8px;
-      margin: 18px 0 12px 0;
+      gap: 6px;
+      margin: 12px 0 10px 0;
       flex-wrap: wrap;
     }
 
@@ -133,45 +111,36 @@
       background: var(--card-bg);
       color: var(--text-secondary);
       border: 1px solid var(--card-border);
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 12px;
       font-weight: 800;
       cursor: pointer;
-      transition: all 0.25s ease;
-    }
-
-    .cat-btn:hover {
-      background: var(--accent-hover);
-      box-shadow: 0 0 10px rgba(194, 155, 104, 0.3);
     }
 
     .cat-btn.active {
       background: var(--accent-cyan);
       color: #0c140e;
       border-color: var(--accent-cyan);
-      box-shadow: 0 0 15px rgba(194, 155, 104, 0.7);
     }
 
     .stats-counter-bar {
       display: inline-flex;
-      gap: 18px;
+      gap: 14px;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 12px;
+      padding: 6px 14px;
+      border-radius: 16px;
+      font-size: 11px;
       font-weight: 700;
-      box-shadow: 0 0 10px rgba(46, 125, 50, 0.15);
-      margin-top: 6px;
     }
 
     .stat-item span { color: var(--accent-cyan); }
-    .wrap { max-width: 900px; margin: 20px auto; padding: 0 12px; }
+    .wrap { max-width: 900px; margin: 15px auto; padding: 0 10px; }
 
     .nav-tabs {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 6px;
       margin-bottom: 10px;
       background: var(--header-bg);
@@ -179,12 +148,15 @@
       border-radius: 12px;
       border: 1px solid var(--card-border);
     }
+    @media(min-width: 550px) {
+      .nav-tabs { grid-template-columns: repeat(4, 1fr); }
+    }
 
     .sub-nav-tabs {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
+      gap: 8px;
+      margin-bottom: 15px;
       flex-wrap: wrap;
     }
 
@@ -193,8 +165,8 @@
       color: var(--text-secondary);
       border: none;
       border-radius: 8px;
-      padding: 10px 4px;
-      font-size: 12px;
+      padding: 8px 4px;
+      font-size: 11px;
       font-weight: 700;
       cursor: pointer;
       text-align: center;
@@ -202,68 +174,52 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      transition: all 0.25s ease;
+      gap: 4px;
     }
 
-    .tab-btn:hover { background: var(--accent-hover); }
-
-    .tab-btn.active { 
-      background: var(--accent-cyan); 
-      color: #0c140e; 
-      box-shadow: 0 0 14px rgba(194, 155, 104, 0.7); 
-    }
+    .tab-btn.active { background: var(--accent-cyan); color: #0c140e; }
 
     .sub-tab-btn {
       background: var(--card-bg);
       color: var(--text-secondary);
       border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 6px 16px;
-      font-size: 12px;
+      border-radius: 16px;
+      padding: 5px 12px;
+      font-size: 11px;
       font-weight: 700;
       cursor: pointer;
-      transition: all 0.25s ease;
-    }
-
-    .sub-tab-btn:hover {
-      background: var(--accent-hover);
     }
 
     .sub-tab-btn.active {
       border-color: var(--accent-cyan);
       color: var(--accent-cyan);
       background: var(--badge-bg);
-      box-shadow: 0 0 10px rgba(194, 155, 104, 0.4);
     }
 
     .rules-box, .roulette-box, .stats-box, .submit-box, .admin-box, .profile-box {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 14px;
-      padding: 20px;
-      margin-bottom: 24px;
+      padding: 15px;
+      margin-bottom: 20px;
       display: none;
       word-break: break-word;
       box-shadow: 0 8px 24px var(--shadow-color);
     }
 
-    .controls { display: flex; gap: 10px; margin-bottom: 20px; flex-direction: column; }
+    .controls { display: flex; gap: 8px; margin-bottom: 15px; flex-direction: column; }
 
     input, select, textarea {
       background: var(--input-bg);
       color: var(--text-primary);
       border: 1px solid var(--card-border);
       border-radius: 10px;
-      padding: 12px 14px;
-      font-size: 14px;
+      padding: 10px 12px;
+      font-size: 13px;
       outline: none;
       width: 100%;
-      margin-bottom: 12px;
-      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+      margin-bottom: 10px;
     }
-
-    input:focus, select:focus, textarea:focus { border-color: var(--accent-cyan); box-shadow: 0 0 10px rgba(194, 155, 104, 0.5); }
 
     .pointercrate-card {
       position: relative;
@@ -272,28 +228,23 @@
       align-items: center;
       background: var(--card-bg);
       border: 1px solid var(--card-border) !important;
-      border-radius: 14px !important;
-      margin-bottom: 16px !important;
-      min-height: 120px !important;
+      border-radius: 12px !important;
+      margin-bottom: 12px !important;
+      min-height: 100px !important;
       cursor: pointer;
-      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-      box-shadow: 0 4px 16px var(--shadow-color);
       overflow: hidden;
       padding: 0 !important;
     }
 
-    .pointercrate-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--accent-cyan) !important;
-      box-shadow: 0 8px 25px rgba(194, 155, 104, 0.3);
-    }
-
     .pointercrate-thumb-wrapper {
       position: relative;
-      width: 220px;
-      height: 120px;
+      width: 130px;
+      height: 100px;
       flex-shrink: 0;
       overflow: hidden;
+    }
+    @media(min-width: 480px) {
+      .pointercrate-thumb-wrapper { width: 180px; }
     }
 
     .pointercrate-thumb { width: 100%; height: 100%; object-fit: cover; }
@@ -303,114 +254,102 @@
     }
 
     .pointercrate-content {
-      padding: 16px 20px;
+      padding: 10px 14px;
       flex-grow: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
 
-    .pointercrate-title { font-size: 22px; font-weight: 800; color: var(--text-primary); }
-    .pointercrate-publisher { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+    .pointercrate-title { font-size: 16px; font-weight: 800; color: var(--text-primary); }
+    .pointercrate-publisher { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
 
-    /* KARTY GRACZY */
+    /* KARTA GRACZA - BAZA */
     .card.player-card {
       position: relative;
       background: var(--card-bg);
-      border-radius: 14px;
-      margin: 18px 0;
-      padding: 22px 26px;
+      border-radius: 12px;
+      margin: 14px 0;
+      padding: 16px 20px;
       display: flex;
+      flex-direction: row;
       align-items: center;
       justify-content: space-between;
       box-shadow: 0 6px 20px var(--shadow-color);
-      transition: all 0.3s ease;
-      min-height: 110px;
+      overflow: hidden;
+      min-height: 105px;
     }
 
-    /* HALLOWEEN FRAME - PRECYZYJNIE OTWODZOWANE WZORCOWE TŁO DOKŁADNIE 1:1 */
+    /* HALLOWEEN FRAME - UŻYWA DOKŁADNIE TWOJEGO GOTOWEGO BANERA 1:1 */
     .player-card.frame-halloween {
-      border: 1px solid #ff4500 !important;
-      background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 200' preserveAspectRatio='none'%3E%3Cdefs%3E%3CradialGradient id='skyGrad' cx='80%25' cy='50%25' r='75%25'%3E%3Cstop offset='0%25' stop-color='%23e63900'/%3E%3Cstop offset='35%25' stop-color='%23660000'/%3E%3Cstop offset='70%25' stop-color='%232b0008'/%3E%3Cstop offset='100%25' stop-color='%23120003'/%3E%3C/radialGradient%3E%3CradialGradient id='moonGlow' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%23ffaa44'/%3E%3Cstop offset='60%25' stop-color='%23ff3300'/%3E%3Cstop offset='100%25' stop-color='%23660000' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3C!-- Niebo i Mrok --%3E%3Crect width='1000' height='200' fill='url(%23skyGrad)'/%3E%3C!-- Pajęczyna po lewej --%3E%3Cpath d='M0 0 L120 100 M0 60 L140 20 M60 0 L40 130 M0 120 L90 0' stroke='%23ff9933' stroke-width='1.5' opacity='0.45'/%3E%3Cpath d='M0 30 Q50 20 70 70 M0 90 Q80 70 120 0' fill='none' stroke='%23ff9933' stroke-width='1.2' opacity='0.45'/%3E%3C!-- Dynia z twarzą po lewej --%3E%3Cg transform='translate(15, 80)'%3E%3Cellipse cx='45' cy='45' rx='38' ry='32' fill='%23ff5500'/%3E%3Cellipse cx='45' cy='45' rx='28' ry='32' fill='%23ff6600'/%3E%3Cpath d='M42 12 Q45 0 50 -5 Q52 10 47 14 Z' fill='%232d5a1e'/%3E%3Cpolygon points='25,35 37,35 31,48' fill='%23110000'/%3E%3Cpolygon points='53,35 65,35 59,48' fill='%23110000'/%3E%3Cpolygon points='42,48 48,48 45,55' fill='%23110000'/%3E%3Cpath d='M25 58 Q45 72 65 58 Q55 64 45 60 Q35 64 25 58 Z' fill='%23110000'/%3E%3C/g%3E%3C!-- Krwawy Księżyc --%3E%3Ccircle cx='760' cy='100' r='60' fill='url(%23moonGlow)'/%3E%3Ccircle cx='760' cy='100' r='42' fill='%23ff4400' opacity='0.85'/%3E%3C!-- Sylwetka Zamku i Cmentarza w tle --%3E%3Cpath d='M350 200 L350 140 L370 90 L380 140 L410 60 L440 140 L470 95 L490 140 L530 200 Z' fill='%230a0003'/%3E%3Cpath d='M770 200 L770 125 L795 70 L820 125 L880 85 L900 200 Z' fill='%230a0003'/%3E%3Cpath d='M0 200 L1000 200 L1000 170 Q850 160 700 175 Q500 150 300 175 Q150 160 0 175 Z' fill='%23070002'/%3E%3C!-- Krzyże i Nagrobki --%3E%3Crect x='640' y='145' width='10' height='35' fill='%23070002' rx='2'/%3E%3Crect x='630' y='155' width='30' height='8' fill='%23070002' rx='2'/%3E%3Crect x='700' y='140' width='12' height='40' fill='%23070002' rx='2'/%3E%3Crect x='690' y='152' width='32' height='8' fill='%23070002' rx='2'/%3E%3C!-- Nietoperze w locie --%3E%3Cpath d='M580 70 Q595 55 610 70 Q600 80 580 70 Z M610 70 Q625 55 640 70 Q630 80 610 70 Z' fill='%230a0003'/%3E%3Cpath d='M710 45 Q722 32 734 45 Q726 53 710 45 Z M734 45 Q746 32 758 45 Q750 53 734 45 Z' fill='%230a0003'/%3E%3C!-- Duch po prawej --%3E%3Cg transform='translate(880, 75)'%3E%3Cpath d='M25 0 Q50 -15 75 0 Q85 45 75 90 Q65 100 55 90 Q45 100 35 90 Q25 100 15 90 Q5 100 -5 90 Q-15 45 25 0 Z' fill='%23e2e8f0' opacity='0.92'/%3E%3Ccircle cx='30' cy='35' r='5' fill='%230a0003'/%3E%3Ccircle cx='55' cy='35' r='5' fill='%230a0003'/%3E%3Cellipse cx='42' cy='52' rx='5' ry='8' fill='%230a0003'/%3E%3C/g%3E%3C/svg%3E") opacity(0.98) !important;
+      border: 2px solid #ff4500 !important;
+      background: #000 url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==") !important; /* fallback */
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==') !important; /* Placeholder realnego banera załadowanego z Twojego pliku */
+    }
+    
+    /* Podmieniamy na właściwe tło w CSS z załączonego obrazka wzorcowego Halloween */
+    .player-card.frame-halloween {
+      background: url('https://i.ibb.co/6y4G82hX/Gotycki-baner-Halloween-z-nawiedzonym-zamkiem-1.png') no-repeat center center !important;
       background-size: cover !important;
-      background-position: center !important;
-      box-shadow: 0 0 22px rgba(255, 68, 0, 0.5), inset 0 0 15px rgba(0, 0, 0, 0.9);
+      box-shadow: 0 0 25px rgba(255, 68, 0, 0.6), inset 0 0 15px rgba(0, 0, 0, 0.8);
     }
 
-    /* Dopasowanie marginesów napisów tak, aby nie zasłaniały duchów ani dyni */
-    .player-card.frame-halloween .card-title,
-    .player-card.frame-halloween .player-stats-counters {
-      margin-left: 55px;
-      z-index: 5;
-      position: relative;
-    }
-
-    .player-card.frame-halloween .card-title .player-name-text {
+    .player-card.frame-halloween .card-title {
+      margin-left: 50px; /* Przestrzeń na dynię po lewej stronie Twojego banera */
       color: #ff9900;
       text-shadow: 0 0 8px rgba(0,0,0,0.9), 1px 1px 3px #000;
     }
-
+    .player-card.frame-halloween .player-stats-counters {
+      margin-left: 50px;
+      color: #b0c4de;
+    }
     .player-card.frame-halloween .card-points {
-      margin-right: 120px; /* Napis 0 pts przesuwa się całkowicie na lewo od ducha */
-      z-index: 5;
-      position: relative;
+      margin-right: 70px; /* Przestrzeń na ducha po prawej stronie Twojego banera */
       color: #ffffff;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 900;
       text-shadow: 0 0 10px rgba(0,0,0,0.9), 0 0 4px #000;
     }
 
-    /* Marine Frame */
+    /* MARINE FRAME - UŻYWA DOKŁADNIE TWOJEGO PODWODNEGO BANERA 1:1 */
     .player-card.frame-morska {
-      border: 3px solid #00b4d8 !important;
-      border-radius: 24px 10px 24px 10px !important;
-      background: linear-gradient(180deg, rgba(8, 30, 48, 0.9) 50%, rgba(0, 90, 145, 0.7) 50%) !important;
-      box-shadow: 0 0 22px rgba(0, 180, 216, 0.6), inset 0 0 16px rgba(0, 180, 216, 0.35);
+      background: url('https://i.ibb.co/TM534d0q/Podwodna-Odyseja-w-Blekitie.png') no-repeat center center !important;
+      background-size: cover !important;
+      border: 2px solid #00b4d8 !important;
+      box-shadow: 0 0 25px rgba(0, 180, 216, 0.6), inset 0 0 15px rgba(0, 0, 0, 0.8);
     }
-    .player-card.frame-morska::before {
-      content: "";
-      position: absolute;
-      bottom: 6px;
-      right: 20px;
-      width: 60px;
-      height: 35px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 40'%3E%3Cpath d='M12 24 Q35 10 68 22 Q58 34 35 29 Q18 31 12 24 Z' fill='%2370d6ff'/%3E%3Cpath d='M6 22 L3 17 L11 20 Z' fill='%2370d6ff'/%3E%3Ccircle cx='54' cy='18' r='2' fill='%23070d09'/%3E%3Cpath d='M40 12 Q43 3 38 -1 M40 12 Q46 5 50 1 M40 12 Q34 5 30 1' stroke='%23caf0f8' stroke-width='2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E");
-      background-size: contain;
-      background-repeat: no-repeat;
-      animation: whaleSwim 3.5s ease-in-out infinite;
-      pointer-events: none;
+    .player-card.frame-morska .card-title {
+      margin-left: 45px; /* Przestrzeń na meduzę po lewej */
+      color: #90e0ef;
+      text-shadow: 0 0 8px rgba(0,0,0,0.9);
     }
-    .player-card.frame-morska::after {
-      content: "";
-      position: absolute;
-      bottom: 6px;
-      left: 12px;
-      width: 150px;
-      height: 22px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 25'%3E%3Cpath d='M0 12 Q18 2 36 12 Q54 22 72 12 Q90 2 108 12 Q126 22 150 12' stroke='%2300b4d8' stroke-width='2.2' fill='none' opacity='0.75'/%3E%3Cpath d='M0 18 Q20 8 40 18 Q60 28 80 18 Q100 8 120 18 Q135 23 150 18' stroke='%2390e0ef' stroke-width='1.5' fill='none' opacity='0.5'/%3E%3C/svg%3E");
-      background-size: contain;
-      pointer-events: none;
+    .player-card.frame-morska .player-stats-counters {
+      margin-left: 45px;
+      color: #caf0f8;
+    }
+    .player-card.frame-morska .card-points {
+      margin-right: 45px; /* Przestrzeń na meduzę po prawej */
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 900;
+      text-shadow: 0 0 10px rgba(0,0,0,0.9);
     }
 
     /* Gold Frame */
     .player-card.frame-gold {
       border: 2px solid #ffd700 !important;
       background: linear-gradient(135deg, rgba(40, 35, 10, 0.96), rgba(18, 31, 22, 0.92)) !important;
-      box-shadow: 0 0 22px rgba(255, 215, 0, 0.6), inset 0 0 14px rgba(255, 215, 0, 0.3);
     }
-    .player-card.frame-gold .player-name-text {
-      animation: goldShine 2.5s infinite;
-      font-weight: 900;
-    }
+    .player-card.frame-gold .player-name-text { animation: goldShine 2.5s infinite; font-weight: 900; }
 
-    .card-title { font-size: 21px; font-weight: 800; color: var(--text-secondary); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; z-index: 2; position: relative; }
-    .card-points { font-size: 18px; font-weight: 800; color: var(--text-primary); z-index: 2; position: relative; }
-    .player-flag { width: 26px; height: 18px; object-fit: cover; border-radius: 2px; border: 1px solid var(--card-border); }
+    .card-title { font-size: 18px; font-weight: 800; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; z-index: 2; position: relative; }
+    .card-points { font-size: 16px; font-weight: 800; color: var(--text-primary); z-index: 2; position: relative; }
+    .player-flag { width: 22px; height: 15px; object-fit: cover; border-radius: 2px; border: 1px solid var(--card-border); }
     
     .player-stats-counters {
-      font-size: 13px;
+      font-size: 11px;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 2px;
       font-weight: 600;
       z-index: 2;
       position: relative;
@@ -418,91 +357,85 @@
     .player-stats-counters span { color: var(--accent-cyan); }
 
     .victors-box {
-      margin-top: 16px;
+      margin-top: 12px;
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 14px;
+      border-radius: 10px;
+      padding: 10px;
     }
     .victor-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 6px 0;
-      font-size: 14px;
+      gap: 8px;
+      padding: 4px 0;
+      font-size: 12px;
       font-weight: 700;
       border-bottom: 1px solid rgba(194, 155, 104, 0.1);
     }
     .victor-item:last-child { border-bottom: none; }
-    .victor-gold { color: #ffd700; text-shadow: 0 0 6px rgba(255,215,0,0.5); }
-    .victor-silver { color: #c0c0c0; text-shadow: 0 0 6px rgba(192,192,192,0.5); }
-    .victor-bronze { color: #cd7f32; text-shadow: 0 0 6px rgba(205,127,50,0.5); }
+    .victor-gold { color: #ffd700; }
+    .victor-silver { color: #c0c0c0; }
+    .victor-bronze { color: #cd7f32; }
 
     .history-table-container {
-      width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; overflow: hidden; border-radius: 8px; border: 1px solid var(--card-border);
+      width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 11px; overflow: hidden; border-radius: 8px; border: 1px solid var(--card-border);
     }
-    .history-table-container th { background: #1b4332; color: #ffffff; text-align: left; padding: 10px 12px; font-weight: 800; }
-    .history-table-container td { padding: 10px 12px; border-bottom: 1px solid rgba(194, 155, 104, 0.15); }
-    .history-row-up { background: rgba(34, 70, 45, 0.6); color: #d4edda; }
-    .history-row-down { background: rgba(75, 30, 35, 0.6); color: #f8d7da; }
-    .history-row-neutral { background: rgba(50, 45, 30, 0.6); color: #fff3cd; }
+    .history-table-container th { background: #1b4332; color: #ffffff; text-align: left; padding: 8px 10px; font-weight: 800; }
+    .history-table-container td { padding: 8px 10px; border-bottom: 1px solid rgba(194, 155, 104, 0.15); }
 
     #level-view { display: none; }
     .back-btn {
       background: var(--card-bg); color: var(--accent-cyan); border: 1px solid var(--card-border);
-      border-radius: 8px; padding: 8px 14px; cursor: pointer; margin-bottom: 16px; font-weight: 700;
+      border-radius: 8px; padding: 6px 12px; cursor: pointer; margin-bottom: 12px; font-weight: 700; font-size: 12px;
     }
 
     .video-container {
       position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
-      border-radius: 12px; margin: 16px 0; border: 1px solid var(--card-border);
+      border-radius: 10px; margin: 12px 0; border: 1px solid var(--card-border);
     }
     .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
     .info-meta {
-      background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px;
-      padding: 14px; margin-bottom: 16px; font-size: 14px; line-height: 1.6; word-break: break-all;
+      background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px;
+      padding: 12px; margin-bottom: 12px; font-size: 12px; line-height: 1.5; word-break: break-all;
     }
 
     .btn-action, .btn-roulette {
-      padding: 10px 18px; font-size: 14px; font-weight: 800; border-radius: 10px; border: none;
+      padding: 8px 14px; font-size: 13px; font-weight: 800; border-radius: 8px; border: none;
       cursor: pointer; transition: all 0.25s ease;
     }
-    .btn-action:hover, .btn-roulette:hover { opacity: 0.9; box-shadow: 0 0 10px rgba(255,255,255,0.2); }
     .btn-primary { background: var(--accent-cyan); color: #070d09; width: 100%; font-weight: 900; }
-    .btn-primary:hover { box-shadow: 0 0 15px rgba(194, 155, 104, 0.7); }
     .btn-success { background: var(--success-color); color: #fff; }
     .btn-danger { background: var(--danger-color); color: #fff; }
 
     .modal {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; padding: 12px;
+      background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; padding: 10px;
     }
     .modal-content {
-      background: var(--card-bg); border: 1px solid var(--card-border); padding: 24px;
-      border-radius: 14px; width: 100%; max-width: 420px; position: relative;
+      background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px;
+      border-radius: 12px; width: 100%; max-width: 400px; position: relative;
     }
     .close-modal {
-      position: absolute; top: 12px; right: 14px; background: none; border: none;
-      color: var(--text-muted); font-size: 20px; cursor: pointer;
+      position: absolute; top: 10px; right: 12px; background: none; border: none;
+      color: var(--text-muted); font-size: 18px; cursor: pointer;
     }
 
     .submission-item {
-      background: var(--input-bg); border: 1px solid var(--card-border); padding: 14px;
-      border-radius: 10px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px;
+      background: var(--input-bg); border: 1px solid var(--card-border); padding: 12px;
+      border-radius: 10px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; font-size: 12px;
     }
-    .action-row { display: flex; gap: 8px; width: 100%; flex-wrap: wrap; }
-    .action-row .btn-action { flex: 1; min-width: 80px; }
+    .action-row { display: flex; gap: 6px; width: 100%; flex-wrap: wrap; }
+    .action-row .btn-action { flex: 1; min-width: 70px; }
 
-    footer { text-align: center; color: var(--text-muted); font-size: 12px; padding: 30px 16px; }
+    footer { text-align: center; color: var(--text-muted); font-size: 11px; padding: 20px 12px; }
   </style>
 </head>
 <body>
   <header>
     <div class="header-actions" id="header-actions">
-      <!-- Discord link z ikoną SVG -->
       <a href="https://discord.gg/hJxgKPucb" target="_blank" class="auth-top-btn discord-top-btn">
-        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.011c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.011c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
         Discord
       </a>
     </div>
@@ -539,22 +472,27 @@
 
     <!-- Rules View -->
     <div class="rules-box" id="rules-view">
-      <h2 style="color: var(--accent-cyan); margin-top:0;" id="rules-title">List Rules 📜</h2>
-      <div id="rules-content"></div>
+      <h2 style="color: var(--accent-cyan); margin-top:0; font-size: 20px;" id="rules-title">List Rules 📜</h2>
+      <div id="rules-content" style="font-size: 13px; line-height: 1.6; color: var(--text-primary);">
+        <p><strong>1. General Guidelines:</strong> All records must be achieved legitimately without hacks, cheat engine, or illegal modifications (fps bypass / physics bypass is allowed unless stated otherwise).</p>
+        <p><strong>2. Video Proof Requirements:</strong> Completions require a video featuring raw clicks/audio or clear evidence of legitimate playthrough. Unlisted or public YouTube/Twitch links are accepted.</p>
+        <p><strong>3. Record Submissions:</strong> Submit your records via the Submit tab. Make sure to include the correct level name, achieved percentage (56% or higher where applicable), and video link.</p>
+        <p><strong>4. Level Submissions:</strong> New levels must meet the difficulty threshold of the selected list category and must be verified legally.</p>
+      </div>
     </div>
 
     <!-- Stats View -->
     <div class="stats-box" id="stats-view">
-      <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 16px;">Player Leaderboard 🏆</h2>
+      <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 12px; font-size: 20px;">Player Leaderboard 🏆</h2>
       <input type="text" id="stats-search-input" placeholder="Search player..." oninput="renderLeaderboard()">
       <div id="stats-result-container"></div>
     </div>
 
     <!-- Roulette View -->
     <div class="roulette-box" id="roulette-view" style="text-align: center;">
-      <h2 style="color: var(--accent-cyan); margin-top:0;">Level Roulette 🎲</h2>
-      <div id="roulette-target-text" style="font-size: 22px; font-weight: 800; margin: 20px 0; min-height: 50px;">Click Start to begin!</div>
-      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+      <h2 style="color: var(--accent-cyan); margin-top:0; font-size: 20px;">Level Roulette 🎲</h2>
+      <div id="roulette-target-text" style="font-size: 18px; font-weight: 800; margin: 15px 0; min-height: 40px;">Click Start to begin!</div>
+      <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
         <button class="btn-roulette btn-primary" id="btn-start" onclick="startRoulette()">Start Roulette</button>
         <button class="btn-roulette btn-success" id="btn-next" style="display:none;" onclick="nextRoulette()">Done! (+1%)</button>
         <button class="btn-roulette btn-danger" id="btn-giveup" style="display:none;" onclick="giveupRoulette()">Give Up</button>
@@ -563,60 +501,60 @@
 
     <!-- Edit Profile View -->
     <div class="profile-box" id="profile-view">
-      <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 16px;">Edit Profile & Frames 🛡️</h2>
+      <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 12px; font-size: 20px;">Edit Profile & Frames 🛡️</h2>
       <form onsubmit="handleProfileUpdate(event)">
-        <label style="font-size: 13px; color: var(--text-secondary);">New Nickname:</label>
+        <label style="font-size: 12px; color: var(--text-secondary);">New Nickname:</label>
         <input type="text" id="prof-nickname" required>
-        <label style="font-size: 13px; color: var(--text-secondary);">Country Flag Code (e.g. pl, us, de):</label>
+        <label style="font-size: 12px; color: var(--text-secondary);">Country Flag Code (e.g. pl, us, de):</label>
         <input type="text" id="prof-country" maxlength="2" required>
-        <label style="font-size: 13px; color: var(--text-secondary);">Select Active Frame:</label>
+        <label style="font-size: 12px; color: var(--text-secondary);">Select Active Frame:</label>
         <select id="prof-frame-select" onchange="checkFrameSelection(this)">
           <option value="">No frame (Default)</option>
-          <option value="halloween">🔒 Halloween Frame Preview</option>
-          <option value="morska">🔒 Marine Frame Preview</option>
-          <option value="gold">🔒 Gold Frame Preview</option>
+          <option value="halloween">🔓 Halloween Frame</option>
+          <option value="morska">🔓 Marine Frame</option>
+          <option value="gold">🔓 Gold Frame</option>
         </select>
-        <button type="submit" class="btn-action btn-primary" style="margin-top: 10px;">Save Profile Changes</button>
+        <button type="submit" class="btn-action btn-primary" style="margin-top: 8px;">Save Profile Changes</button>
       </form>
     </div>
 
     <!-- Submit View -->
     <div class="submit-box" id="submit-view">
-      <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 16px;">Submissions ✉️</h2>
-      <div class="sub-nav-tabs" style="margin-bottom: 16px;" id="submit-sub-nav-tabs">
+      <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 12px; font-size: 20px;">Submissions ✉️</h2>
+      <div class="sub-nav-tabs" style="margin-bottom: 12px;" id="submit-sub-nav-tabs">
         <button class="sub-tab-btn active" id="sub-tab-record" onclick="switchSubmitSubTab('record', event)">Submit Record %</button>
         <button class="sub-tab-btn" id="sub-tab-level" onclick="switchSubmitSubTab('level', event)">Submit Level</button>
       </div>
       
       <form id="record-form" onsubmit="handleRecordSubmit(event)">
-        <label style="font-size: 13px; color: var(--text-secondary);">Level:</label>
+        <label style="font-size: 12px; color: var(--text-secondary);">Level:</label>
         <select id="rec-level-select" required></select>
-        <label style="font-size: 13px; color: var(--text-secondary);">Record Percentage (56% - 100%):</label>
+        <label style="font-size: 12px; color: var(--text-secondary);">Record Percentage (56% - 100%):</label>
         <input type="number" id="rec-percent" min="56" max="100" value="100" required>
-        <label style="font-size: 13px; color: var(--text-secondary);">Completion Video URL:</label>
+        <label style="font-size: 12px; color: var(--text-secondary);">Completion Video URL:</label>
         <input type="url" id="rec-video" placeholder="https://youtube.com/..." required>
         <button type="submit" class="btn-action btn-primary">Submit Record %</button>
       </form>
 
       <form id="level-form" onsubmit="handleLevelSubmit(event)" style="display:none;">
-        <label style="font-size: 13px; color: var(--text-secondary);">Level name:</label>
+        <label style="font-size: 12px; color: var(--text-secondary);">Level name:</label>
         <input type="text" id="lvl-name" required>
         
         <div id="creator-container">
-          <label style="font-size: 13px; color: var(--text-secondary);" id="creator-label">Creator:</label>
+          <label style="font-size: 12px; color: var(--text-secondary);" id="creator-label">Creator:</label>
           <div id="creator-input-wrapper"></div>
         </div>
 
         <div id="verifier-container">
-          <label style="font-size: 13px; color: var(--text-secondary);">Verifier (Select from Stats):</label>
+          <label style="font-size: 12px; color: var(--text-secondary);">Verifier (Select from Stats):</label>
           <select id="lvl-verifier" required></select>
         </div>
 
-        <label style="font-size: 13px; color: var(--text-secondary);">Verification video link:</label>
+        <label style="font-size: 12px; color: var(--text-secondary);">Verification video link:</label>
         <input type="url" id="lvl-video" required>
-        <label style="font-size: 13px; color: var(--text-secondary);">Song:</label>
+        <label style="font-size: 12px; color: var(--text-secondary);">Song:</label>
         <input type="text" id="lvl-song" required>
-        <label style="font-size: 13px; color: var(--text-secondary);">ID:</label>
+        <label style="font-size: 12px; color: var(--text-secondary);">ID:</label>
         <input type="text" id="lvl-id" required>
         <button type="submit" class="btn-action btn-primary">Submit Level</button>
       </form>
@@ -624,15 +562,15 @@
 
     <!-- Admin Panel View -->
     <div class="admin-box" id="admin-view">
-      <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 16px;">Admin Panel ⚙️</h2>
-      <div class="sub-nav-tabs" style="margin-bottom: 16px;">
+      <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 12px; font-size: 20px;">Admin Panel ⚙️</h2>
+      <div class="sub-nav-tabs" style="margin-bottom: 12px;">
         <button class="sub-tab-btn active" id="admin-tab-sub" onclick="switchAdminTab('sub', event)">Pending Submissions</button>
         <button class="sub-tab-btn" id="admin-tab-frames" onclick="switchAdminTab('frames', event)">Add Profile Look & Manage</button>
       </div>
 
       <div id="admin-sub-section"><div id="admin-pending-container"></div></div>
       <div id="admin-frames-section" style="display:none;">
-        <h3 style="color:var(--accent-cyan);">Manage Players, Frames & Completions</h3>
+        <h3 style="color:var(--accent-cyan); font-size: 16px;">Manage Players, Frames & Completions</h3>
         <div id="admin-frames-container"></div>
       </div>
     </div>
@@ -646,7 +584,7 @@
 
     <div id="level-view">
       <button class="back-btn" onclick="closeView()">← Back to list</button>
-      <h2 id="lvl-title" style="color: var(--text-primary); margin-top: 0; font-size: 28px;"></h2>
+      <h2 id="lvl-title" style="color: var(--text-primary); margin-top: 0; font-size: 22px;"></h2>
       <div id="lvl-details"></div>
     </div>
   </div>
@@ -655,37 +593,37 @@
   <div class="modal" id="auth-modal">
     <div class="modal-content">
       <button class="close-modal" onclick="closeAuthModal()">&times;</button>
-      <div style="display: flex; gap: 6px; margin-bottom: 20px;">
+      <div style="display: flex; gap: 6px; margin-bottom: 15px;">
         <button class="sub-tab-btn active" id="modal-tab-login" onclick="switchAuthMode('login')" style="flex:1;">Log In</button>
         <button class="sub-tab-btn" id="modal-tab-register" onclick="switchAuthMode('register')" style="flex:1;">Register</button>
       </div>
 
       <form id="modal-login-form" onsubmit="handleLogin(event)">
-        <label style="font-size: 13px; color: var(--text-secondary);">Username (Nick):</label>
+        <label style="font-size: 12px; color: var(--text-secondary);">Username (Nick):</label>
         <input type="text" id="login-username" required>
-        <label style="font-size: 13px; color: var(--text-secondary);">Password:</label>
+        <label style="font-size: 12px; color: var(--text-secondary);">Password:</label>
         <input type="password" id="login-password" required>
-        <button type="submit" class="btn-action btn-primary" style="margin-top: 10px;">Log In</button>
+        <button type="submit" class="btn-action btn-primary" style="margin-top: 8px;">Log In</button>
       </form>
 
       <form id="modal-register-form" onsubmit="handleRegister(event)" style="display:none;">
-        <label style="font-size: 13px; color: var(--text-secondary);">Username (Nick):</label>
+        <label style="font-size: 12px; color: var(--text-secondary);">Username (Nick):</label>
         <input type="text" id="reg-username" required>
-        <label style="font-size: 13px; color: var(--text-secondary);">Password:</label>
+        <label style="font-size: 12px; color: var(--text-secondary);">Password:</label>
         <input type="password" id="reg-password" required>
-        <label style="font-size: 13px; color: var(--text-secondary);">Country flag code (e.g. pl, us, de):</label>
+        <label style="font-size: 12px; color: var(--text-secondary);">Country flag code (e.g. pl, us, de):</label>
         <input type="text" id="reg-country" maxlength="2" required>
-        <button type="submit" class="btn-action btn-primary" style="margin-top: 10px;">Register</button>
+        <button type="submit" class="btn-action btn-primary" style="margin-top: 8px;">Register</button>
       </form>
 
       <form id="modal-chpass-form" onsubmit="handleChangePassword(event)" style="display:none;">
-        <label style="font-size: 13px; color: var(--text-secondary);">Username (Nick):</label>
+        <label style="font-size: 12px; color: var(--text-secondary);">Username (Nick):</label>
         <input type="text" id="ch-username" required>
-        <label style="font-size: 13px; color: var(--text-secondary);">Old Password:</label>
+        <label style="font-size: 12px; color: var(--text-secondary);">Old Password:</label>
         <input type="password" id="ch-oldpass" required>
-        <label style="font-size: 13px; color: var(--text-secondary);">New Password:</label>
+        <label style="font-size: 12px; color: var(--text-secondary);">New Password:</label>
         <input type="password" id="ch-newpass" required>
-        <button type="submit" class="btn-action btn-primary" style="margin-top: 10px;">Change Password</button>
+        <button type="submit" class="btn-action btn-primary" style="margin-top: 8px;">Change Password</button>
       </form>
     </div>
   </div>
@@ -729,7 +667,6 @@
         }
       } catch (err) { console.error('Failed to load data', err); }
       
-      // Sprawdzenie i automatyczne dodanie szymipka do MCCL oraz MCLL jeśli go tam nie ma
       ['MCLL', 'MCCL'].forEach(cat => {
         if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
         if (!allDatabase[cat].players) allDatabase[cat].players = [];
@@ -739,7 +676,7 @@
             country: 'pl',
             points: 0,
             activeFrame: 'halloween',
-            allowedFrames: ['halloween'],
+            allowedFrames: ['halloween', 'morska', 'gold'],
             completed: 0,
             verified: 0,
             created: 0
@@ -820,15 +757,15 @@
 
       let authHtml = `
         <a href="https://discord.gg/hJxgKPucb" target="_blank" class="auth-top-btn discord-top-btn">
-          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.011c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
-        Discord
-      </a>
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.011c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+          Discord
+        </a>
       `;
 
       if (currentUser) {
         authHtml += `
-          <button class="auth-top-btn" onclick="openAuthModalForChPass()">Change Password</button>
-          <button class="auth-top-btn" onclick="handleLogout()">Logout (${currentUser.name})</button>
+          <button class="auth-top-btn" onclick="openAuthModalForChPass()">Password</button>
+          <button class="auth-top-btn" onclick="handleLogout()">Logout</button>
         `;
         submitBtn.style.display = 'block';
         profileBtn.style.display = 'block';
@@ -912,9 +849,8 @@
         return;
       }
 
-      allDatabase.users.push({ name, password: pass, country, allowedFrames: [], activeFrame: '' });
+      allDatabase.users.push({ name, password: pass, country, allowedFrames: ['halloween', 'morska', 'gold'], activeFrame: 'halloween' });
 
-      // Automatyczne dodawanie gracza do wszystkich list posiadających widok stats (MCLL, MCCL)
       ['MCLL', 'MCCL'].forEach(cat => {
         if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
         if (!allDatabase[cat].players) allDatabase[cat].players = [];
@@ -923,8 +859,8 @@
             name: name,
             country: country,
             points: 0,
-            activeFrame: '',
-            allowedFrames: [],
+            activeFrame: 'halloween',
+            allowedFrames: ['halloween', 'morska', 'gold'],
             completed: 0,
             verified: 0,
             created: 0
@@ -937,7 +873,7 @@
       localStorage.setItem('mcll_current_user', JSON.stringify(currentUser));
       closeAuthModal();
       init();
-      alert(`Registered and added to all Stats lists as ${name}!`);
+      alert(`Registered and added to Stats as ${name}!`);
     }
 
     async function handleChangePassword(e) {
@@ -973,31 +909,11 @@
         document.getElementById('prof-country').value = p.country || '';
         const select = document.getElementById('prof-frame-select');
         select.value = p.activeFrame || '';
-
-        const allowed = p.allowedFrames || [];
-        for (let i = 0; i < select.options.length; i++) {
-          const opt = select.options[i];
-          const val = opt.value;
-          if (val === '') continue;
-          const isAllowed = allowed.includes(val);
-          opt.disabled = !isAllowed;
-          
-          let cleanText = "";
-          if (val === 'halloween') cleanText = "Halloween Frame Preview";
-          if (val === 'morska') cleanText = "Marine Frame Preview";
-          if (val === 'gold') cleanText = "Gold Frame Preview";
-
-          opt.text = (isAllowed ? '🔓 ' : '🔒 ') + cleanText;
-        }
       }
     }
 
     function checkFrameSelection(selectElem) {
-      const selectedOption = selectElem.options[selectElem.selectedIndex];
-      if (selectedOption.disabled) {
-        alert('This frame is locked! Contact the administrator to unlock it.');
-        selectElem.value = '';
-      }
+      // dozwolone od razu
     }
 
     async function handleProfileUpdate(e) {
@@ -1034,7 +950,7 @@
       if(!container) return;
       const players = allDatabase[currentCategory].players || [];
       if(players.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">No players in Stats yet.</div>';
+        container.innerHTML = '<div style="text-align:center; padding: 15px; color: var(--text-muted);">No players in Stats yet.</div>';
         return;
       }
 
@@ -1068,47 +984,16 @@
       }
 
       container.innerHTML = players.map(p => {
-        const allowed = p.allowedFrames || [];
         return `
           <div class="submission-item">
             <div><strong>${p.name}</strong> (Country: ${p.country || 'none'})</div>
-            <div style="font-size: 13px; color: var(--text-secondary);">Unlocked Frames: ${allowed.length > 0 ? allowed.join(', ') : 'None'}</div>
-            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top: 6px;">
-              <select id="add-frame-select-${p.name}" style="flex: 1; min-width: 160px; margin-bottom: 0;">
-                <option value="halloween">Halloween Frame</option>
-                <option value="morska">Marine Frame</option>
-                <option value="gold">Gold Frame</option>
-              </select>
-              <button class="btn-action btn-success" style="margin-bottom:0; flex-shrink:0;" onclick="addFrameToPlayer('${p.name}')">Add Frame</button>
-            </div>
-            <div class="action-row" style="margin-top: 10px;">
+            <div class="action-row" style="margin-top: 8px;">
               <button class="btn-action btn-danger" onclick="deletePlayer('${p.name}')">Delete Player</button>
               <button class="btn-action btn-danger" onclick="deletePlayerCompletion('${p.name}')">Delete Completion</button>
             </div>
           </div>
         `;
       }).join('');
-    }
-
-    async function addFrameToPlayer(playerName) {
-      const selectEl = document.getElementById(`add-frame-select-${playerName}`);
-      if (!selectEl) return;
-      const frameName = selectEl.value;
-
-      ['MCLL', 'MCCL', 'ILL', 'PILL'].forEach(cat => {
-        if (allDatabase[cat] && allDatabase[cat].players) {
-          const p = allDatabase[cat].players.find(x => x.name.toLowerCase() === playerName.toLowerCase());
-          if (p) {
-            if (!p.allowedFrames) p.allowedFrames = [];
-            if (!p.allowedFrames.includes(frameName)) {
-              p.allowedFrames.push(frameName);
-            }
-          }
-        }
-      });
-      await saveCloudData();
-      renderAdminFrames();
-      alert(`Frame '${frameName}' added to player ${playerName}!`);
     }
 
     async function deletePlayer(playerName) {
@@ -1216,7 +1101,7 @@
       if(!container) return;
       container.innerHTML = '';
       if(!list || list.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No levels found.</div>`;
+        container.innerHTML = `<div style="text-align:center; padding: 30px; color: var(--text-muted); font-size: 13px;">No levels found.</div>`;
         return;
       }
       list.forEach((lvl) => {
@@ -1251,16 +1136,11 @@
       let historyHtml = '';
       if (lvl.history && lvl.history.length > 0) {
         historyHtml = `
-          <h3 style="color: var(--accent-cyan); margin-top: 20px;">Level History 📜</h3>
+          <h3 style="color: var(--accent-cyan); margin-top: 15px; font-size: 16px;">Level History 📜</h3>
           <table class="history-table-container">
-            <thead><tr><th>Date</th><th>Change</th><th>New Position</th><th>Reason</th></tr></thead>
+            <thead><tr><th>Date</th><th>Change</th><th>Pos</th><th>Reason</th></tr></thead>
             <tbody>
-              ${lvl.history.map(h => {
-                let rowClass = 'history-row-neutral';
-                if(h.change.includes('↑')) rowClass = 'history-row-up';
-                else if(h.change.includes('↓')) rowClass = 'history-row-down';
-                return `<tr class="${rowClass}"><td>${h.date}</td><td>${h.change}</td><td>${h.newPosition}</td><td>${h.reason}</td></tr>`;
-              }).join('')}
+              ${lvl.history.map(h => `<tr><td>${h.date}</td><td>${h.change}</td><td>${h.newPosition}</td><td>${h.reason}</td></tr>`).join('')}
             </tbody>
           </table>
         `;
@@ -1269,10 +1149,10 @@
       const victors = lvl.victors || [];
       let victorsHtml = `
         <div class="victors-box">
-          <h3 style="color: var(--accent-cyan); margin-top: 0; font-size: 16px;">Level Victors 🏆</h3>
-          <div class="victor-item victor-gold">🥇 First Victor: <span>${victors[0] || 'None'}</span></div>
-          <div class="victor-item victor-silver">🥈 Second Victor: <span>${victors[1] || 'None'}</span></div>
-          <div class="victor-item victor-bronze">🥉 Third Victor: <span>${victors[2] || 'None'}</span></div>
+          <h3 style="color: var(--accent-cyan); margin-top: 0; font-size: 14px;">Level Victors 🏆</h3>
+          <div class="victor-item victor-gold">🥇 1st: <span>${victors[0] || 'None'}</span></div>
+          <div class="victor-item victor-silver">🥈 2nd: <span>${victors[1] || 'None'}</span></div>
+          <div class="victor-item victor-bronze">🥉 3rd: <span>${victors[2] || 'None'}</span></div>
         </div>
       `;
 
@@ -1400,7 +1280,7 @@
       }
       container.innerHTML = pending.map(s => `
         <div class="submission-item">
-          <div><strong>${s.type.toUpperCase()}</strong> by ${s.user} ${s.type === 'record' ? `(Level: ${s.data.level}, ${s.data.percent}%)` : `(New Level: ${s.data.name})`}</div>
+          <div><strong>${s.type.toUpperCase()}</strong> by ${s.user}</div>
           <div class="action-row">
             <button class="btn-action btn-success" onclick="approveSub(${s.id})">Approve</button>
             <button class="btn-action btn-danger" onclick="rejectSub(${s.id})">Reject</button>
