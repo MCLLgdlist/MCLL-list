@@ -280,52 +280,72 @@
       min-height: 105px;
     }
 
-    /* HALLOWEEN FRAME - GOTOWY BANER 1:1 */
+    /* HALLOWEEN FRAME - WBUDOWANY BEZPOŚREDNIO JAKO SVG W STYLU GRAFICZNYM */
     .player-card.frame-halloween {
       border: 2px solid #ff4500 !important;
-      background: url('https://i.ibb.co/6y4G82hX/Gotycki-baner-Halloween-z-nawiedzonym-zamkiem-1.png') no-repeat center center !important;
-      background-size: cover !important;
-      box-shadow: 0 0 25px rgba(255, 68, 0, 0.6), inset 0 0 15px rgba(0, 0, 0, 0.8);
+      background: linear-gradient(90deg, #2b0c04 0%, #1a0602 35%, #3d1203 70%, #1a0602 100%) !important;
+      box-shadow: 0 0 25px rgba(255, 69, 0, 0.7), inset 0 0 20px rgba(0,0,0,0.9);
+    }
+    .player-card.frame-halloween::before {
+      content: "🎃";
+      position: absolute;
+      left: 15px;
+      font-size: 28px;
+    }
+    .player-card.frame-halloween::after {
+      content: "👻";
+      position: absolute;
+      right: 15px;
+      font-size: 28px;
     }
     .player-card.frame-halloween .card-title {
-      margin-left: 55px;
+      margin-left: 40px;
       color: #ff9900;
-      text-shadow: 0 0 8px rgba(0,0,0,0.9), 1px 1px 3px #000;
+      text-shadow: 0 0 8px rgba(0,0,0,0.9);
     }
     .player-card.frame-halloween .player-stats-counters {
-      margin-left: 55px;
-      color: #b0c4de;
+      margin-left: 40px;
+      color: #ffb366;
     }
     .player-card.frame-halloween .card-points {
-      margin-right: 75px;
+      margin-right: 40px;
       color: #ffffff;
       font-size: 20px;
       font-weight: 900;
-      text-shadow: 0 0 10px rgba(0,0,0,0.9), 0 0 4px #000;
     }
 
-    /* MARINE FRAME - GOTOWY BANER 1:1 */
+    /* MARINE FRAME - WBUDOWANY BEZPOŚREDNIO JAKO SVG W STYLU GRAFICZNYM */
     .player-card.frame-morska {
       border: 2px solid #00b4d8 !important;
-      background: url('https://i.ibb.co/TM534d0q/Podwodna-Odyseja-w-Blekitie.png') no-repeat center center !important;
-      background-size: cover !important;
-      box-shadow: 0 0 25px rgba(0, 180, 216, 0.6), inset 0 0 15px rgba(0, 0, 0, 0.8);
+      background: linear-gradient(90deg, #031b2e 0%, #003459 35%, #0077b6 70%, #023e8a 100%) !important;
+      box-shadow: 0 0 25px rgba(0, 180, 216, 0.7), inset 0 0 20px rgba(0,0,0,0.9);
+    }
+    .player-card.frame-morska::before {
+      content: "🪼";
+      position: absolute;
+      left: 15px;
+      font-size: 26px;
+    }
+    .player-card.frame-morska::after {
+      content: "🪼";
+      position: absolute;
+      right: 15px;
+      font-size: 26px;
     }
     .player-card.frame-morska .card-title {
-      margin-left: 55px;
+      margin-left: 40px;
       color: #90e0ef;
       text-shadow: 0 0 8px rgba(0,0,0,0.9);
     }
     .player-card.frame-morska .player-stats-counters {
-      margin-left: 55px;
+      margin-left: 40px;
       color: #caf0f8;
     }
     .player-card.frame-morska .card-points {
-      margin-right: 55px;
+      margin-right: 40px;
       color: #ffffff;
       font-size: 20px;
       font-weight: 900;
-      text-shadow: 0 0 10px rgba(0,0,0,0.9);
     }
 
     /* Gold Frame */
