@@ -406,7 +406,7 @@
       <button class="sub-tab-btn" id="sub-tab-legacy" onclick="switchSubTab('legacy', event)">Legacy List</button>
     </div>
 
-    <!-- Rules View (Dynamiczny kontener zasad dla każdej kategorii) -->
+    <!-- Rules View -->
     <div class="rules-box" id="rules-view">
       <h2 style="color: var(--accent-cyan); margin-top:0; font-size: 20px;" id="rules-title">List Rules 📜</h2>
       <div id="rules-content" style="font-size: 13px; line-height: 1.6; color: var(--text-primary);"></div>
@@ -508,7 +508,7 @@
     </div>
   </div>
 
-  <!-- Edit Level Modal (dla Admina) -->
+  <!-- Edit Level Modal -->
   <div class="modal" id="edit-level-modal">
     <div class="modal-content">
       <button class="close-modal" onclick="closeEditModal()">&times;</button>
@@ -581,7 +581,6 @@
     let currentSubTab = 'main';
     let rouletteState = { active: false, currentLevel: null, currentPercent: 0 };
 
-    // Definicje zasad dla każdej kategorii
     const rulesData = {
       MCLL: `
         <p><strong>1. Minimum Gameplay Duration:</strong> The level must feature at least 30 seconds of active gameplay. Short challenges or levels that end before the 30-second mark do not qualify.</p>
@@ -609,6 +608,39 @@
         <p><strong>5. Appropriate Content:</strong> Any custom graphics or themes inside the level must strictly avoid NSFW or adult content.</p>
       `
     };
+
+    function getLevelBasePoints(cat, levelId) {
+      if (cat === 'ILL' || cat === 'PPLL') return 0;
+      const levels = allDatabase[cat].levels || [];
+      const index = levels.findIndex(l => l.id === levelId);
+      if (index === -1) return 0;
+      const total = levels.length;
+      if (total <= 1) return 500;
+      const pts = 500 - (index / (total - 1)) * 400;
+      return Math.round(pts);
+    }
+
+    function recalculateAllPlayerPoints() {
+      ['MCLL', 'MCCL'].forEach(cat => {
+        if (!allDatabase[cat] || !allDatabase[cat].players) return;
+        const levels = allDatabase[cat].levels || [];
+        
+        allDatabase[cat].players.forEach(player => {
+          let totalPoints = 0;
+          levels.forEach(lvl => {
+            const victors = lvl.victors || [];
+            const userRecord = victors.find(v => v.name.toLowerCase() === player.name.toLowerCase());
+            if (userRecord) {
+              const basePts = getLevelBasePoints(cat, lvl.id);
+              const percent = parseFloat(userRecord.percent) || 100;
+              totalPoints += (basePts * (percent / 100));
+            }
+          });
+          player.points = Math.round(totalPoints);
+        });
+        allDatabase[cat].players.sort((a, b) => (b.points || 0) - (a.points || 0));
+      });
+    }
 
     function renderRules() {
       const content = document.getElementById('rules-content');
@@ -654,6 +686,7 @@
           });
         }
       });
+      recalculateAllPlayerPoints();
       init();
     }
 
@@ -676,9 +709,26 @@
     }
 
     function init() {
+      recalculateAllPlayerPoints();
+      const isImpossible = (currentCategory === 'ILL' || currentCategory === 'PPLL');
       const currentList = allDatabase[currentCategory] || { levels: [], players: [] };
+
       document.getElementById('stat-levels').innerText = currentList.levels ? currentList.levels.length : 0;
-      document.getElementById('stat-players').innerText = currentList.players ? currentList.players.length : 0;
+      
+      const statsPlayersBox = document.getElementById('stat-players-box');
+      const statsNavBtn = document.getElementById('nav-btn-stats');
+      
+      if (isImpossible) {
+        statsPlayersBox.style.display = 'none';
+        statsNavBtn.style.display = 'none';
+        if (currentMainTab === 'stats') {
+          switchMainTab('levels', document.getElementById('nav-btn-levels'));
+        }
+      } else {
+        statsPlayersBox.style.display = 'inline-block';
+        statsNavBtn.style.display = 'flex';
+        document.getElementById('stat-players').innerText = currentList.players ? currentList.players.length : 0;
+      }
 
       updateAuthUI();
       filterData();
@@ -846,6 +896,8 @@
     }
 
     function renderLeaderboard() {
+      if (currentCategory === 'ILL' || currentCategory === 'PPLL') return;
+      recalculateAllPlayerPoints();
       const container = document.getElementById('stats-result-container');
       if(!container) return;
       const players = allDatabase[currentCategory].players || [];
@@ -857,8 +909,22 @@
         return;
       }
 
-      container.innerHTML = filtered.map((p, idx) => {
+      container.innerHTML = filtered.map((p) => {
         const globalIdx = players.findIndex(x => x.name === p.name) + 1;
+        const displayPts = p.points || 0;
+
+        const levels = allDatabase[currentCategory].levels || [];
+        let completedCount = 0;
+        let verifiedCount = 0;
+        let createdCount = 0;
+
+        levels.forEach(lvl => {
+          if (lvl.creator && lvl.creator.toLowerCase() === p.name.toLowerCase()) createdCount++;
+          if (lvl.verifier && lvl.verifier.toLowerCase() === p.name.toLowerCase()) verifiedCount++;
+          const rec = (lvl.victors || []).find(v => v.name.toLowerCase() === p.name.toLowerCase());
+          if (rec && (parseFloat(rec.percent) || 100) === 100) completedCount++;
+        });
+
         return `
           <div class="card player-card" onclick="openPlayerProfile('${p.name}')">
             <div>
@@ -868,16 +934,18 @@
                 <span class="player-name-text">${p.name}</span>
               </div>
               <div class="player-stats-counters">
-                Completed: <span>${p.completed || 0}</span> | Verified: <span>${p.verified || 0}</span> | Created: <span>${p.created || 0}</span>
+                Completed: <span>${completedCount}</span> | Verified: <span>${verifiedCount}</span> | Created: <span>${createdCount}</span>
               </div>
             </div>
-            <div class="card-points">${p.points || 0} pts</div>
+            <div class="card-points">${displayPts} pts</div>
           </div>
         `;
       }).join('');
     }
 
     function openPlayerProfile(playerName) {
+      if (currentCategory === 'ILL' || currentCategory === 'PPLL') return;
+      recalculateAllPlayerPoints();
       const players = allDatabase[currentCategory].players || [];
       const p = players.find(x => x.name.toLowerCase() === playerName.toLowerCase());
       if(!p) return;
@@ -890,18 +958,56 @@
       document.getElementById('roulette-view').style.display = 'none';
       document.getElementById('submit-view').style.display = 'none';
       document.getElementById('admin-view').style.display = 'none';
+      document.getElementById('level-view').style.display = 'none';
       document.getElementById('player-profile-view').style.display = 'block';
 
       const globalIdx = players.findIndex(x => x.name.toLowerCase() === playerName.toLowerCase()) + 1;
+      const displayPts = p.points || 0;
+
+      const levels = allDatabase[currentCategory].levels || [];
+      
+      let completedList = [];
+      let verifiedList = [];
+      let createdList = [];
+
+      levels.forEach(lvl => {
+        if (lvl.creator && lvl.creator.toLowerCase() === p.name.toLowerCase()) {
+          createdList.push(lvl.title);
+        }
+        if (lvl.verifier && lvl.verifier.toLowerCase() === p.name.toLowerCase()) {
+          verifiedList.push(lvl.title);
+        }
+        const rec = (lvl.victors || []).find(v => v.name.toLowerCase() === p.name.toLowerCase());
+        if (rec) {
+          const basePts = getLevelBasePoints(currentCategory, lvl.id);
+          const pct = parseFloat(rec.percent) || 100;
+          const earnedPts = Math.round(basePts * (pct / 100));
+          completedList.push(`${lvl.title} (${pct}% -> +${earnedPts} pts)`);
+        }
+      });
 
       document.getElementById('player-profile-content').innerHTML = `
         <h2 style="color:var(--accent-cyan); margin-top:0;">Player Profile: ${p.name}</h2>
-        <div><strong>Rank:</strong> #${globalIdx}</div>
-        <div><strong>Country:</strong> ${p.country ? p.country.toUpperCase() : 'N/A'}</div>
-        <div><strong>Points:</strong> ${p.points || 0} pts</div>
-        <div><strong>Completed Levels:</strong> ${p.completed || 0}</div>
-        <div><strong>Verified Levels:</strong> ${p.verified || 0}</div>
-        <div><strong>Created Levels:</strong> ${p.created || 0}</div>
+        <div style="margin-bottom:8px;"><strong>Rank:</strong> #${globalIdx}</div>
+        <div style="margin-bottom:8px;"><strong>Country:</strong> ${p.country ? p.country.toUpperCase() : 'N/A'}</div>
+        <div style="margin-bottom:8px;"><strong>Total Points:</strong> ${displayPts} pts</div>
+        
+        <hr style="border-color:var(--card-border); margin: 12px 0;">
+
+        <div style="margin-bottom: 12px;">
+          <strong style="color:var(--accent-cyan);">Completed Levels & Records (${completedList.length}):</strong>
+          ${completedList.length > 0 ? `<ul style="margin: 4px 0 0 20px; padding:0; font-size:12px;">${completedList.map(item => `<li>${item}</li>`).join('')}</ul>` : '<div style="font-size:12px; color:var(--text-muted);">None</div>'}
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <strong style="color:var(--accent-cyan);">Verified Levels (${verifiedList.length}):</strong>
+          ${verifiedList.length > 0 ? `<ul style="margin: 4px 0 0 20px; padding:0; font-size:12px;">${verifiedList.map(item => `<li>${item}</li>`).join('')}</ul>` : '<div style="font-size:12px; color:var(--text-muted);">None</div>'}
+        </div>
+
+        <div style="margin-bottom: 6px;">
+          <strong style="color:var(--accent-cyan);">Created Levels (${createdList.length}):</strong>
+          ${createdList.length > 0 ? `<ul style="margin: 4px 0 0 20px; padding:0; font-size:12px;">${createdList.map(item => `<li>${item}</li>`).join('')}</ul>` : '<div style="font-size:12px; color:var(--text-muted);">None</div>'}
+        </div>
       `;
     }
 
@@ -975,7 +1081,10 @@
       }
       list.forEach((lvl) => {
         const globalRank = allDatabase[currentCategory].levels.findIndex(l => l.id === lvl.id) + 1;
+        const basePts = getLevelBasePoints(currentCategory, lvl.id);
+        const ptsText = (currentCategory === 'ILL' || currentCategory === 'PPLL') ? '' : ` • <span style="color:var(--accent-cyan); font-weight:bold;">${basePts} pts</span>`;
         const thumbUrl = lvl.youtubeId ? `https://img.youtube.com/vi/${lvl.youtubeId}/mqdefault.jpg` : '';
+        
         const card = document.createElement('div');
         card.className = 'pointercrate-card';
         card.onclick = () => openLevelView(lvl.id);
@@ -986,7 +1095,7 @@
           </div>
           <div class="pointercrate-content">
             <div class="pointercrate-title">#${globalRank} – ${lvl.title}</div>
-            <div class="pointercrate-publisher">by <strong>${lvl.creator || 'Unknown'}</strong></div>
+            <div class="pointercrate-publisher">by <strong>${lvl.creator || 'Unknown'}</strong>${ptsText}</div>
           </div>
         `;
         container.appendChild(card);
@@ -1004,15 +1113,56 @@
       
       let victorsHtml = '';
       const isImpossible = (currentCategory === 'ILL' || currentCategory === 'PPLL');
+      
       if (!isImpossible) {
-        const victors = lvl.victors || [];
-        const first = victors[0] || { name: 'None', proof: '' };
-        const second = victors[1] || { name: 'None', proof: '' };
-        const third = victors[2] || { name: 'None', proof: '' };
+        const records = lvl.victors || [];
+        const fullVictors = records.filter(r => (parseFloat(r.percent) || 100) === 100);
+        const percentRecords = records.filter(r => (parseFloat(r.percent) || 100) < 100)
+                                      .sort((a, b) => parseFloat(b.percent) - parseFloat(a.percent));
+
+        const first = fullVictors[0] || { name: 'None', proof: '' };
+        const second = fullVictors[1] || { name: 'None', proof: '' };
+        const third = fullVictors[2] || { name: 'None', proof: '' };
+        const otherVictors = fullVictors.slice(3);
+
+        let percentHtml = '';
+        if (percentRecords.length > 0) {
+          percentHtml = `
+            <div style="margin-top: 10px; border-top: 1px dashed rgba(194, 155, 104, 0.3); padding-top: 8px;">
+              <strong style="color:var(--text-secondary); font-size:12px;">Highscores (%):</strong>
+              ${percentRecords.map(r => `
+                <div class="victor-item" style="color: var(--text-primary);">
+                  <span>• <strong>${r.name}</strong> – <span style="color:var(--accent-cyan);">${r.percent}%</span></span>
+                  ${r.proof ? `<a href="${r.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        let otherVictorsHtml = '';
+        if (otherVictors.length > 0) {
+          otherVictorsHtml = `
+            <div style="margin-top: 6px;">
+              <strong style="color:var(--text-secondary); font-size:11px;">Other 100% Victors:</strong>
+              ${otherVictors.map(r => `
+                <div class="victor-item" style="color: #ffffff;">
+                  <span>🏆 <strong>${r.name}</strong></span>
+                  ${r.proof ? `<a href="${r.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        const basePts = getLevelBasePoints(currentCategory, lvl.id);
 
         victorsHtml = `
           <div class="victors-box">
-            <h3 style="color: var(--accent-cyan); margin-top: 0; font-size: 14px;">Level Victors 🏆</h3>
+            <h3 style="color: var(--accent-cyan); margin-top: 0; font-size: 14px; display:flex; justify-content:space-between;">
+              <span>Level Victors & Records 🏆</span>
+              <span style="font-size:12px; color:var(--text-muted);">Base Value: ${basePts} pts</span>
+            </h3>
             <div class="victor-item victor-gold">
               <span>🥇 1st: <strong style="color: #ffd700;">${first.name}</strong></span>
               ${first.proof ? `<a href="${first.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}
@@ -1025,6 +1175,8 @@
               <span>🥉 3rd: <strong style="color: #cd7f32;">${third.name}</strong></span>
               ${third.proof ? `<a href="${third.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}
             </div>
+            ${otherVictorsHtml}
+            ${percentHtml}
           </div>
         `;
       }
@@ -1063,6 +1215,7 @@
     }
 
     function switchMainTab(tab, ev) {
+      if ((currentCategory === 'ILL' || currentCategory === 'PPLL') && tab === 'stats') return;
       currentMainTab = tab;
       document.querySelectorAll('.nav-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
       if(ev && ev.currentTarget) ev.currentTarget.classList.add('active');
@@ -1163,7 +1316,7 @@
       e.preventDefault();
       if (!currentUser) return;
       const lvlName = document.getElementById('rec-level-select').value;
-      const percent = document.getElementById('rec-percent').value;
+      const percent = parseFloat(document.getElementById('rec-percent').value);
       const video = document.getElementById('rec-video').value;
 
       const newSub = {
@@ -1192,6 +1345,7 @@
       container.innerHTML = pending.map(s => `
         <div class="submission-item">
           <div><strong>${s.type.toUpperCase()}</strong> by ${s.user} (${s.category})</div>
+          ${s.type === 'record' ? `<div>Level: ${s.data.level} (${s.data.percent}%)</div>` : ''}
           <div class="action-row">
             <button class="btn-action btn-success" onclick="approveSub(${s.id})">Approve</button>
             <button class="btn-action btn-danger" onclick="rejectSub(${s.id})">Reject</button>
@@ -1223,6 +1377,7 @@
       if(!confirm('Czy na pewno chcesz usunąć ten poziom?')) return;
       const levels = allDatabase[currentCategory].levels || [];
       allDatabase[currentCategory].levels = levels.filter(l => l.id !== lvlId);
+      recalculateAllPlayerPoints();
       await saveCloudData();
       init();
       renderAdminLevelsList();
@@ -1295,34 +1450,20 @@
           l.history.push({ date: today, change: '↓1', newPosition: `#${idx + 2}`, reason: `${newLvl.title} was added above` });
         });
         levels.unshift(newLvl);
-
-        if (sub.data.creator) {
-          const pl = (allDatabase[cat].players || []).find(p => p.name.toLowerCase() === sub.data.creator.toLowerCase());
-          if (pl) pl.created = (pl.created || 0) + 1;
-        }
-        if (sub.data.verifier) {
-          const pl = (allDatabase[cat].players || []).find(p => p.name.toLowerCase() === sub.data.verifier.toLowerCase());
-          if (pl) pl.verified = (pl.verified || 0) + 1;
-        }
       } else if (sub.type === 'record') {
-        if (!allDatabase[cat].players) allDatabase[cat].players = [];
-        const pl = allDatabase[cat].players.find(p => p.name.toLowerCase() === sub.user.toLowerCase());
-        if (pl) {
-          pl.completed = (pl.completed || 0) + 1;
-          pl.points = (pl.points || 0) + 10;
-        }
-
-        if (sub.data.percent == 100) {
-          const lvl = (allDatabase[cat].levels || []).find(l => l.title.toLowerCase() === sub.data.level.toLowerCase());
-          if (lvl) {
-            if (!lvl.victors) lvl.victors = [];
-            if (!lvl.victors.some(v => v.name.toLowerCase() === sub.user.toLowerCase()) && lvl.victors.length < 3) {
-              lvl.victors.push({ name: sub.user, proof: sub.data.video });
-            }
-          }
+        const lvl = (allDatabase[cat].levels || []).find(l => l.title.toLowerCase() === sub.data.level.toLowerCase());
+        if (lvl) {
+          if (!lvl.victors) lvl.victors = [];
+          lvl.victors = lvl.victors.filter(v => v.name.toLowerCase() !== sub.user.toLowerCase());
+          lvl.victors.push({
+            name: sub.user,
+            percent: parseFloat(sub.data.percent),
+            proof: sub.data.video
+          });
         }
       }
 
+      recalculateAllPlayerPoints();
       await saveCloudData();
       init();
       renderAdminPending();
