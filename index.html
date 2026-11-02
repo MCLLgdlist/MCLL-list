@@ -267,7 +267,7 @@
     /* KARTA GRACZA - BAZA */
     .card.player-card {
       position: relative;
-      background: var(--card-bg);
+      background-color: #0d1610;
       border-radius: 12px;
       margin: 14px 0;
       padding: 16px 20px;
@@ -280,45 +280,50 @@
       min-height: 105px;
     }
 
-    /* HALLOWEEN FRAME - WBUDOWANY OBRAZEK 1:1 JAKO TŁO */
+    /* HALLOWEEN FRAME - PEŁNA GRAFIKA SVGS (ZAMEK + DYNA + NOCNE NIEBO) */
     .player-card.frame-halloween {
       border: 2px solid #ff4500 !important;
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="150"><rect width="800" height="150" fill="%232b0a03"/><text x="400" y="75" fill="%23ff7700" font-size="24" font-family="sans-serif" font-weight="bold" text-anchor="middle">HALLOWEEN BANNER</text></svg>') center center / cover no-repeat !important;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 150"><defs><linearGradient id="bgH" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="%231f0802"/><stop offset="50%" stop-color="%23381103"/><stop offset="100%" stop-color="%23120301"/></linearGradient></defs><rect width="800" height="150" fill="url(%23bgH)"/><path d="M0,150 Q200,120 400,150 T800,150 Z" fill="%230b0200"/></svg>') !important;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="200" viewBox="0 0 1000 200"><defs><linearGradient id="hSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="%231a0005"/><stop offset="60%" stop-color="%234a0e00"/><stop offset="100%" stop-color="%231a0500"/></linearGradient></defs><rect width="1000" height="200" fill="url(%23hSky)"/><circle cx="880" cy="60" r="45" fill="%23ff9900" opacity="0.35"/><path d="M720 200 L720 110 L750 80 L780 110 L780 200 M750 80 L750 50 M820 200 L820 130 L850 100 L880 130 L880 200 M920 200 L920 140 L940 120 L960 140 L960 200" stroke="%230a0002" stroke-width="12" fill="%230a0002"/><path d="M0 200 Q250 160 500 190 T1000 180 V200 H0 Z" fill="%23050001"/><g transform="translate(40, 110) scale(0.6)"><path d="M30 10 C10 10 0 30 0 50 C0 80 20 90 30 90 C40 90 60 80 60 50 C60 30 50 10 30 10 Z" fill="%23ff5500"/><path d="M15 35 L25 45 L10 45 Z M45 35 L50 45 L35 45 Z M20 65 Q30 80 40 65 Z" fill="%231a0000"/></g></svg>') !important;
       background-size: cover !important;
-      box-shadow: 0 0 25px rgba(255, 69, 0, 0.7), inset 0 0 15px rgba(0,0,0,0.8);
+      background-position: center !important;
+      box-shadow: 0 0 25px rgba(255, 68, 0, 0.7), inset 0 0 15px rgba(0, 0, 0, 0.9);
     }
     .player-card.frame-halloween .card-title {
-      color: #ff9900;
-      text-shadow: 0 0 8px rgba(0,0,0,0.9);
+      color: #ffaa00 !important;
+      text-shadow: 0 0 10px #000, 2px 2px 4px #000;
     }
     .player-card.frame-halloween .player-stats-counters {
-      color: #ffb366;
+      color: #ffcc99 !important;
+      text-shadow: 1px 1px 3px #000;
     }
     .player-card.frame-halloween .card-points {
-      color: #ffffff;
+      color: #ffffff !important;
       font-size: 20px;
       font-weight: 900;
+      text-shadow: 0 0 10px #ff4500, 2px 2px 4px #000;
     }
 
-    /* MARINE FRAME - WBUDOWANY OBRAZEK 1:1 JAKO TŁO */
+    /* MARINE FRAME (MORSKA) - PEŁNA GRAFIKA SVG (GLEBIA OCEANICZNA + MEDUZY) */
     .player-card.frame-morska {
       border: 2px solid #00b4d8 !important;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 150"><defs><linearGradient id="bgM" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="%230077b6"/><stop offset="50%" stop-color="%2300b4d8"/><stop offset="100%" stop-color="%2303045e"/></linearGradient></defs><rect width="800" height="150" fill="url(%23bgM)"/><path d="M0,130 Q150,110 300,130 T600,130 T800,130 V150 H0 Z" fill="%23023e8a" opacity="0.6"/></svg>') !important;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="200" viewBox="0 0 1000 200"><defs><linearGradient id="mOcean" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="%23001829"/><stop offset="50%" stop-color="%23003459"/><stop offset="100%" stop-color="%23001220"/></linearGradient></defs><rect width="1000" height="200" fill="url(%23mOcean)"/><g opacity="0.4"><path d="M820 80 Q850 50 880 80 Q880 110 820 80 Z" fill="%2348cae4"/><path d="M830 90 L830 140 M850 90 L850 150 M870 90 L870 135" stroke="%2390e0ef" stroke-width="3"/><path d="M120 60 Q145 35 170 60 Q170 85 120 60 Z" fill="%2348cae4"/><path d="M130 70 L130 110 M145 70 L145 125 M160 70 L160 105" stroke="%2390e0ef" stroke-width="2.5"/></g><path d="M0 170 Q300 140 600 175 T1000 165 V200 H0 Z" fill="%23000814" opacity="0.8"/></svg>') !important;
       background-size: cover !important;
-      box-shadow: 0 0 25px rgba(0, 180, 216, 0.7), inset 0 0 15px rgba(0,0,0,0.8);
+      background-position: center !important;
+      box-shadow: 0 0 25px rgba(0, 180, 216, 0.7), inset 0 0 15px rgba(0, 0, 0, 0.9);
     }
     .player-card.frame-morska .card-title {
-      color: #90e0ef;
-      text-shadow: 0 0 8px rgba(0,0,0,0.9);
+      color: #90e0ef !important;
+      text-shadow: 0 0 10px #000, 2px 2px 4px #000;
     }
     .player-card.frame-morska .player-stats-counters {
-      color: #caf0f8;
+      color: #caf0f8 !important;
+      text-shadow: 1px 1px 3px #000;
     }
     .player-card.frame-morska .card-points {
-      color: #ffffff;
+      color: #ffffff !important;
       font-size: 20px;
       font-weight: 900;
+      text-shadow: 0 0 10px #00b4d8, 2px 2px 4px #000;
     }
 
     /* Gold Frame */
@@ -494,7 +499,7 @@
         <label style="font-size: 12px; color: var(--text-secondary);">Country Flag Code (e.g. pl, us, de):</label>
         <input type="text" id="prof-country" maxlength="2" required>
         <label style="font-size: 12px; color: var(--text-secondary);">Select Active Frame:</label>
-        <select id="prof-frame-select" onchange="checkFrameSelection(this)">
+        <select id="prof-frame-select">
           <option value="">No frame (Default)</option>
           <option value="halloween">🔓 Halloween Frame</option>
           <option value="morska">🔓 Marine Frame</option>
@@ -896,10 +901,6 @@
         const select = document.getElementById('prof-frame-select');
         select.value = p.activeFrame || '';
       }
-    }
-
-    function checkFrameSelection(selectElem) {
-      // dozwolone od razu
     }
 
     async function handleProfileUpdate(e) {
