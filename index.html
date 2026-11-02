@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>MCLL - Heliopolis Edition</title>
+  <style>
+    :root {
+      --bg-color: #070d09;
+      --bg-radial: rgba(30, 90, 40, 0.22);
+      --text-primary: #e8f5e9;
+      --text-secondary: #c29b68;
+      --text-muted: #7ca982;
+      --card-bg: rgba(14, 25, 18, 0.92);
+      --card-border: rgba(46, 125, 50, 0.5);
+      --header-bg: rgba(10, 16, 12, 0.95);
+      --accent-cyan: #c29b68;
+      --accent-hover: rgba(194, 155, 104, 0.25);
+      --input-bg: rgba(12, 22, 15, 0.9);
+      --shadow-color: rgba(0, 0, 0, 0.9);
+      --badge-bg: rgba(46, 125, 50, 0.15);
+      --danger-color: #ff3333;
+      --success-color: #44cc44;
+      --discord-color: #5865F2;
+    }
+
+    * { box-sizing: border-box; }
+
+    @keyframes assemblePage {
+      0% { opacity: 0; transform: translateY(25px) scale(0.98); filter: blur(4px); }
+      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+
+    body {
+      margin: 0;
+      background-color: var(--bg-color);
+      background-image: 
+        radial-gradient(at 50% 20%, var(--bg-radial) 0px, transparent 65%),
+        linear-gradient(to bottom, rgba(7, 13, 9, 0.75), rgba(5, 10, 7, 0.92));
+      color: var(--text-primary);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      animation: assemblePage 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    header {
+      position: relative;
+      padding: 35px 12px 18px 12px;
+      text-align: center;
+      background: var(--header-bg);
+      backdrop-filter: blur(12px);
+      border-bottom: 2px solid var(--accent-cyan);
+      box-shadow: 0 10px 30px var(--shadow-color);
+    }
+
+    .header-actions {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .auth-top-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--accent-cyan);
+      padding: 6px 10px;
+      border-radius: 16px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .discord-top-btn { background: var(--discord-color); border: 1px solid var(--discord-color); color: #ffffff; }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: var(--text-secondary);
+    }
+
+    .category-selector-bar {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin: 12px 0 10px 0;
+      flex-wrap: wrap;
+    }
+
+    .cat-btn {
+      background: var(--card-bg);
+      color: var(--text-secondary);
+      border: 1px solid var(--card-border);
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .cat-btn.active {
+      background: var(--accent-cyan);
+      color: #0c140e;
+      border-color: var(--accent-cyan);
+    }
+
+    .stats-counter-bar {
+      display: inline-flex;
+      gap: 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 6px 14px;
+      border-radius: 16px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .stat-item span { color: var(--accent-cyan); }
+    .wrap { max-width: 900px; margin: 15px auto; padding: 0 10px; }
+
+    .nav-tabs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      margin-bottom: 10px;
+      background: var(--header-bg);
+      padding: 6px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+    @media(min-width: 550px) {
+      .nav-tabs { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .sub-nav-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: transparent;
+      color: var(--text-secondary);
+      border: none;
+      border-radius: 8px;
+      padding: 8px 4px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .tab-btn.active { background: var(--accent-cyan); color: #0c140e; }
+
+    .sub-tab-btn {
+      background: var(--card-bg);
+      color: var(--text-secondary);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 5px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .sub-tab-btn.active {
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+      background: var(--badge-bg);
+    }
+
+    .rules-box, .roulette-box, .stats-box, .submit-box, .admin-box, .profile-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 15px;
+      margin-bottom: 20px;
+      display: none;
+      word-break: break-word;
+      box-shadow: 0 8px 24px var(--shadow-color);
+    }
+
+    .controls { display: flex; gap: 8px; margin-bottom: 15px; flex-direction: column; }
+
+    input, select, textarea {
+      background: var(--input-bg);
+      color: var(--text-primary);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      outline: none;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .pointercrate-card {
+      position: relative;
+      display: flex !important;
+      flex-direction: row;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border) !important;
+      border-radius: 12px !important;
+      margin-bottom: 12px !important;
+      min-height: 100px !important;
+      cursor: pointer;
+      overflow: hidden;
+      padding: 0 !important;
+    }
+
+    .pointercrate-thumb-wrapper {
+      position: relative;
+      width: 130px;
+      height: 100px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    @media(min-width: 480px) {
+      .pointercrate-thumb-wrapper { width: 180px; }
+    }
+
+    .pointercrate-thumb { width: 100%; height: 100%; object-fit: cover; }
+    .pointercrate-overlay {
+      position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+      background: linear-gradient(to right, rgba(14,25,18,0.1) 0%, rgba(14,25,18,0.85) 100%);
+    }
+
+    .pointercrate-content {
+      padding: 10px 14px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .pointercrate-title { font-size: 16px; font-weight: 800; color: var(--text-primary); }
+    .pointercrate-publisher { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+    .card.player-card {
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      margin: 14px 0;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 6px 20px var(--shadow-color);
+      overflow: hidden;
+      min-height: 105px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .card.player-card:hover { border-color: var(--accent-cyan); }
+
+    .card-title { font-size: 18px; font-weight: 800; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; z-index: 2; position: relative; }
+    .card-points { font-size: 16px; font-weight: 800; color: var(--text-primary); z-index: 2; position: relative; }
+    .player-flag { width: 22px; height: 15px; object-fit: cover; border-radius: 2px; border: 1px solid var(--card-border); }
+    
+    .player-stats-counters {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      font-weight: 600;
+      z-index: 2;
+      position: relative;
+    }
+    .player-stats-counters span { color: var(--accent-cyan); }
+
+    .victors-box {
+      margin-top: 12px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .victor-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 12px;
+      font-weight: 700;
+      border-bottom: 1px solid rgba(194, 155, 104, 0.1);
+    }
+    .victor-item:last-child { border-bottom: none; }
+    .victor-gold { color: #ffd700; }
+    .victor-silver { color: #c0c0c0; }
+    .victor-bronze { color: #cd7f32; }
+    .victor-link { color: var(--accent-cyan); text-decoration: none; font-size: 11px; }
+    .victor-link:hover { text-decoration: underline; }
+
+    .history-table-container {
+      width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 11px; overflow: hidden; border-radius: 8px; border: 1px solid var(--card-border);
+    }
+    .history-table-container th { background: #1b4332; color: #ffffff; text-align: left; padding: 8px 10px; font-weight: 800; }
+    .history-table-container td { padding: 8px 10px; border-bottom: 1px solid rgba(194, 155, 104, 0.15); }
+
+    #level-view, #player-profile-view { display: none; }
+    .back-btn {
+      background: var(--card-bg); color: var(--accent-cyan); border: 1px solid var(--card-border);
+      border-radius: 8px; padding: 6px 12px; cursor: pointer; margin-bottom: 12px; font-weight: 700; font-size: 12px;
+    }
+
+    .video-container {
+      position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
+      border-radius: 10px; margin: 12px 0; border: 1px solid var(--card-border);
+    }
+    .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+    .info-meta {
+      background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px;
+      padding: 12px; margin-bottom: 12px; font-size: 12px; line-height: 1.5; word-break: break-all;
+    }
+
+    .btn-action, .btn-roulette {
+      padding: 8px 14px; font-size: 13px; font-weight: 800; border-radius: 8px; border: none;
+      cursor: pointer; transition: all 0.25s ease;
+    }
+    .btn-primary { background: var(--accent-cyan); color: #070d09; width: 100%; font-weight: 900; }
+    .btn-success { background: var(--success-color); color: #fff; }
+    .btn-danger { background: var(--danger-color); color: #fff; }
+
+    .modal {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; padding: 10px;
+    }
+    .modal-content {
+      background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px;
+      border-radius: 12px; width: 100%; max-width: 400px; position: relative;
+    }
+    .close-modal {
+      position: absolute; top: 10px; right: 12px; background: none; border: none;
+      color: var(--text-muted); font-size: 18px; cursor: pointer;
+    }
+
+    .submission-item {
+      background: var(--input-bg); border: 1px solid var(--card-border); padding: 12px;
+      border-radius: 10px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; font-size: 12px;
+    }
+    .action-row { display: flex; gap: 6px; width: 100%; flex-wrap: wrap; align-items: center; }
+    .action-row .btn-action { flex: 1; min-width: 70px; }
+    .move-input { width: 60px !important; margin-bottom: 0 !important; padding: 6px !important; text-align: center; }
+
+    footer { text-align: center; color: var(--text-muted); font-size: 11px; padding: 20px 12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-actions" id="header-actions">
+      <a href="https://discord.gg/hJxgKPucb" target="_blank" class="auth-top-btn discord-top-btn">
+        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.011c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        Discord
+      </a>
+    </div>
+    <h1 id="header-title">MCLL</h1>
+
+    <div class="category-selector-bar">
+      <button class="cat-btn active" id="cat-btn-MCLL" onclick="switchCategory('MCLL')">MCLL</button>
+      <button class="cat-btn" id="cat-btn-MCCL" onclick="switchCategory('MCCL')">MCCL</button>
+      <button class="cat-btn" id="cat-btn-ILL" onclick="switchCategory('ILL')">ILL</button>
+      <button class="cat-btn" id="cat-btn-PPLL" onclick="switchCategory('PPLL')">PPLL</button>
+    </div>
+
+    <div class="stats-counter-bar">
+      <div class="stat-item">Levels: <span id="stat-levels">0</span></div>
+      <div class="stat-item" id="stat-players-box">Players: <span id="stat-players">0</span></div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <nav class="nav-tabs" id="main-nav-tabs">
+      <button class="tab-btn active" id="nav-btn-levels" onclick="switchMainTab('levels', event)">Levels</button>
+      <button class="tab-btn" id="nav-btn-stats" onclick="switchMainTab('stats', event)">Stats</button>
+      <button class="tab-btn" id="nav-btn-rules" onclick="switchMainTab('rules', event)">Rules</button>
+      <button class="tab-btn" id="nav-btn-roulette" onclick="switchMainTab('roulette', event)">Roulette</button>
+      <button class="tab-btn" id="nav-btn-submit" onclick="switchMainTab('submit', event)">Submit</button>
+      <button class="tab-btn" id="nav-btn-admin" onclick="switchMainTab('admin', event)" style="display:none;">Admin Panel</button>
+    </nav>
+
+    <div class="sub-nav-tabs" id="sub-levels-nav">
+      <button class="sub-tab-btn active" id="sub-tab-main" onclick="switchSubTab('main', event)">Main List</button>
+      <button class="sub-tab-btn" id="sub-tab-legacy" onclick="switchSubTab('legacy', event)">Legacy List</button>
+    </div>
+
+    <!-- Rules View -->
+    <div class="rules-box" id="rules-view">
+      <h2 style="color: var(--accent-cyan); margin-top:0; font-size: 20px;" id="rules-title">List Rules 📜</h2>
+      <div id="rules-content" style="font-size: 13px; line-height: 1.6; color: var(--text-primary);"></div>
+    </div>
+
+    <!-- Stats View -->
+    <div class="stats-box" id="stats-view">
+      <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 12px; font-size: 20px;">Player Leaderboard 🏆</h2>
+      <input type="text" id="stats-search-input" placeholder="Search player..." oninput="renderLeaderboard()">
+      <div id="stats-result-container"></div>
+    </div>
+
+    <!-- Roulette View -->
+    <div class="roulette-box" id="roulette-view" style="text-align: center;">
+      <h2 style="color: var(--accent-cyan); margin-top:0; font-size: 20px;">Level Roulette 🎲</h2>
+      <div id="roulette-target-text" style="font-size: 18px; font-weight: 800; margin: 15px 0; min-height: 40px;">Click Start to begin!</div>
+      <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <button class="btn-roulette btn-primary" id="btn-start" onclick="startRoulette()">Start Roulette</button>
+        <button class="btn-roulette btn-success" id="btn-next" style="display:none;" onclick="nextRoulette()">Done! (+1%)</button>
+        <button class="btn-roulette btn-danger" id="btn-giveup" style="display:none;" onclick="giveupRoulette()">Give Up</button>
+      </div>
+    </div>
+
+    <!-- Submit View -->
+    <div class="submit-box" id="submit-view">
+      <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 12px; font-size: 20px;">Submissions ✉️</h2>
+      <div class="sub-nav-tabs" style="margin-bottom: 12px;" id="submit-sub-nav-tabs">
+        <button class="sub-tab-btn active" id="sub-tab-record" onclick="switchSubmitSubTab('record', event)">Submit Record %</button>
+        <button class="sub-tab-btn" id="sub-tab-level" onclick="switchSubmitSubTab('level', event)">Submit Level</button>
+      </div>
+      
+      <form id="record-form" onsubmit="handleRecordSubmit(event)">
+        <label style="font-size: 12px; color: var(--text-secondary);">Level:</label>
+        <select id="rec-level-select" required></select>
+        <label style="font-size: 12px; color: var(--text-secondary);">Record Percentage (56% - 100%):</label>
+        <input type="number" id="rec-percent" min="56" max="100" value="100" required>
+        <label style="font-size: 12px; color: var(--text-secondary);">Completion Video URL:</label>
+        <input type="url" id="rec-video" placeholder="https://youtube.com/..." required>
+        <button type="submit" class="btn-action btn-primary">Submit Record %</button>
+      </form>
+
+      <form id="level-form" onsubmit="handleLevelSubmit(event)" style="display:none;">
+        <label style="font-size: 12px; color: var(--text-secondary);">Level name:</label>
+        <input type="text" id="lvl-name" required>
+        
+        <div id="creator-container">
+          <label style="font-size: 12px; color: var(--text-secondary);">Creator:</label>
+          <input type="text" id="lvl-creator" required placeholder="Enter creator name">
+        </div>
+
+        <div id="verifier-container">
+          <label style="font-size: 12px; color: var(--text-secondary);">Verifier:</label>
+          <input type="text" id="lvl-verifier" required placeholder="Enter verifier name">
+        </div>
+
+        <label style="font-size: 12px; color: var(--text-secondary);">Verification video link:</label>
+        <input type="url" id="lvl-video" required>
+        <label style="font-size: 12px; color: var(--text-secondary);">Song:</label>
+        <input type="text" id="lvl-song" required>
+        <label style="font-size: 12px; color: var(--text-secondary);">ID:</label>
+        <input type="text" id="lvl-id" required>
+        <button type="submit" class="btn-action btn-primary">Submit Level</button>
+      </form>
+    </div>
+
+    <!-- Admin Panel View -->
+    <div class="admin-box" id="admin-view">
+      <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 12px; font-size: 20px;">Admin Panel ⚙️</h2>
+      <div class="sub-nav-tabs" style="margin-bottom: 12px;">
+        <button class="sub-tab-btn active" id="admin-tab-sub" onclick="switchAdminTab('sub', event)">Pending Submissions</button>
+        <button class="sub-tab-btn" id="admin-tab-manage" onclick="switchAdminTab('manage', event)">Manage Levels</button>
+      </div>
+
+      <div id="admin-sub-section"><div id="admin-pending-container"></div></div>
+      <div id="admin-manage-section" style="display:none;">
+        <h3 style="color:var(--accent-cyan); font-size: 15px;">Edit, Move or Delete Levels</h3>
+        <div id="admin-levels-manage-container"></div>
+      </div>
+    </div>
+
+    <main id="main-content">
+      <div class="controls" id="search-controls">
+        <input type="text" id="search-input" placeholder="Search level..." oninput="filterData()">
+      </div>
+      <div id="list-container"></div>
+    </main>
+
+    <!-- Level View -->
+    <div id="level-view">
+      <button class="back-btn" onclick="closeView()">← Back to list</button>
+      <h2 id="lvl-title" style="color: var(--text-primary); margin-top: 0; font-size: 22px;"></h2>
+      <div id="lvl-details"></div>
+    </div>
+
+    <!-- Player Profile View -->
+    <div id="player-profile-view">
+      <button class="back-btn" onclick="closePlayerProfile()">← Back</button>
+      <div class="info-meta" id="player-profile-content"></div>
+    </div>
+  </div>
+
+  <!-- Edit Level Modal -->
+  <div class="modal" id="edit-level-modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeEditModal()">&times;</button>
+      <h3 style="color:var(--accent-cyan); margin-top:0;">Edit Level Info</h3>
+      <form onsubmit="handleSaveLevelEdit(event)">
+        <input type="hidden" id="edit-lvl-id">
+        <label style="font-size: 12px; color: var(--text-secondary);">Level Name:</label>
+        <input type="text" id="edit-lvl-name" required>
+        <label style="font-size: 12px; color: var(--text-secondary);">Creator:</label>
+        <input type="text" id="edit-lvl-creator" required>
+        <label style="font-size: 12px; color: var(--text-secondary);">Verifier:</label>
+        <input type="text" id="edit-lvl-verifier">
+        <label style="font-size: 12px; color: var(--text-secondary);">Song:</label>
+        <input type="text" id="edit-lvl-song">
+        <label style="font-size: 12px; color: var(--text-secondary);">GD ID:</label>
+        <input type="text" id="edit-lvl-id-val">
+        <label style="font-size: 12px; color: var(--text-secondary);">Video URL:</label>
+        <input type="url" id="edit-lvl-video">
+        <button type="submit" class="btn-action btn-primary" style="margin-top: 8px;">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
+  <div class="modal" id="auth-modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeAuthModal()">&times;</button>
+      <div style="display: flex; gap: 6px; margin-bottom: 15px;">
+        <button class="sub-tab-btn active" id="modal-tab-login" onclick="switchAuthMode('login')" style="flex:1;">Log In</button>
+        <button class="sub-tab-btn" id="modal-tab-register" onclick="switchAuthMode('register')" style="flex:1;">Register</button>
+      </div>
+
+      <form id="modal-login-form" onsubmit="handleLogin(event)">
+        <label style="font-size: 12px; color: var(--text-secondary);">Username (Nick):</label>
+        <input type="text" id="login-username" required>
+        <label style="font-size: 12px; color: var(--text-secondary);">Password:</label>
+        <input type="password" id="login-password" required>
+        <button type="submit" class="btn-action btn-primary" style="margin-top: 8px;">Log In</button>
+      </form>
+
+      <form id="modal-register-form" onsubmit="handleRegister(event)" style="display:none;">
+        <label style="font-size: 12px; color: var(--text-secondary);">Username (Nick):</label>
+        <input type="text" id="reg-username" required>
+        <label style="font-size: 12px; color: var(--text-secondary);">Password:</label>
+        <input type="password" id="reg-password" required>
+        <label style="font-size: 12px; color: var(--text-secondary);">Country flag code (e.g. pl, us, de):</label>
+        <input type="text" id="reg-country" maxlength="2" required>
+        <button type="submit" class="btn-action btn-primary" style="margin-top: 8px;">Register</button>
+      </form>
+    </div>
+  </div>
+
+  <footer>&copy; 2026 MCLL List Network - Heliopolis Edition</footer>
+
+  <script>
+    const NPOINT_URL = 'https://api.npoint.io/2a62ce7078414fa7cab3';
+    let currentCategory = 'MCLL';
+
+    let allDatabase = {
+      MCLL: { levels: [], players: [] },
+      MCCL: { levels: [], players: [] },
+      ILL: { levels: [] },
+      PPLL: { levels: [] },
+      users: [],
+      zgloszenia: []
+    };
+
+    let currentUser = JSON.parse(localStorage.getItem('mcll_current_user')) || null;
+    let currentMainTab = 'levels';
+    let currentSubTab = 'main';
+    let rouletteState = { active: false, currentLevel: null, currentPercent: 0 };
+
+    const rulesData = {
+      MCLL: `
+        <p><strong>1. Minimum Gameplay Duration:</strong> The level must feature at least 30 seconds of active gameplay. Short challenges or levels that end before the 30-second mark do not qualify.</p>
+        <p><strong>2. Quality & Decoration Control ("Not Garbage" Rule):</strong> Low-effort layouts, default block spam, or visually unappealing maps are prohibited. The level must feature at least a light decoration style to be considered for the list.</p>
+        <p><strong>3. Audio Requirements:</strong> All record and verification footage must have clearly audible click sounds from the mouse, keyboard, or controller. Submissions with muted microphone audio or music overlays that drown out the inputs will be denied.</p>
+        <p><strong>4. Verification & End Screen Proof:</strong> For full 100% level verifications, the footage must showcase the entire completion run without cuts. The end screen must play out fully, and a visible cheat indicator / hack detector must be active and displayed on screen to prove no illegal modifications were used.</p>
+      `,
+      MCCL: `
+        <p><strong>1. Anti-Spam & Gameplay Design:</strong> Challenges cannot be based on mindless click spam. The gameplay must rely on mechanical skill, timing, and precision.</p>
+        <p><strong>2. Challenge Duration Limits:</strong> The active gameplay must have a length of at least 5 seconds and a maximum of 30 seconds. Anything shorter than 5 seconds or longer than 30 seconds will be rejected.</p>
+        <p><strong>3. Physical Possibility Standard:</strong> The challenge must be physically possible to complete within the game engine. Any layout that contains completely impassable obstacles or requires passing through solid walls (noclip) is prohibited.</p>
+        <p><strong>4. Quality & Decoration Control:</strong> Low-effort layouts or default block spam will not be accepted. The challenge must feature at least a light decoration style to meet the list's quality standards.</p>
+        <p><strong>5. Audio Requirements & Verification Proof:</strong> All record footage must feature clearly audible clicks. Full completion footage must show the entire run without cuts with a visible cheat indicator.</p>
+      `,
+      ILL: `
+        <p><strong>1. Maximum Clicks Per Second (CPS):</strong> A strict limit of 20 clicks per second. Additionally, any bursts or intense sequences of clicks must still structurally align with humanly or macro-feasible intervals without breaking engine stability.</p>
+        <p><strong>2. Maximum Clicks Per Frame (CPF):</strong> A maximum of 4 clicks within a single frame of the game.</p>
+        <p><strong>3. Note for 2-Player Mode:</strong> If a level utilizes the built-in dual controls for two separate players, each player must independently respect these same maximum constraints.</p>
+      `,
+      PPLL: `
+        <p><strong>1. The Impossibility Criteria:</strong> Need to be possible to bot.</p>
+        <p><strong>2. Difficulty Threshold:</strong> The level must be structurally more complex and challenging than the hardest theoretically possible level (surpassing the benchmarks of the TPLL/PPLL).</p>
+        <p><strong>3. Quality Standard:</strong> Low-effort maps (like a solid wall of spikes right at the spawn point) are rejected. The level must feature a cohesive layout and a decent level of decoration.</p>
+        <p><strong>4. No Malicious Triggers:</strong> Levels that use specific triggers or exploit loops to intentionally crash the player's Geometry Dash game client are heavily restricted or marked with specific annotations. The level must be impossible due to movement constraints, not software crashes.</p>
+        <p><strong>5. Appropriate Content:</strong> Any custom graphics or themes inside the level must strictly avoid NSFW or adult content.</p>
+      `
+    };
+
+    function getLevelBasePoints(cat, levelId) {
+      if (cat === 'ILL' || cat === 'PPLL') return 0;
+      const levels = allDatabase[cat].levels || [];
+      const index = levels.findIndex(l => l.id === levelId);
+      if (index === -1) return 0;
+      const total = levels.length;
+      if (total <= 1) return 500;
+      const pts = 500 - (index / (total - 1)) * 400;
+      return Math.round(pts);
+    }
+
+    function recalculateAllPlayerPoints() {
+      ['MCLL', 'MCCL'].forEach(cat => {
+        if (!allDatabase[cat] || !allDatabase[cat].players) return;
+        const levels = allDatabase[cat].levels || [];
+        
+        allDatabase[cat].players.forEach(player => {
+          let totalPoints = 0;
+          levels.forEach(lvl => {
+            const victors = lvl.victors || [];
+            const userRecord = victors.find(v => v.name.toLowerCase() === player.name.toLowerCase());
+            if (userRecord) {
+              const basePts = getLevelBasePoints(cat, lvl.id);
+              const percent = parseFloat(userRecord.percent) || 100;
+              totalPoints += (basePts * (percent / 100));
+            }
+          });
+          player.points = Math.round(totalPoints);
+        });
+        allDatabase[cat].players.sort((a, b) => (b.points || 0) - (a.points || 0));
+      });
+    }
+
+    function renderRules() {
+      const content = document.getElementById('rules-content');
+      if (content) {
+        content.innerHTML = rulesData[currentCategory] || '<p>No specific rules found.</p>';
+      }
+    }
+
+    function extractYoutubeId(url) {
+      if (!url) return '';
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length === 11) ? match[2] : '';
+    }
+
+    async function loadData() {
+      try {
+        const subRes = await fetch(NPOINT_URL + '?nocache=' + Date.now(), { cache: "no-store" });
+        if (subRes.ok) {
+          const subData = await subRes.json();
+          if (subData) {
+            allDatabase = subData;
+            if(!allDatabase.users) allDatabase.users = [];
+            if(allDatabase.PILL && !allDatabase.PPLL) {
+              allDatabase.PPLL = allDatabase.PILL;
+              delete allDatabase.PILL;
+            }
+          }
+        }
+      } catch (err) { console.error('Failed to load data', err); }
+      
+      ['MCLL', 'MCCL'].forEach(cat => {
+        if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
+        if (!allDatabase[cat].players) allDatabase[cat].players = [];
+        if (!allDatabase[cat].players.some(p => p.name.toLowerCase() === 'szymipek')) {
+          allDatabase[cat].players.push({
+            name: 'szymipek',
+            country: 'pl',
+            points: 0,
+            completed: 0,
+            verified: 0,
+            created: 0
+          });
+        }
+      });
+      recalculateAllPlayerPoints();
+      init();
+    }
+
+    async function saveCloudData() {
+      try {
+        await fetch(NPOINT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(allDatabase)
+        });
+      } catch (err) { console.error('Failed to save data', err); }
+    }
+
+    function switchCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`cat-btn-${cat}`).classList.add('active');
+      document.getElementById('header-title').innerText = cat;
+      init();
+    }
+
+    function init() {
+      recalculateAllPlayerPoints();
+      const isImpossible = (currentCategory === 'ILL' || currentCategory === 'PPLL');
+      const currentList = allDatabase[currentCategory] || { levels: [], players: [] };
+
+      document.getElementById('stat-levels').innerText = currentList.levels ? currentList.levels.length : 0;
+      
+      const statsPlayersBox = document.getElementById('stat-players-box');
+      const statsNavBtn = document.getElementById('nav-btn-stats');
+      
+      if (isImpossible) {
+        statsPlayersBox.style.display = 'none';
+        statsNavBtn.style.display = 'none';
+        if (currentMainTab === 'stats') {
+          switchMainTab('levels', document.getElementById('nav-btn-levels'));
+        }
+      } else {
+        statsPlayersBox.style.display = 'inline-block';
+        statsNavBtn.style.display = 'flex';
+        document.getElementById('stat-players').innerText = currentList.players ? currentList.players.length : 0;
+      }
+
+      updateAuthUI();
+      filterData();
+      renderRules();
+      populateRecordLevelSelect();
+    }
+
+    function updateAuthUI() {
+      const authButtonsContainer = document.getElementById('header-actions');
+      const submitBtn = document.getElementById('nav-btn-submit');
+      const adminBtn = document.getElementById('nav-btn-admin');
+
+      let authHtml = `
+        <a href="https://discord.gg/hJxgKPucb" target="_blank" class="auth-top-btn discord-top-btn">
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.011c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+          Discord
+        </a>
+      `;
+
+      if (currentUser) {
+        authHtml += `<button class="auth-top-btn" onclick="handleLogout()">Logout (${currentUser.name})</button>`;
+        submitBtn.style.display = 'block';
+        if (currentUser.isAdmin) adminBtn.style.display = 'block';
+        else adminBtn.style.display = 'none';
+      } else {
+        authHtml += `
+          <button class="auth-top-btn" onclick="openAuthModal('login')">Log In</button>
+          <button class="auth-top-btn" onclick="openAuthModal('register')">Register</button>
+        `;
+        submitBtn.style.display = 'none';
+        adminBtn.style.display = 'none';
+        if (['submit', 'admin'].includes(currentMainTab)) {
+          switchMainTab('levels', document.getElementById('nav-btn-levels'));
+        }
+      }
+      authButtonsContainer.innerHTML = authHtml;
+    }
+
+    function openAuthModal(mode) {
+      document.getElementById('auth-modal').style.display = 'flex';
+      ['login', 'register'].forEach(m => {
+        const f = document.getElementById(`modal-${m}-form`);
+        if(f) f.style.display = (m === mode) ? 'block' : 'none';
+      });
+      document.querySelectorAll('.modal .sub-tab-btn').forEach(b => b.classList.remove('active'));
+      const tabEl = document.getElementById(`modal-tab-${mode}`);
+      if(tabEl) tabEl.classList.add('active');
+    }
+
+    function closeAuthModal() { document.getElementById('auth-modal').style.display = 'none'; }
+    
+    function switchAuthMode(mode) {
+      ['login', 'register'].forEach(m => {
+        const el = document.getElementById(`modal-${m}-form`);
+        const tb = document.getElementById(`modal-tab-${m}`);
+        if(el) el.style.display = (m === mode) ? 'block' : 'none';
+        if(tb) tb.classList.toggle('active', m === mode);
+      });
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const name = document.getElementById('login-username').value.trim();
+      const pass = document.getElementById('login-password').value;
+
+      if (name.toLowerCase() === 'admin' && pass === 'ha1234qwer') {
+        currentUser = { name: 'admin', isAdmin: true };
+      } else {
+        const user = (allDatabase.users || []).find(u => u.name.toLowerCase() === name.toLowerCase() && u.password === pass);
+        if (!user) { alert('Invalid username or password!'); return; }
+        currentUser = { name: user.name, isAdmin: false };
+      }
+      localStorage.setItem('mcll_current_user', JSON.stringify(currentUser));
+      closeAuthModal();
+      init();
+      alert(`Logged in as ${currentUser.name}!`);
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('reg-username').value.trim();
+      const pass = document.getElementById('reg-password').value;
+      const country = document.getElementById('reg-country').value.trim().toLowerCase();
+
+      if (!allDatabase.users) allDatabase.users = [];
+      const nameLower = name.toLowerCase();
+      if (allDatabase.users.some(u => u.name.toLowerCase() === nameLower)) {
+        alert('Taki gracz już istnieje! Wybierz inny nick.');
+        return;
+      }
+      let existsInPlayers = false;
+      ['MCLL', 'MCCL', 'ILL', 'PPLL'].forEach(cat => {
+        if (allDatabase[cat] && allDatabase[cat].players) {
+          if (allDatabase[cat].players.some(p => p.name.toLowerCase() === nameLower)) existsInPlayers = true;
+        }
+      });
+      if (existsInPlayers) {
+        alert('Taki gracz już istnieje w rankingu!');
+        return;
+      }
+
+      allDatabase.users.push({ name, password: pass, country });
+
+      ['MCLL', 'MCCL'].forEach(cat => {
+        if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
+        if (!allDatabase[cat].players) allDatabase[cat].players = [];
+        allDatabase[cat].players.push({
+          name: name,
+          country: country,
+          points: 0,
+          completed: 0,
+          verified: 0,
+          created: 0
+        });
+      });
+
+      await saveCloudData();
+      currentUser = { name, isAdmin: false };
+      localStorage.setItem('mcll_current_user', JSON.stringify(currentUser));
+      closeAuthModal();
+      init();
+      alert(`Registered and added to Stats as ${name}!`);
+    }
+
+    function handleLogout() {
+      currentUser = null;
+      localStorage.removeItem('mcll_current_user');
+      init();
+      switchMainTab('levels', document.getElementById('nav-btn-levels'));
+      alert('Logged out.');
+    }
+
+    function renderLeaderboard() {
+      if (currentCategory === 'ILL' || currentCategory === 'PPLL') return;
+      recalculateAllPlayerPoints();
+      const container = document.getElementById('stats-result-container');
+      if(!container) return;
+      const players = allDatabase[currentCategory].players || [];
+      const query = document.getElementById('stats-search-input').value.toLowerCase().trim();
+      const filtered = players.filter(p => !query || p.name.toLowerCase().includes(query));
+
+      if(filtered.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding: 15px; color: var(--text-muted);">No players found.</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map((p) => {
+        const globalIdx = players.findIndex(x => x.name === p.name) + 1;
+        const displayPts = p.points || 0;
+
+        const levels = allDatabase[currentCategory].levels || [];
+        let completedCount = 0;
+        let verifiedCount = 0;
+        let createdCount = 0;
+
+        levels.forEach(lvl => {
+          if (lvl.creator && lvl.creator.toLowerCase() === p.name.toLowerCase()) createdCount++;
+          if (lvl.verifier && lvl.verifier.toLowerCase() === p.name.toLowerCase()) verifiedCount++;
+          const rec = (lvl.victors || []).find(v => v.name.toLowerCase() === p.name.toLowerCase());
+          if (rec && (parseFloat(rec.percent) || 100) === 100) completedCount++;
+        });
+
+        return `
+          <div class="card player-card" onclick="openPlayerProfile('${p.name}')">
+            <div>
+              <div class="card-title">
+                #${globalIdx} 
+                ${p.country ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country}.png" alt="${p.country}">` : ''}
+                <span class="player-name-text">${p.name}</span>
+              </div>
+              <div class="player-stats-counters">
+                Completed: <span>${completedCount}</span> | Verified: <span>${verifiedCount}</span> | Created: <span>${createdCount}</span>
+              </div>
+            </div>
+            <div class="card-points">${displayPts} pts</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openPlayerProfile(playerName) {
+      if (currentCategory === 'ILL' || currentCategory === 'PPLL') return;
+      recalculateAllPlayerPoints();
+      const players = allDatabase[currentCategory].players || [];
+      const p = players.find(x => x.name.toLowerCase() === playerName.toLowerCase());
+      if(!p) return;
+
+      document.getElementById('main-content').style.display = 'none';
+      document.getElementById('sub-levels-nav').style.display = 'none';
+      document.getElementById('search-controls').style.display = 'none';
+      document.getElementById('rules-view').style.display = 'none';
+      document.getElementById('stats-view').style.display = 'none';
+      document.getElementById('roulette-view').style.display = 'none';
+      document.getElementById('submit-view').style.display = 'none';
+      document.getElementById('admin-view').style.display = 'none';
+      document.getElementById('level-view').style.display = 'none';
+      document.getElementById('player-profile-view').style.display = 'block';
+
+      const globalIdx = players.findIndex(x => x.name.toLowerCase() === playerName.toLowerCase()) + 1;
+      const displayPts = p.points || 0;
+
+      const levels = allDatabase[currentCategory].levels || [];
+      
+      let completedList = [];
+      let verifiedList = [];
+      let createdList = [];
+
+      levels.forEach(lvl => {
+        if (lvl.creator && lvl.creator.toLowerCase() === p.name.toLowerCase()) {
+          createdList.push(lvl.title);
+        }
+        if (lvl.verifier && lvl.verifier.toLowerCase() === p.name.toLowerCase()) {
+          verifiedList.push(lvl.title);
+        }
+        const rec = (lvl.victors || []).find(v => v.name.toLowerCase() === p.name.toLowerCase());
+        if (rec) {
+          const basePts = getLevelBasePoints(currentCategory, lvl.id);
+          const pct = parseFloat(rec.percent) || 100;
+          const earnedPts = Math.round(basePts * (pct / 100));
+          completedList.push(`${lvl.title} (${pct}% -> +${earnedPts} pts)`);
+        }
+      });
+
+      document.getElementById('player-profile-content').innerHTML = `
+        <h2 style="color:var(--accent-cyan); margin-top:0;">Player Profile: ${p.name}</h2>
+        <div style="margin-bottom:8px;"><strong>Rank:</strong> #${globalIdx}</div>
+        <div style="margin-bottom:8px;"><strong>Country:</strong> ${p.country ? p.country.toUpperCase() : 'N/A'}</div>
+        <div style="margin-bottom:8px;"><strong>Total Points:</strong> ${displayPts} pts</div>
+        
+        <hr style="border-color:var(--card-border); margin: 12px 0;">
+
+        <div style="margin-bottom: 12px;">
+          <strong style="color:var(--accent-cyan);">Completed Levels & Records (${completedList.length}):</strong>
+          ${completedList.length > 0 ? `<ul style="margin: 4px 0 0 20px; padding:0; font-size:12px;">${completedList.map(item => `<li>${item}</li>`).join('')}</ul>` : '<div style="font-size:12px; color:var(--text-muted);">None</div>'}
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <strong style="color:var(--accent-cyan);">Verified Levels (${verifiedList.length}):</strong>
+          ${verifiedList.length > 0 ? `<ul style="margin: 4px 0 0 20px; padding:0; font-size:12px;">${verifiedList.map(item => `<li>${item}</li>`).join('')}</ul>` : '<div style="font-size:12px; color:var(--text-muted);">None</div>'}
+        </div>
+
+        <div style="margin-bottom: 6px;">
+          <strong style="color:var(--accent-cyan);">Created Levels (${createdList.length}):</strong>
+          ${createdList.length > 0 ? `<ul style="margin: 4px 0 0 20px; padding:0; font-size:12px;">${createdList.map(item => `<li>${item}</li>`).join('')}</ul>` : '<div style="font-size:12px; color:var(--text-muted);">None</div>'}
+        </div>
+      `;
+    }
+
+    function closePlayerProfile() {
+      document.getElementById('player-profile-view').style.display = 'none';
+      document.getElementById('main-content').style.display = 'block';
+      document.getElementById('sub-levels-nav').style.display = 'flex';
+      document.getElementById('search-controls').style.display = 'flex';
+    }
+
+    function populateRecordLevelSelect() {
+      const select = document.getElementById('rec-level-select');
+      if (!select) return;
+      select.innerHTML = '';
+      const levels = allDatabase[currentCategory].levels || [];
+      levels.forEach(lvl => select.add(new Option(lvl.title, lvl.title)));
+    }
+
+    function filterData() {
+      const query = document.getElementById('search-input').value.toLowerCase().trim();
+      const levels = allDatabase[currentCategory].levels || [];
+      const filtered = levels.filter(lvl => 
+        (lvl.type === currentSubTab || (!lvl.type && currentSubTab === 'main')) &&
+        (!query || (lvl.title && lvl.title.toLowerCase().includes(query)))
+      );
+      renderLevels(filtered);
+    }
+
+    function renderLevels(list) {
+      const container = document.getElementById('list-container');
+      if(!container) return;
+      container.innerHTML = '';
+      if(!list || list.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding: 30px; color: var(--text-muted); font-size: 13px;">No levels found.</div>`;
+        return;
+      }
+      list.forEach((lvl) => {
+        const globalRank = allDatabase[currentCategory].levels.findIndex(l => l.id === lvl.id) + 1;
+        const basePts = getLevelBasePoints(currentCategory, lvl.id);
+        const ptsText = (currentCategory === 'ILL' || currentCategory === 'PPLL') ? '' : ` • <span style="color:var(--accent-cyan); font-weight:bold;">${basePts} pts</span>`;
+        const thumbUrl = lvl.youtubeId ? `https://img.youtube.com/vi/${lvl.youtubeId}/mqdefault.jpg` : '';
+        
+        const card = document.createElement('div');
+        card.className = 'pointercrate-card';
+        card.onclick = () => openLevelView(lvl.id);
+        card.innerHTML = `
+          <div class="pointercrate-thumb-wrapper">
+            <img class="pointercrate-thumb" src="${thumbUrl}" alt="${lvl.title}">
+            <div class="pointercrate-overlay"></div>
+          </div>
+          <div class="pointercrate-content">
+            <div class="pointercrate-title">#${globalRank} – ${lvl.title}</div>
+            <div class="pointercrate-publisher">by <strong>${lvl.creator || 'Unknown'}</strong>${ptsText}</div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function openLevelView(id) {
+      const lvl = allDatabase[currentCategory].levels.find(l => l.id === id);
+      if(!lvl) return;
+      document.getElementById('main-content').style.display = 'none';
+      document.getElementById('sub-levels-nav').style.display = 'none';
+      document.getElementById('search-controls').style.display = 'none';
+      document.getElementById('level-view').style.display = 'block';
+      document.getElementById('lvl-title').innerText = lvl.title;
+      
+      let victorsHtml = '';
+      const isImpossible = (currentCategory === 'ILL' || currentCategory === 'PPLL');
+      
+      if (!isImpossible) {
+        const records = lvl.victors || [];
+        const fullVictors = records.filter(r => (parseFloat(r.percent) || 100) === 100);
+        const percentRecords = records.filter(r => (parseFloat(r.percent) || 100) < 100)
+                                      .sort((a, b) => parseFloat(b.percent) - parseFloat(a.percent));
+
+        const first = fullVictors[0] || { name: 'None', proof: '' };
+        const second = fullVictors[1] || { name: 'None', proof: '' };
+        const third = fullVictors[2] || { name: 'None', proof: '' };
+        const otherVictors = fullVictors.slice(3);
+
+        let percentHtml = '';
+        if (percentRecords.length > 0) {
+          percentHtml = `
+            <div style="margin-top: 10px; border-top: 1px dashed rgba(194, 155, 104, 0.3); padding-top: 8px;">
+              <strong style="color:var(--text-secondary); font-size:12px;">Highscores (%):</strong>
+              ${percentRecords.map(r => `
+                <div class="victor-item" style="color: var(--text-primary);">
+                  <span>• <strong>${r.name}</strong> – <span style="color:var(--accent-cyan);">${r.percent}%</span></span>
+                  ${r.proof ? `<a href="${r.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        let otherVictorsHtml = '';
+        if (otherVictors.length > 0) {
+          otherVictorsHtml = `
+            <div style="margin-top: 6px;">
+              <strong style="color:var(--text-secondary); font-size:11px;">Other 100% Victors:</strong>
+              ${otherVictors.map(r => `
+                <div class="victor-item" style="color: #ffffff;">
+                  <span>🏆 <strong>${r.name}</strong></span>
+                  ${r.proof ? `<a href="${r.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        const basePts = getLevelBasePoints(currentCategory, lvl.id);
+
+        victorsHtml = `
+          <div class="victors-box">
+            <h3 style="color: var(--accent-cyan); margin-top: 0; font-size: 14px; display:flex; justify-content:space-between;">
+              <span>Level Victors & Records 🏆</span>
+              <span style="font-size:12px; color:var(--text-muted);">Base Value: ${basePts} pts</span>
+            </h3>
+            <div class="victor-item victor-gold">
+              <span>🥇 1st: <strong style="color: #ffd700;">${first.name}</strong></span>
+              ${first.proof ? `<a href="${first.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}
+            </div>
+            <div class="victor-item victor-silver">
+              <span>🥈 2nd: <strong style="color: #c0c0c0;">${second.name}</strong></span>
+              ${second.proof ? `<a href="${second.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}
+            </div>
+            <div class="victor-item victor-bronze">
+              <span>🥉 3rd: <strong style="color: #cd7f32;">${third.name}</strong></span>
+              ${third.proof ? `<a href="${third.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}
+            </div>
+            ${otherVictorsHtml}
+            ${percentHtml}
+          </div>
+        `;
+      }
+
+      let historyHtml = '';
+      if (lvl.history && lvl.history.length > 0) {
+        historyHtml = `
+          <h3 style="color: var(--accent-cyan); margin-top: 15px; font-size: 16px;">Level History 📜</h3>
+          <table class="history-table-container">
+            <thead><tr><th>Date</th><th>Change</th><th>Pos</th><th>Reason</th></tr></thead>
+            <tbody>
+              ${lvl.history.map(h => `<tr><td>${h.date}</td><td>${h.change}</td><td>${h.newPosition}</td><td>${h.reason}</td></tr>`).join('')}
+            </tbody>
+          </table>
+        `;
+      }
+
+      document.getElementById('lvl-details').innerHTML = `
+        <div class="info-meta">
+          <div><strong>GD ID:</strong> ${lvl.gdId || 'N/A'}</div>
+          <div><strong>Created by:</strong> ${lvl.creator || 'N/A'}</div>
+          ${lvl.verifier ? `<div><strong>Verified by:</strong> ${lvl.verifier}</div>` : ''}
+          <div><strong>Song:</strong> ${lvl.song || 'N/A'}</div>
+        </div>
+        ${victorsHtml}
+        ${lvl.youtubeId ? `<div class="video-container"><iframe src="https://www.youtube.com/embed/${lvl.youtubeId}" allowfullscreen></iframe></div>` : ''}
+        ${historyHtml}
+      `;
+    }
+
+    function closeView() {
+      document.getElementById('level-view').style.display = 'none';
+      document.getElementById('main-content').style.display = 'block';
+      document.getElementById('sub-levels-nav').style.display = 'flex';
+      document.getElementById('search-controls').style.display = 'flex';
+    }
+
+    function switchMainTab(tab, ev) {
+      if ((currentCategory === 'ILL' || currentCategory === 'PPLL') && tab === 'stats') return;
+      currentMainTab = tab;
+      document.querySelectorAll('.nav-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
+      if(ev && ev.currentTarget) ev.currentTarget.classList.add('active');
+
+      document.getElementById('main-content').style.display = 'none';
+      document.getElementById('sub-levels-nav').style.display = 'none';
+      document.getElementById('rules-view').style.display = 'none';
+      document.getElementById('stats-view').style.display = 'none';
+      document.getElementById('roulette-view').style.display = 'none';
+      document.getElementById('submit-view').style.display = 'none';
+      document.getElementById('admin-view').style.display = 'none';
+      document.getElementById('level-view').style.display = 'none';
+      document.getElementById('player-profile-view').style.display = 'none';
+
+      if (tab === 'levels') {
+        document.getElementById('sub-levels-nav').style.display = 'flex';
+        document.getElementById('main-content').style.display = 'block';
+        document.getElementById('search-controls').style.display = 'flex';
+        filterData();
+      } else if (tab === 'stats') {
+        document.getElementById('stats-view').style.display = 'block';
+        renderLeaderboard();
+      } else if (tab === 'rules') { 
+        document.getElementById('rules-view').style.display = 'block'; 
+        renderRules();
+      }
+      else if (tab === 'roulette') { document.getElementById('roulette-view').style.display = 'block'; }
+      else if (tab === 'submit') { document.getElementById('submit-view').style.display = 'block'; }
+      else if (tab === 'admin') { 
+        document.getElementById('admin-view').style.display = 'block'; 
+        renderAdminPending();
+        renderAdminLevelsList();
+      }
+    }
+
+    function switchSubTab(subTab, ev) {
+      currentSubTab = subTab;
+      document.querySelectorAll('#sub-levels-nav .sub-tab-btn').forEach(btn => btn.classList.remove('active'));
+      if(ev && ev.target) ev.target.classList.add('active');
+      filterData();
+    }
+
+    function switchSubmitSubTab(subTab, ev) {
+      const recordForm = document.getElementById('record-form');
+      const levelForm = document.getElementById('level-form');
+      document.querySelectorAll('#submit-view .sub-nav-tabs .sub-tab-btn').forEach(b => b.classList.remove('active'));
+      if(ev && ev.target) ev.target.classList.add('active');
+
+      if (subTab === 'record') {
+        recordForm.style.display = 'block';
+        levelForm.style.display = 'none';
+      } else {
+        recordForm.style.display = 'none';
+        levelForm.style.display = 'block';
+      }
+    }
+
+    function switchAdminTab(subTab, ev) {
+      const subSec = document.getElementById('admin-sub-section');
+      const manageSec = document.getElementById('admin-manage-section');
+      document.querySelectorAll('#admin-view .sub-nav-tabs .sub-tab-btn').forEach(b => b.classList.remove('active'));
+      if(ev && ev.target) ev.target.classList.add('active');
+
+      if (subTab === 'sub') {
+        subSec.style.display = 'block';
+        manageSec.style.display = 'none';
+        renderAdminPending();
+      } else {
+        subSec.style.display = 'none';
+        manageSec.style.display = 'block';
+        renderAdminLevelsList();
+      }
+    }
+
+    async function handleLevelSubmit(e) {
+      e.preventDefault();
+      if (!currentUser) {
+        alert('Musisz być zalogowany, aby dodać poziom!');
+        return;
+      }
+      const lvlNameInput = document.getElementById('lvl-name').value.trim();
+      
+      const existingLevels = allDatabase[currentCategory].levels || [];
+      if (existingLevels.some(l => l.title.toLowerCase() === lvlNameInput.toLowerCase())) {
+        alert('Poziom o tej nazwie już istnieje w tej kategorii!');
+        return;
+      }
+
+      const creatorVal = document.getElementById('lvl-creator').value.trim();
+      const verifierVal = document.getElementById('lvl-verifier').value.trim();
+
+      const newSub = {
+        id: Date.now(),
+        user: currentUser.name,
+        type: 'level',
+        category: currentCategory,
+        status: 'pending',
+        data: {
+          name: lvlNameInput,
+          creator: creatorVal,
+          verifier: verifierVal,
+          video: document.getElementById('lvl-video').value,
+          song: document.getElementById('lvl-song').value,
+          gdId: document.getElementById('lvl-id').value
+        }
+      };
+      if (!allDatabase.zgloszenia) allDatabase.zgloszenia = [];
+      allDatabase.zgloszenia.push(newSub);
+      await saveCloudData();
+      alert('Level submitted for review!');
+      document.getElementById('level-form').reset();
+    }
+
+    async function handleRecordSubmit(e) {
+      e.preventDefault();
+      if (!currentUser) {
+        alert('Musisz być zalogowany, aby dodać rekord!');
+        return;
+      }
+      const lvlName = document.getElementById('rec-level-select').value;
+      const percent = parseFloat(document.getElementById('rec-percent').value);
+      const video = document.getElementById('rec-video').value;
+
+      const newSub = {
+        id: Date.now(),
+        user: currentUser.name,
+        type: 'record',
+        category: currentCategory,
+        status: 'pending',
+        data: { level: lvlName, percent, video }
+      };
+      if (!allDatabase.zgloszenia) allDatabase.zgloszenia = [];
+      allDatabase.zgloszenia.push(newSub);
+      await saveCloudData();
+      alert('Record submitted for review!');
+      document.getElementById('record-form').reset();
+    }
+
+    function renderAdminPending() {
+      const container = document.getElementById('admin-pending-container');
+      if(!container) return;
+      const pending = (allDatabase.zgloszenia || []).filter(s => s.status === 'pending');
+      if(pending.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted); text-align:center;">No pending submissions.</div>';
+        return;
+      }
+      container.innerHTML = pending.map(s => {
+        let detailsHtml = '';
+        if (s.type === 'level') {
+          detailsHtml = `
+            <div><strong>Level Name:</strong> ${s.data.name}</div>
+            <div><strong>Creator:</strong> ${s.data.creator}</div>
+            <div><strong>Verifier:</strong> ${s.data.verifier || 'N/A'}</div>
+            <div><strong>Song:</strong> ${s.data.song} | <strong>ID:</strong> ${s.data.gdId}</div>
+            <div><strong>Video:</strong> <a href="${s.data.video}" target="_blank" style="color:var(--accent-cyan)">${s.data.video}</a></div>
+          `;
+        } else if (s.type === 'record') {
+          detailsHtml = `
+            <div><strong>Level:</strong> ${s.data.level}</div>
+            <div><strong>Record:</strong> ${s.data.percent}%</div>
+            <div><strong>Video Proof:</strong> <a href="${s.data.video}" target="_blank" style="color:var(--accent-cyan)">${s.data.video}</a></div>
+          `;
+        }
+
+        return `
+          <div class="submission-item">
+            <div><strong>${s.type.toUpperCase()}</strong> submitted by <span style="color:var(--accent-cyan);">${s.user}</span> in <strong>${s.category}</strong></div>
+            ${detailsHtml}
+            <div class="action-row" style="margin-top: 6px;">
+              <button class="btn-action btn-success" onclick="approveSub(${s.id})">Approve</button>
+              <button class="btn-action btn-danger" onclick="rejectSub(${s.id})">Reject</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderAdminLevelsList() {
+      const container = document.getElementById('admin-levels-manage-container');
+      if(!container) return;
+      const levels = allDatabase[currentCategory].levels || [];
+      if(levels.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted); text-align:center;">No levels in this category.</div>';
+        return;
+      }
+      container.innerHTML = levels.map((l, index) => `
+        <div class="submission-item">
+          <div><strong>#${index + 1} - ${l.title}</strong> by ${l.creator} (ID: ${l.gdId || 'N/A'})</div>
+          <div class="action-row">
+            <input type="number" id="move-input-${l.id}" min="1" max="${levels.length}" value="${index + 1}" class="move-input">
+            <button class="btn-action btn-success" onclick="moveLevelCustom('${l.id}')">Move</button>
+            <button class="btn-action btn-primary" onclick="openEditLevelModal('${l.id}')">Edit Info</button>
+            <button class="btn-action btn-danger" onclick="adminDeleteLevel('${l.id}')">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function moveLevelCustom(lvlId) {
+      const levels = allDatabase[currentCategory].levels || [];
+      const inputEl = document.getElementById(`move-input-${lvlId}`);
+      if (!inputEl) return;
+      
+      let targetPos = parseInt(inputEl.value);
+      if (isNaN(targetPos)) return;
+      
+      targetPos = Math.max(1, Math.min(targetPos, levels.length));
+      const targetIndex = targetPos - 1;
+      const currentIndex = levels.findIndex(l => l.id === lvlId);
+
+      if (currentIndex === -1 || currentIndex === targetIndex) return;
+
+      const [movedLevel] = levels.splice(currentIndex, 1);
+      levels.splice(targetIndex, 0, movedLevel);
+
+      const today = new Date().toISOString().split('T')[0];
+      levels.forEach((lvl, idx) => {
+        if (!lvl.history) lvl.history = [];
+        lvl.history.push({
+          date: today,
+          change: idx < currentIndex ? '↑' : '↓',
+          newPosition: `#${idx + 1}`,
+          reason: 'moved via admin panel'
+        });
+      });
+
+      recalculateAllPlayerPoints();
+      await saveCloudData();
+      init();
+      renderAdminLevelsList();
+      alert(`Przeniesiono poziom na pozycję #${targetPos}!`);
+    }
+
+    async function adminDeleteLevel(lvlId) {
+      if(!confirm('Czy na pewno chcesz usunąć ten poziom?')) return;
+      const levels = allDatabase[currentCategory].levels || [];
+      allDatabase[currentCategory].levels = levels.filter(l => l.id !== lvlId);
+      recalculateAllPlayerPoints();
+      await saveCloudData();
+      init();
+      renderAdminLevelsList();
+      alert('Poziom został usunięty.');
+    }
+
+    function openEditLevelModal(lvlId) {
+      const lvl = (allDatabase[currentCategory].levels || []).find(l => l.id === lvlId);
+      if(!lvl) return;
+      document.getElementById('edit-lvl-id').value = lvl.id;
+      document.getElementById('edit-lvl-name').value = lvl.title || '';
+      document.getElementById('edit-lvl-creator').value = lvl.creator || '';
+      document.getElementById('edit-lvl-verifier').value = lvl.verifier || '';
+      document.getElementById('edit-lvl-song').value = lvl.song || '';
+      document.getElementById('edit-lvl-id-val').value = lvl.gdId || '';
+      document.getElementById('edit-lvl-video').value = lvl.youtubeId ? `https://youtu.be/${lvl.youtubeId}` : '';
+      document.getElementById('edit-level-modal').style.display = 'flex';
+    }
+
+    function closeEditModal() {
+      document.getElementById('edit-level-modal').style.display = 'none';
+    }
+
+    async function handleSaveLevelEdit(e) {
+      e.preventDefault();
+      const lvlId = document.getElementById('edit-lvl-id').value;
+      const levels = allDatabase[currentCategory].levels || [];
+      const lvl = levels.find(l => l.id === lvlId);
+      if(!lvl) return;
+
+      lvl.title = document.getElementById('edit-lvl-name').value.trim();
+      lvl.creator = document.getElementById('edit-lvl-creator').value.trim();
+      lvl.verifier = document.getElementById('edit-lvl-verifier').value.trim();
+      lvl.song = document.getElementById('edit-lvl-song').value.trim();
+      lvl.gdId = document.getElementById('edit-lvl-id-val').value.trim();
+      const vidUrl = document.getElementById('edit-lvl-video').value.trim();
+      if(vidUrl) lvl.youtubeId = extractYoutubeId(vidUrl);
+
+      await saveCloudData();
+      closeEditModal();
+      init();
+      renderAdminLevelsList();
+      alert('Zaktualizowano informacje o poziomie!');
+    }
+
+    async function approveSub(id) {
+      const sub = allDatabase.zgloszenia.find(s => s.id === id);
+      if(!sub) return;
+      sub.status = 'accepted';
+      const cat = sub.category || currentCategory;
+      if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
+      const today = new Date().toISOString().split('T')[0];
+
+      if (sub.type === 'level') {
+        if (!allDatabase[cat].levels) allDatabase[cat].levels = [];
+        const levels = allDatabase[cat].levels;
+        const newLvl = {
+          id: 'lvl_' + Date.now(),
+          title: sub.data.name,
+          creator: sub.data.creator,
+          verifier: sub.data.verifier || '',
+          youtubeId: extractYoutubeId(sub.data.video),
+          song: sub.data.song,
+          gdId: sub.data.gdId,
+          victors: [],
+          history: [{ date: today, change: '-', newPosition: '#1', reason: 'was placed at top' }]
+        };
+        levels.forEach((l, idx) => {
+          if(!l.history) l.history = [];
+          l.history.push({ date: today, change: '↓1', newPosition: `#${idx + 2}`, reason: `${newLvl.title} was added above` });
+        });
+        levels.unshift(newLvl);
+      } else if (sub.type === 'record') {
+        const lvl = (allDatabase[cat].levels || []).find(l => l.title.toLowerCase() === sub.data.level.toLowerCase());
+        if (lvl) {
+          if (!lvl.victors) lvl.victors = [];
+          lvl.victors = lvl.victors.filter(v => v.name.toLowerCase() !== sub.user.toLowerCase());
+          lvl.victors.push({
+            name: sub.user,
+            percent: parseFloat(sub.data.percent),
+            proof: sub.data.video
+          });
+        }
+      }
+
+      recalculateAllPlayerPoints();
+      await saveCloudData();
+      init();
+      renderAdminPending();
+      alert('Approved successfully!');
+    }
+
+    async function rejectSub(id) {
+      const sub = allDatabase.zgloszenia.find(s => s.id === id);
+      if(sub) sub.status = 'declined';
+      await saveCloudData();
+      renderAdminPending();
+    }
+
+    function startRoulette() {
+      const levels = allDatabase[currentCategory].levels || [];
+      if(levels.length === 0) { alert('No levels.'); return; }
+      rouletteState.active = true;
+      rouletteState.currentLevel = levels[Math.floor(Math.random() * levels.length)];
+      rouletteState.currentPercent = 0;
+      updateRouletteUI();
+    }
+
+    function updateRouletteUI() {
+      const targetText = document.getElementById('roulette-target-text');
+      const btnStart = document.getElementById('btn-start');
+      const btnNext = document.getElementById('btn-next');
+      const btnGiveup = document.getElementById('btn-giveup');
+      if(rouletteState.active) {
+        btnStart.style.display = 'none';
+        btnNext.style.display = 'inline-block';
+        btnGiveup.style.display = 'inline-block';
+        targetText.innerHTML = `Target: <strong>${rouletteState.currentLevel.title}</strong><br>Goal: ${rouletteState.currentPercent}%`;
+      } else {
+        btnStart.style.display = 'inline-block';
+        btnNext.style.display = 'none';
+        btnGiveup.style.display = 'none';
+        targetText.innerHTML = 'Click Start to begin!';
+      }
+    }
+
+    function nextRoulette() {
+      rouletteState.currentPercent += 1;
+      if(rouletteState.currentPercent >= 100) { alert('Completed!'); giveupRoulette(); }
+      else updateRouletteUI();
+    }
+
+    function giveupRoulette() { rouletteState.active = false; updateRouletteUI(); }
+
+    document.addEventListener('DOMContentLoaded', loadData);
+  </script>
+</body>
+</html>
