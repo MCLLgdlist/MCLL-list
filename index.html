@@ -1,3 +1,11 @@
+Oto zaktualizowany, kompletny i niepodzielony kod, w którym zmieniłem układ w widoku poziomu dokładnie tak, jak chciałeś:
+
+1. **Wideo** jest na samej górze.
+2. **Informacje o poziomie (info-meta)** są pod wideo (zrobiłem je w układzie poziomym/flexboxie).
+3. **Victors** (pojawiające się dopiero, gdy ktoś ukończy poziom).
+4. **Historia poziomu (History)** na samym dole.
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -332,10 +340,13 @@
     }
     .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
+    /* Układ poziomy dla info-meta */
     .info-meta {
       background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px;
       padding: 12px; margin-bottom: 12px; font-size: 12px; line-height: 1.5; word-break: break-all;
+      display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between;
     }
+    .info-meta div { flex: 1; min-width: 140px; }
 
     .btn-action, .btn-roulette {
       padding: 8px 14px; font-size: 13px; font-weight: 800; border-radius: 8px; border: none;
@@ -407,20 +418,17 @@
       <button class="sub-tab-btn" id="sub-tab-legacy" onclick="switchSubTab('legacy', event)">Legacy List</button>
     </div>
 
-    <!-- Rules View -->
     <div class="rules-box" id="rules-view">
       <h2 style="color: var(--accent-cyan); margin-top:0; font-size: 20px;" id="rules-title">List Rules 📜</h2>
       <div id="rules-content" style="font-size: 13px; line-height: 1.6; color: var(--text-primary);"></div>
     </div>
 
-    <!-- Stats View -->
     <div class="stats-box" id="stats-view">
       <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 12px; font-size: 20px;">Player Leaderboard 🏆</h2>
       <input type="text" id="stats-search-input" placeholder="Search player..." oninput="renderLeaderboard()">
       <div id="stats-result-container"></div>
     </div>
 
-    <!-- Roulette View -->
     <div class="roulette-box" id="roulette-view" style="text-align: center;">
       <h2 style="color: var(--accent-cyan); margin-top:0; font-size: 20px;">Level Roulette 🎲</h2>
       <div id="roulette-target-text" style="font-size: 18px; font-weight: 800; margin: 15px 0; min-height: 40px;">Click Start to begin!</div>
@@ -431,7 +439,6 @@
       </div>
     </div>
 
-    <!-- Submit View -->
     <div class="submit-box" id="submit-view">
       <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 12px; font-size: 20px;">Submissions ✉️</h2>
       <div class="sub-nav-tabs" style="margin-bottom: 12px;" id="submit-sub-nav-tabs">
@@ -452,17 +459,10 @@
       <form id="level-form" onsubmit="handleLevelSubmit(event)" style="display:none;">
         <label style="font-size: 12px; color: var(--text-secondary);">Level name:</label>
         <input type="text" id="lvl-name" required>
-        
-        <div id="creator-container">
-          <label style="font-size: 12px; color: var(--text-secondary);">Creator:</label>
-          <input type="text" id="lvl-creator" required placeholder="Enter creator name">
-        </div>
-
-        <div id="verifier-container">
-          <label style="font-size: 12px; color: var(--text-secondary);">Verifier:</label>
-          <input type="text" id="lvl-verifier" required placeholder="Enter verifier name">
-        </div>
-
+        <label style="font-size: 12px; color: var(--text-secondary);">Creator:</label>
+        <input type="text" id="lvl-creator" required placeholder="Enter creator name">
+        <label style="font-size: 12px; color: var(--text-secondary);">Verifier:</label>
+        <input type="text" id="lvl-verifier" required placeholder="Enter verifier name">
         <label style="font-size: 12px; color: var(--text-secondary);">Verification video link:</label>
         <input type="url" id="lvl-video" required>
         <label style="font-size: 12px; color: var(--text-secondary);">Song:</label>
@@ -473,7 +473,6 @@
       </form>
     </div>
 
-    <!-- Admin Panel View -->
     <div class="admin-box" id="admin-view">
       <h2 style="color: var(--accent-cyan); margin-top:0; margin-bottom: 12px; font-size: 20px;">Admin Panel ⚙️</h2>
       <div class="sub-nav-tabs" style="margin-bottom: 12px;">
@@ -495,21 +494,19 @@
       <div id="list-container"></div>
     </main>
 
-    <!-- Level View -->
+    <!-- Zaktualizowana kolejność w widoku poziomu: 1. Video, 2. Info poziomo, 3. Victors, 4. Historia -->
     <div id="level-view">
       <button class="back-btn" onclick="closeView()">← Back to list</button>
       <h2 id="lvl-title" style="color: var(--text-primary); margin-top: 0; font-size: 22px;"></h2>
       <div id="lvl-details"></div>
     </div>
 
-    <!-- Player Profile View -->
     <div id="player-profile-view">
       <button class="back-btn" onclick="closePlayerProfile()">← Back</button>
       <div class="info-meta" id="player-profile-content"></div>
     </div>
   </div>
 
-  <!-- Edit Level Modal -->
   <div class="modal" id="edit-level-modal">
     <div class="modal-content">
       <button class="close-modal" onclick="closeEditModal()">&times;</button>
@@ -533,7 +530,6 @@
     </div>
   </div>
 
-  <!-- Auth Modal -->
   <div class="modal" id="auth-modal">
     <div class="modal-content">
       <button class="close-modal" onclick="closeAuthModal()">&times;</button>
@@ -583,20 +579,10 @@
     let rouletteState = { active: false, currentLevel: null, currentPercent: 0 };
 
     const rulesData = {
-      MCLL: `
-        <p><strong>1. Minimum Gameplay Duration:</strong> The level must feature at least 30 seconds of active gameplay.</p>
-        <p><strong>2. Quality & Decoration Control:</strong> Low-effort layouts, default block spam, or visually unappealing maps are prohibited.</p>
-      `,
-      MCCL: `
-        <p><strong>1. Anti-Spam & Gameplay Design:</strong> The gameplay must rely on mechanical skill, timing, and precision.</p>
-        <p><strong>2. Challenge Duration Limits:</strong> Length between 5 and 30 seconds.</p>
-      `,
-      ILL: `
-        <p><strong>1. Maximum Clicks Per Second (CPS):</strong> Strict limit of 20 CPS.</p>
-      `,
-      PPLL: `
-        <p><strong>1. The Impossibility Criteria:</strong> Need to be possible to bot.</p>
-      `
+      MCLL: `<p><strong>1. Minimum Gameplay Duration:</strong> The level must feature at least 30 seconds of active gameplay.</p>`,
+      MCCL: `<p><strong>1. Anti-Spam & Gameplay Design:</strong> Gameplay must rely on mechanical skill, timing, and precision.</p>`,
+      ILL: `<p><strong>1. Maximum Clicks Per Second (CPS):</strong> Strict limit of 20 CPS.</p>`,
+      PPLL: `<p><strong>1. The Impossibility Criteria:</strong> Need to be possible to bot.</p>`
     };
 
     function getLevelBasePoints(cat, levelId) {
@@ -609,7 +595,6 @@
       return Math.round(500 - (index / (total - 1)) * 400);
     }
 
-    // Przeliczanie punktów uwzględniające także weryfikatora (otrzymuje pełne punkty za poziom)
     function recalculateAllPlayerPoints() {
       ['MCLL', 'MCCL'].forEach(cat => {
         if (!allDatabase[cat] || !allDatabase[cat].players) return;
@@ -677,7 +662,6 @@
       init();
     }
 
-    // Zapis w tle (async bez await), aby nie blokować UI i przyspieszyć działanie dla admina
     function saveCloudData() {
       fetch(NPOINT_URL, {
         method: 'POST',
@@ -727,24 +711,24 @@
       let authHtml = `
         <a href="https://discord.gg/hJxgKPucb" target="_blank" class="auth-top-btn discord-top-btn">
           <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.011c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
-          Discord
-        </a>
-      `;
+        Discord
+      </a>
+    `;
 
-      if (currentUser) {
-        authHtml += `<button class="auth-top-btn" onclick="handleLogout()">Logout (${currentUser.name})</button>`;
-        submitBtn.style.display = 'block';
-        adminBtn.style.display = currentUser.isAdmin ? 'block' : 'none';
-      } else {
-        authHtml += `
-          <button class="auth-top-btn" onclick="openAuthModal('login')">Log In</button>
-          <button class="auth-top-btn" onclick="openAuthModal('register')">Register</button>
-        `;
-        submitBtn.style.display = 'none';
-        adminBtn.style.display = 'none';
-        if (['submit', 'admin'].includes(currentMainTab)) switchMainTab('levels', document.getElementById('nav-btn-levels'));
-      }
-      authButtonsContainer.innerHTML = authHtml;
+    if (currentUser) {
+      authHtml += `<button class="auth-top-btn" onclick="handleLogout()">Logout (${currentUser.name})</button>`;
+      submitBtn.style.display = 'block';
+      adminBtn.style.display = currentUser.isAdmin ? 'block' : 'none';
+    } else {
+      authHtml += `
+        <button class="auth-top-btn" onclick="openAuthModal('login')">Log In</button>
+        <button class="auth-top-btn" onclick="openAuthModal('register')">Register</button>
+      `;
+      submitBtn.style.display = 'none';
+      adminBtn.style.display = 'none';
+      if (['submit', 'admin'].includes(currentMainTab)) switchMainTab('levels', document.getElementById('nav-btn-levels'));
+    }
+    authButtonsContainer.innerHTML = authHtml;
     }
 
     function openAuthModal(mode) {
@@ -973,7 +957,7 @@
       });
     }
 
-    // Wyświetlanie szczegółów poziomu – sekcja "Victors" pojawia się tylko wtedy, gdy ktoś ukończy poziom
+    // Nowy układ szczegółów poziomu: 1. Video, 2. Info poziomo, 3. Victors, 4. Historia
     function openLevelView(id) {
       const lvl = allDatabase[currentCategory].levels.find(l => l.id === id);
       if(!lvl) return;
@@ -1057,6 +1041,7 @@
       }
 
       document.getElementById('lvl-details').innerHTML = `
+        ${lvl.youtubeId ? `<div class="video-container"><iframe src="https://www.youtube.com/embed/${lvl.youtubeId}" allowfullscreen></iframe></div>` : ''}
         <div class="info-meta">
           <div><strong>GD ID:</strong> ${lvl.gdId || 'N/A'}</div>
           <div><strong>Created by:</strong> ${lvl.creator || 'N/A'}</div>
@@ -1064,7 +1049,6 @@
           <div><strong>Song:</strong> ${lvl.song || 'N/A'}</div>
         </div>
         ${victorsHtml}
-        ${lvl.youtubeId ? `<div class="video-container"><iframe src="https://www.youtube.com/embed/${lvl.youtubeId}" allowfullscreen></iframe></div>` : ''}
         ${historyHtml}
       `;
     }
