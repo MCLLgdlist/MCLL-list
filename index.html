@@ -332,7 +332,6 @@
     }
     .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
-    /* Poziomy układ info-meta dla widoku poziomu (video->info->victors->history) */
     .info-meta {
       background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px;
       padding: 12px; margin-bottom: 12px; font-size: 12px; line-height: 1.5; word-break: break-all;
@@ -340,7 +339,6 @@
     }
     .info-meta div { flex: 1; min-width: 140px; }
 
-    /* Klasyczny, pionowy układ informacji wewnątrz profilu gracza */
     .player-profile-meta {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -590,11 +588,25 @@
     let currentSubTab = 'main';
     let rouletteState = { active: false, currentLevel: null, currentPercent: 0 };
 
+    /* Przywrócone pełne zasady dla każdej kategorii */
     const rulesData = {
-      MCLL: `<p><strong>1. Minimum Gameplay Duration:</strong> The level must feature at least 30 seconds of active gameplay.</p>`,
-      MCCL: `<p><strong>1. Anti-Spam & Gameplay Design:</strong> Gameplay must rely on mechanical skill, timing, and precision.</p>`,
-      ILL: `<p><strong>1. Maximum Clicks Per Second (CPS):</strong> Strict limit of 20 CPS.</p>`,
-      PPLL: `<p><strong>1. The Impossibility Criteria:</strong> Need to be possible to bot.</p>`
+      MCLL: `
+        <p><strong>1. Minimum Gameplay Duration:</strong> The level must feature at least 30 seconds of active gameplay.</p>
+        <p><strong>2. Rate Eligibility:</strong> The level must be rated in Geometry Dash or meet strict quality standards to qualify.</p>
+        <p><strong>3. Verification Proof:</strong> A raw verification footage video with clicks is required for every submitted level.</p>
+      `,
+      MCCL: `
+        <p><strong>1. Anti-Spam & Gameplay Design:</strong> Gameplay must rely on mechanical skill, timing, and precision rather than blind memory.</p>
+        <p><strong>2. Balanced Difficulty:</strong> Spikes in difficulty must be reasonable and playtested thoroughly.</p>
+        <p><strong>3. Verification Proof:</strong> Complete raw footage with audio/clicks must be provided.</p>
+      `,
+      ILL: `
+        <p><strong>1. Maximum Clicks Per Second (CPS):</strong> Strict limit of 20 CPS to prevent impossible hardware abuse.</p>
+        <p><strong>2. Legitimacy Check:</strong> Levels must not rely on corrupted triggers or illegal object hacks.</p>
+      `,
+      PPLL: `
+        <p><strong>1. The Impossibility Criteria:</strong> The level must be provably impossible for a human player, but possible to complete using a bot tool.</p>
+      `
     };
 
     function getLevelBasePoints(cat, levelId) {
@@ -609,7 +621,8 @@
 
     function recalculateAllPlayerPoints() {
       ['MCLL', 'MCCL'].forEach(cat => {
-        if (!allDatabase[cat] || !allDatabase[cat].players) return;
+        if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
+        if (!allDatabase[cat].players) allDatabase[cat].players = [];
         const levels = allDatabase[cat].levels || [];
         
         allDatabase[cat].players.forEach(player => {
@@ -652,41 +665,69 @@
         const subRes = await fetch(NPOINT_URL + '?nocache=' + Date.now(), { cache: "no-store" });
         if (subRes.ok) {
           const subData = await subRes.json();
-          if (subData) {
+          if (subData && typeof subData === 'object') {
             allDatabase = subData;
-            if(!allDatabase.users) allDatabase.users = [];
-            if(!allDatabase.zgloszenia) allDatabase.zgloszenia = [];
-            if(allDatabase.PILL && !allDatabase.PPLL) {
-              allDatabase.PPLL = allDatabase.PILL;
-              delete allDatabase.PILL;
-            }
           }
         }
       } catch (err) { console.error('Failed to load data', err); }
       
-      ['MCLL', 'MCCL'].forEach(cat => {
+      if(!allDatabase.users) allDatabase.users = [];
+      if(!allDatabase.zgloszenia) allDatabase.zgloszenia = [];
+      if(allDatabase.PILL && !allDatabase.PPLL) {
+        allDatabase.PPLL = allDatabase.PILL;
+        delete allDatabase.PILL;
+      }
+
+      ['MCLL', 'MCCL', 'ILL', 'PPLL'].forEach(cat => {
         if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
-        if (!allDatabase[cat].players) allDatabase[cat].players = [];
-        if (!allDatabase[cat].players.some(p => p.name.toLowerCase() === 'szymipek')) {
-          allDatabase[cat].players.push({ name: 'szymipek', country: 'pl', points: 0, completed: 0, verified: 0, created: 0 });
+        if (!allDatabase[cat].levels) allDatabase[cat].levels = [];
+        if (cat === 'MCLL' || cat === 'MCCL') {
+          if (!allDatabase[cat].players) allDatabase[cat].players = [];
+          if (!allDatabase[cat].players.some(p => p.name.toLowerCase() === 'szymipek')) {
+            allDatabase[cat].players.push({ name: 'szymipek', country: 'pl', points: 0, completed: 0, verified: 0, created: 0 });
+          }
         }
       });
       recalculateAllPlayerPoints();
       init();
     }
 
-    async function forceRefreshAdminSubmissions() {
-      await loadData();
-      renderAdminPending();
-      alert('Zgłoszenia zostały odświeżone z serwera!');
-    }
+    async function saveCloudData() {
+      try {
+        const freshRes = await fetch(NPOINT_URL + '?nocache=' + Date.now(), { cache: "no-store" });
+        if (freshRes.ok) {
+          const freshData = await freshRes.json();
+          if (freshData && typeof freshData === 'object') {
+            const existingZgl = freshData.zgloszenia || [];
+            const localZgl = allDatabase.zgloszenia || [];
+            localZgl.forEach(lz => {
+              if (!existingZgl.some(ez => ez.id === lz.id)) existingZgl.push(lz);
+            });
+            allDatabase.zgloszenia = existingZgl;
 
-    function saveCloudData() {
+            const existingUsers = freshData.users || [];
+            const localUsers = allDatabase.users || [];
+            localUsers.forEach(lu => {
+              if (!existingUsers.some(eu => eu.name.toLowerCase() === lu.name.toLowerCase())) existingUsers.push(lu);
+            });
+            allDatabase.users = existingUsers;
+          }
+        }
+      } catch (err) {
+        console.warn('Could not sync latest state before save, proceeding with local copy.', err);
+      }
+
       return fetch(NPOINT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(allDatabase)
       }).catch(err => console.error('Failed to save data', err));
+    }
+
+    async function forceRefreshAdminSubmissions() {
+      await loadData();
+      renderAdminPending();
+      alert('Zgłoszenia zostały odświeżone z serwera!');
     }
 
     function switchCategory(cat) {
@@ -777,6 +818,7 @@
 
     async function handleLogin(e) {
       e.preventDefault();
+      await loadData();
       const name = document.getElementById('login-username').value.trim();
       const pass = document.getElementById('login-password').value;
 
@@ -794,6 +836,7 @@
 
     async function handleRegister(e) {
       e.preventDefault();
+      await loadData();
       const name = document.getElementById('reg-username').value.trim();
       const pass = document.getElementById('reg-password').value;
       const country = document.getElementById('reg-country').value.trim().toLowerCase();
@@ -866,7 +909,6 @@
       }).join('');
     }
 
-    /* PRZYWRÓCONY PIONOWY UKŁAD PROFILU GRACZA (Zgodny z obrazkiem 2) */
     function openPlayerProfile(playerName) {
       if (currentCategory === 'ILL' || currentCategory === 'PPLL') return;
       recalculateAllPlayerPoints();
