@@ -332,12 +332,25 @@
     }
     .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
+    /* Poziomy układ info-meta dla widoku poziomu (video->info->victors->history) */
     .info-meta {
       background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px;
       padding: 12px; margin-bottom: 12px; font-size: 12px; line-height: 1.5; word-break: break-all;
       display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between;
     }
     .info-meta div { flex: 1; min-width: 140px; }
+
+    /* Klasyczny, pionowy układ informacji wewnątrz profilu gracza */
+    .player-profile-meta {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      line-height: 1.6;
+      word-break: break-all;
+    }
 
     .btn-action, .btn-roulette {
       padding: 8px 14px; font-size: 13px; font-weight: 800; border-radius: 8px; border: none;
@@ -484,6 +497,11 @@
     <main id="main-content">
       <div class="controls" id="search-controls">
         <input type="text" id="search-input" placeholder="Search level..." oninput="filterData()">
+        <div id="completion-filter-bar" style="display:none; gap: 6px; justify-content: center; margin-top: 6px;">
+          <button class="sub-tab-btn active" id="flt-all" onclick="setCompletionFilter('all', event)">Wszystkie</button>
+          <button class="sub-tab-btn" id="flt-todo" onclick="setCompletionFilter('todo', event)">Do zrobienia</button>
+          <button class="sub-tab-btn" id="flt-done" onclick="setCompletionFilter('done', event)">Ukończone</button>
+        </div>
       </div>
       <div id="list-container"></div>
     </main>
@@ -496,7 +514,7 @@
 
     <div id="player-profile-view">
       <button class="back-btn" onclick="closePlayerProfile()">← Back</button>
-      <div class="info-meta" id="player-profile-content"></div>
+      <div class="player-profile-meta" id="player-profile-content"></div>
     </div>
   </div>
 
@@ -556,6 +574,7 @@
   <script>
     const NPOINT_URL = 'https://api.npoint.io/2a62ce7078414fa7cab3';
     let currentCategory = 'MCLL';
+    let currentCompletionFilter = 'all';
 
     let allDatabase = {
       MCLL: { levels: [], players: [] },
@@ -656,7 +675,6 @@
       init();
     }
 
-    // Funkcja wymuszająca pobranie najświeższych danych z serwera na żądanie admina
     async function forceRefreshAdminSubmissions() {
       await loadData();
       renderAdminPending();
@@ -708,6 +726,7 @@
       const authButtonsContainer = document.getElementById('header-actions');
       const submitBtn = document.getElementById('nav-btn-submit');
       const adminBtn = document.getElementById('nav-btn-admin');
+      const completionFilterBar = document.getElementById('completion-filter-bar');
 
       let authHtml = `
         <a href="https://discord.gg/hJxgKPucb" target="_blank" class="auth-top-btn discord-top-btn">
@@ -720,6 +739,7 @@
         authHtml += `<button class="auth-top-btn" onclick="handleLogout()">Logout (${currentUser.name})</button>`;
         submitBtn.style.display = 'block';
         adminBtn.style.display = currentUser.isAdmin ? 'block' : 'none';
+        if (completionFilterBar) completionFilterBar.style.display = 'flex';
       } else {
         authHtml += `
           <button class="auth-top-btn" onclick="openAuthModal('login')">Log In</button>
@@ -727,6 +747,7 @@
         `;
         submitBtn.style.display = 'none';
         adminBtn.style.display = 'none';
+        if (completionFilterBar) completionFilterBar.style.display = 'none';
         if (['submit', 'admin'].includes(currentMainTab)) switchMainTab('levels', document.getElementById('nav-btn-levels'));
       }
       authButtonsContainer.innerHTML = authHtml;
@@ -845,6 +866,7 @@
       }).join('');
     }
 
+    /* PRZYWRÓCONY PIONOWY UKŁAD PROFILU GRACZA (Zgodny z obrazkiem 2) */
     function openPlayerProfile(playerName) {
       if (currentCategory === 'ILL' || currentCategory === 'PPLL') return;
       recalculateAllPlayerPoints();
@@ -868,36 +890,43 @@
       const levels = allDatabase[currentCategory].levels || [];
       
       let completedList = [], verifiedList = [], createdList = [];
+      const pNameLower = p.name.toLowerCase();
 
       levels.forEach(lvl => {
-        if (lvl.creator && lvl.creator.toLowerCase() === p.name.toLowerCase()) createdList.push(lvl.title);
-        if (lvl.verifier && lvl.verifier.toLowerCase() === p.name.toLowerCase()) verifiedList.push(lvl.title);
-        const rec = (lvl.victors || []).find(v => v.name.toLowerCase() === p.name.toLowerCase());
+        if (lvl.creator && lvl.creator.toLowerCase() === pNameLower) createdList.push(lvl.title);
+        if (lvl.verifier && lvl.verifier.toLowerCase() === pNameLower) verifiedList.push(lvl.title);
+        const rec = (lvl.victors || []).find(v => v.name.toLowerCase() === pNameLower);
         if (rec) {
           const basePts = getLevelBasePoints(currentCategory, lvl.id);
           const pct = parseFloat(rec.percent) || 100;
           const earnedPts = Math.round(basePts * (pct / 100));
           completedList.push(`${lvl.title} (${pct}% -> +${earnedPts} pts)`);
+        } else if (lvl.verifier && lvl.verifier.toLowerCase() === pNameLower) {
+          const basePts = getLevelBasePoints(currentCategory, lvl.id);
+          completedList.push(`${lvl.title} (100% - Verifier -> +${basePts} pts)`);
         }
       });
 
       document.getElementById('player-profile-content').innerHTML = `
-        <h2 style="color:var(--accent-cyan); margin-top:0;">Player Profile: ${p.name}</h2>
+        <h2 style="color:var(--accent-cyan); margin-top:0; margin-bottom: 12px; display:flex; align-items:center; gap:8px;">
+          ${p.country ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country}.png">` : ''}
+          Player Profile: ${p.name}
+        </h2>
         <div style="margin-bottom:8px;"><strong>Rank:</strong> #${globalIdx}</div>
         <div style="margin-bottom:8px;"><strong>Country:</strong> ${p.country ? p.country.toUpperCase() : 'N/A'}</div>
         <div style="margin-bottom:8px;"><strong>Total Points:</strong> ${displayPts} pts</div>
         <hr style="border-color:var(--card-border); margin: 12px 0;">
         <div style="margin-bottom: 12px;">
           <strong style="color:var(--accent-cyan);">Completed Levels (${completedList.length}):</strong>
-          ${completedList.length > 0 ? `<ul style="margin: 4px 0 0 20px; padding:0; font-size:12px;">${completedList.map(item => `<li>${item}</li>`).join('')}</ul>` : '<div style="font-size:12px; color:var(--text-muted);">None</div>'}
+          ${completedList.length > 0 ? `<ul style="margin: 4px 0 0 20px; padding:0; font-size:12px;">${completedList.map(item => `<li>${item}</li>`).join('')}</ul>` : '<div style="font-size:12px; color:var(--text-muted); margin-top: 4px;">None</div>'}
         </div>
         <div style="margin-bottom: 12px;">
           <strong style="color:var(--accent-cyan);">Verified Levels (${verifiedList.length}):</strong>
-          ${verifiedList.length > 0 ? `<ul style="margin: 4px 0 0 20px; padding:0; font-size:12px;">${verifiedList.map(item => `<li>${item}</li>`).join('')}</ul>` : '<div style="font-size:12px; color:var(--text-muted);">None</div>'}
+          ${verifiedList.length > 0 ? `<ul style="margin: 4px 0 0 20px; padding:0; font-size:12px;">${verifiedList.map(item => `<li>${item}</li>`).join('')}</ul>` : '<div style="font-size:12px; color:var(--text-muted); margin-top: 4px;">None</div>'}
         </div>
         <div style="margin-bottom: 6px;">
           <strong style="color:var(--accent-cyan);">Created Levels (${createdList.length}):</strong>
-          ${createdList.length > 0 ? `<ul style="margin: 4px 0 0 20px; padding:0; font-size:12px;">${createdList.map(item => `<li>${item}</li>`).join('')}</ul>` : '<div style="font-size:12px; color:var(--text-muted);">None</div>'}
+          ${createdList.length > 0 ? `<ul style="margin: 4px 0 0 20px; padding:0; font-size:12px;">${createdList.map(item => `<li>${item}</li>`).join('')}</ul>` : '<div style="font-size:12px; color:var(--text-muted); margin-top: 4px;">None</div>'}
         </div>
       `;
     }
@@ -917,13 +946,38 @@
       levels.forEach(lvl => select.add(new Option(lvl.title, lvl.title)));
     }
 
+    function setCompletionFilter(filter, ev) {
+      currentCompletionFilter = filter;
+      document.querySelectorAll('#completion-filter-bar .sub-tab-btn').forEach(b => b.classList.remove('active'));
+      if(ev && ev.target) ev.target.classList.add('active');
+      filterData();
+    }
+
     function filterData() {
       const query = document.getElementById('search-input').value.toLowerCase().trim();
       const levels = allDatabase[currentCategory].levels || [];
-      const filtered = levels.filter(lvl => 
-        (lvl.type === currentSubTab || (!lvl.type && currentSubTab === 'main')) &&
-        (!query || (lvl.title && lvl.title.toLowerCase().includes(query)))
-      );
+      
+      const filtered = levels.filter(lvl => {
+        const matchesSubTab = (lvl.type === currentSubTab || (!lvl.type && currentSubTab === 'main'));
+        const matchesQuery = (!query || (lvl.title && lvl.title.toLowerCase().includes(query)));
+        
+        let matchesCompletion = true;
+        if (currentUser && currentCompletionFilter !== 'all') {
+          const userNameLower = currentUser.name.toLowerCase();
+          const isVerifier = lvl.verifier && lvl.verifier.toLowerCase() === userNameLower;
+          const victorRecord = (lvl.victors || []).find(v => v.name.toLowerCase() === userNameLower);
+          const isCompleted100 = isVerifier || (victorRecord && (parseFloat(victorRecord.percent) || 100) === 100);
+
+          if (currentCompletionFilter === 'done') {
+            matchesCompletion = isCompleted100;
+          } else if (currentCompletionFilter === 'todo') {
+            matchesCompletion = !isCompleted100;
+          }
+        }
+
+        return matchesSubTab && matchesQuery && matchesCompletion;
+      });
+
       renderLevels(filtered);
     }
 
@@ -941,6 +995,18 @@
         const ptsText = (currentCategory === 'ILL' || currentCategory === 'PPLL') ? '' : ` • <span style="color:var(--accent-cyan); font-weight:bold;">${basePts} pts</span>`;
         const thumbUrl = lvl.youtubeId ? `https://img.youtube.com/vi/${lvl.youtubeId}/mqdefault.jpg` : '';
         
+        let userBadge = '';
+        if (currentUser) {
+          const uName = currentUser.name.toLowerCase();
+          const isVerif = lvl.verifier && lvl.verifier.toLowerCase() === uName;
+          const rec = (lvl.victors || []).find(v => v.name.toLowerCase() === uName);
+          if (isVerif || (rec && (parseFloat(rec.percent) || 100) === 100)) {
+            userBadge = `<span style="color: var(--success-color); font-size:11px; margin-left: 6px;">✓ Ukończone</span>`;
+          } else if (rec) {
+            userBadge = `<span style="color: var(--accent-cyan); font-size:11px; margin-left: 6px;">✓ ${rec.percent}%</span>`;
+          }
+        }
+
         const card = document.createElement('div');
         card.className = 'pointercrate-card';
         card.onclick = () => openLevelView(lvl.id);
@@ -950,7 +1016,7 @@
             <div class="pointercrate-overlay"></div>
           </div>
           <div class="pointercrate-content">
-            <div class="pointercrate-title">#${globalRank} – ${lvl.title}</div>
+            <div class="pointercrate-title">#${globalRank} – ${lvl.title} ${userBadge}</div>
             <div class="pointercrate-publisher">by <strong>${lvl.creator || 'Unknown'}</strong>${ptsText}</div>
           </div>
         `;
@@ -1092,7 +1158,6 @@
       else if (tab === 'submit') { document.getElementById('submit-view').style.display = 'block'; }
       else if (tab === 'admin') { 
         document.getElementById('admin-view').style.display = 'block'; 
-        // Przed otwarciem panela admina zawsze pobieramy aktualne dane z serwera, żeby widzieć nowe zgłoszenia
         await loadData();
         renderAdminPending();
         renderAdminLevelsList();
@@ -1143,7 +1208,6 @@
       e.preventDefault();
       if (!currentUser) { alert('Musisz być zalogowany!'); return; }
       
-      // Pobieramy świeże dane przed wysłaniem, żeby uniknąć nadpisania czyjegoś zgłoszenia
       await loadData();
 
       const lvlNameInput = document.getElementById('lvl-name').value.trim();
