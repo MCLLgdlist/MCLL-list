@@ -496,9 +496,9 @@
       <div class="controls" id="search-controls">
         <input type="text" id="search-input" placeholder="Search level..." oninput="filterData()">
         <div id="completion-filter-bar" style="display:none; gap: 6px; justify-content: center; margin-top: 6px;">
-          <button class="sub-tab-btn active" id="flt-all" onclick="setCompletionFilter('all', event)">Wszystkie</button>
-          <button class="sub-tab-btn" id="flt-todo" onclick="setCompletionFilter('todo', event)">Do zrobienia</button>
-          <button class="sub-tab-btn" id="flt-done" onclick="setCompletionFilter('done', event)">Ukończone</button>
+          <button class="sub-tab-btn active" id="flt-all" onclick="setCompletionFilter('all', event)">All</button>
+          <button class="sub-tab-btn" id="flt-todo" onclick="setCompletionFilter('todo', event)">To Do</button>
+          <button class="sub-tab-btn" id="flt-done" onclick="setCompletionFilter('done', event)">Completed</button>
         </div>
       </div>
       <div id="list-container"></div>
@@ -588,7 +588,6 @@
     let currentSubTab = 'main';
     let rouletteState = { active: false, currentLevel: null, currentPercent: 0 };
 
-    /* Przywrócone pełne zasady dla każdej kategorii */
     const rulesData = {
       MCLL: `
         <p><strong>1. Minimum Gameplay Duration:</strong> The level must feature at least 30 seconds of active gameplay.</p>
@@ -619,12 +618,38 @@
       return Math.round(500 - (index / (total - 1)) * 400);
     }
 
+    // Inteligentne wykrywanie i dodawanie graczy ze wszystkich poziomów i rekordów
+    function ensurePlayerExists(cat, playerName, country = 'pl') {
+      if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
+      if (!allDatabase[cat].players) allDatabase[cat].players = [];
+      if (!playerName) return;
+      const cleanName = playerName.trim();
+      const exists = allDatabase[cat].players.find(p => p.name.toLowerCase() === cleanName.toLowerCase());
+      if (!exists) {
+        // Sprawdź czy użytkownik jest w systemie users, aby pobrać jego kraj
+        const sysUser = (allDatabase.users || []).find(u => u.name.toLowerCase() === cleanName.toLowerCase());
+        const userCountry = sysUser ? sysUser.country : country;
+        allDatabase[cat].players.push({ name: cleanName, country: userCountry, points: 0, completed: 0, verified: 0, created: 0 });
+      }
+    }
+
     function recalculateAllPlayerPoints() {
       ['MCLL', 'MCCL'].forEach(cat => {
         if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
-        if (!allDatabase[cat].players) allDatabase[cat].players = [];
         const levels = allDatabase[cat].levels || [];
+
+        // Automatyczne zbieranie wszystkich graczy z weryfikacji i rekordów
+        levels.forEach(lvl => {
+          if (lvl.verifier) ensurePlayerExists(cat, lvl.verifier);
+          if (lvl.creator) ensurePlayerExists(cat, lvl.creator);
+          if (lvl.victors) {
+            lvl.victors.forEach(v => ensurePlayerExists(cat, v.name));
+          }
+        });
         
+        // Zapewnij obecność szymipek
+        ensurePlayerExists(cat, 'szymipek', 'pl');
+
         allDatabase[cat].players.forEach(player => {
           let totalPoints = 0;
           const pNameLower = player.name.toLowerCase();
@@ -681,12 +706,7 @@
       ['MCLL', 'MCCL', 'ILL', 'PPLL'].forEach(cat => {
         if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
         if (!allDatabase[cat].levels) allDatabase[cat].levels = [];
-        if (cat === 'MCLL' || cat === 'MCCL') {
-          if (!allDatabase[cat].players) allDatabase[cat].players = [];
-          if (!allDatabase[cat].players.some(p => p.name.toLowerCase() === 'szymipek')) {
-            allDatabase[cat].players.push({ name: 'szymipek', country: 'pl', points: 0, completed: 0, verified: 0, created: 0 });
-          }
-        }
+        if (!allDatabase[cat].players) allDatabase[cat].players = [];
       });
       recalculateAllPlayerPoints();
       init();
@@ -727,7 +747,7 @@
     async function forceRefreshAdminSubmissions() {
       await loadData();
       renderAdminPending();
-      alert('Zgłoszenia zostały odświeżone z serwera!');
+      alert('Submissions refreshed from server successfully!');
     }
 
     function switchCategory(cat) {
@@ -843,7 +863,7 @@
 
       if (!allDatabase.users) allDatabase.users = [];
       const nameLower = name.toLowerCase();
-      if (allDatabase.users.some(u => u.name.toLowerCase() === nameLower)) { alert('Gracz już istnieje!'); return; }
+      if (allDatabase.users.some(u => u.name.toLowerCase() === nameLower)) { alert('Player already exists!'); return; }
 
       allDatabase.users.push({ name, password: pass, country });
       ['MCLL', 'MCCL'].forEach(cat => {
@@ -1043,7 +1063,7 @@
           const isVerif = lvl.verifier && lvl.verifier.toLowerCase() === uName;
           const rec = (lvl.victors || []).find(v => v.name.toLowerCase() === uName);
           if (isVerif || (rec && (parseFloat(rec.percent) || 100) === 100)) {
-            userBadge = `<span style="color: var(--success-color); font-size:11px; margin-left: 6px;">✓ Ukończone</span>`;
+            userBadge = `<span style="color: var(--success-color); font-size:11px; margin-left: 6px;">✓ Completed</span>`;
           } else if (rec) {
             userBadge = `<span style="color: var(--accent-cyan); font-size:11px; margin-left: 6px;">✓ ${rec.percent}%</span>`;
           }
@@ -1123,7 +1143,7 @@
                 <span style="font-size:12px; color:var(--text-muted);">Base Value: ${basePts} pts</span>
               </h3>
               <div class="victor-item victor-gold">
-                <span>🥇 1st Victor: <strong style="color: #ffd700;">${first.name !== 'None' ? first.name : 'Brak'}</strong></span>
+                <span>🥇 1st Victor: <strong style="color: #ffd700;">${first.name !== 'None' ? first.name : 'None'}</strong></span>
                 ${first.proof ? `<a href="${first.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}
               </div>
               ${second.name !== 'None' ? `<div class="victor-item victor-silver"><span>🥈 2nd: <strong style="color: #c0c0c0;">${second.name}</strong></span>${second.proof ? `<a href="${second.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}</div>` : ''}
@@ -1248,14 +1268,14 @@
 
     async function handleLevelSubmit(e) {
       e.preventDefault();
-      if (!currentUser) { alert('Musisz być zalogowany!'); return; }
+      if (!currentUser) { alert('You must be logged in!'); return; }
       
       await loadData();
 
       const lvlNameInput = document.getElementById('lvl-name').value.trim();
       const existingLevels = allDatabase[currentCategory].levels || [];
       if (existingLevels.some(l => l.title.toLowerCase() === lvlNameInput.toLowerCase())) {
-        alert('Poziom już istnieje!');
+        alert('Level already exists!');
         return;
       }
 
@@ -1284,7 +1304,7 @@
 
     async function handleRecordSubmit(e) {
       e.preventDefault();
-      if (!currentUser) { alert('Musisz być zalogowany!'); return; }
+      if (!currentUser) { alert('You must be logged in!'); return; }
       
       await loadData();
 
@@ -1317,15 +1337,25 @@
         return;
       }
       container.innerHTML = pending.map(s => {
-        let detailsHtml = s.type === 'level' ? `
-          <div><strong>Level Name:</strong> ${s.data.name}</div>
-          <div><strong>Creator:</strong> ${s.data.creator}</div>
-          <div><strong>Verifier:</strong> ${s.data.verifier || 'N/A'}</div>
-          <div><strong>Song:</strong> ${s.data.song} | <strong>ID:</strong> ${s.data.gdId}</div>
-        ` : `
-          <div><strong>Level:</strong> ${s.data.level}</div>
-          <div><strong>Record:</strong> ${s.data.percent}%</div>
-        `;
+        let detailsHtml = '';
+        let proofLink = '';
+        if (s.type === 'level') {
+          proofLink = s.data.video ? `<div style="margin-top: 4px;"><a href="${s.data.video}" target="_blank" class="victor-link" style="font-size:12px;">Verification Proof ↗</a></div>` : '';
+          detailsHtml = `
+            <div><strong>Level Name:</strong> ${s.data.name}</div>
+            <div><strong>Creator:</strong> ${s.data.creator}</div>
+            <div><strong>Verifier:</strong> ${s.data.verifier || 'N/A'}</div>
+            <div><strong>Song:</strong> ${s.data.song} | <strong>ID:</strong> ${s.data.gdId}</div>
+            ${proofLink}
+          `;
+        } else {
+          proofLink = s.data.video ? `<div style="margin-top: 4px;"><a href="${s.data.video}" target="_blank" class="victor-link" style="font-size:12px;">Completion Proof ↗</a></div>` : '';
+          detailsHtml = `
+            <div><strong>Level:</strong> ${s.data.level}</div>
+            <div><strong>Record:</strong> ${s.data.percent}%</div>
+            ${proofLink}
+          `;
+        }
 
         return `
           <div class="submission-item">
@@ -1381,24 +1411,52 @@
       const today = new Date().toISOString().split('T')[0];
       levels.forEach((lvl, idx) => {
         if (!lvl.history) lvl.history = [];
-        lvl.history.push({ date: today, change: idx < currentIndex ? '↑' : '↓', newPosition: `#${idx + 1}`, reason: 'moved via admin' });
+        let changeSymbol = '-';
+        let reasonText = 'position updated';
+        if (idx < currentIndex) {
+          changeSymbol = '↑';
+          reasonText = `moved up to #${idx + 1}`;
+        } else if (idx > currentIndex) {
+          changeSymbol = '↓';
+          reasonText = `moved down to #${idx + 1}`;
+        }
+        lvl.history.push({ date: today, change: changeSymbol, newPosition: `#${idx + 1}`, reason: reasonText });
       });
 
       recalculateAllPlayerPoints();
       await saveCloudData();
       init();
       renderAdminLevelsList();
-      alert(`Przeniesiono na pozycję #${targetPos}!`);
+      alert(`Level moved to position #${targetPos}!`);
     }
 
     async function adminDeleteLevel(lvlId) {
-      if(!confirm('Usunąć poziom?')) return;
+      if(!confirm('Are you sure you want to delete this level?')) return;
       await loadData();
-      allDatabase[currentCategory].levels = (allDatabase[currentCategory].levels || []).filter(l => l.id !== lvlId);
+      const levels = allDatabase[currentCategory].levels || [];
+      const deletedIndex = levels.findIndex(l => l.id === lvlId);
+      if (deletedIndex === -1) return;
+      
+      const deletedLevelTitle = levels[deletedIndex].title;
+      allDatabase[currentCategory].levels = levels.filter(l => l.id !== lvlId);
+      
+      const today = new Date().toISOString().split('T')[0];
+      // Po usunięciu poziomu, wszystkie poziomy poniżej przesuwają się wyżej (są podnoszone)
+      allDatabase[currentCategory].levels.forEach((lvl, idx) => {
+        if (!lvl.history) lvl.history = [];
+        lvl.history.push({ 
+          date: today, 
+          change: '↑', 
+          newPosition: `#${idx + 1}`, 
+          reason: `moved up because "${deletedLevelTitle}" was removed` 
+        });
+      });
+
       recalculateAllPlayerPoints();
       await saveCloudData();
       init();
       renderAdminLevelsList();
+      alert('Level deleted successfully!');
     }
 
     function openEditLevelModal(lvlId) {
@@ -1435,6 +1493,7 @@
       closeEditModal();
       init();
       renderAdminLevelsList();
+      alert('Level updated successfully!');
     }
 
     async function approveSub(id) {
@@ -1462,7 +1521,7 @@
         };
         levels.forEach((l, idx) => {
           if(!l.history) l.history = [];
-          l.history.push({ date: today, change: '↓1', newPosition: `#${idx + 2}`, reason: `${newLvl.title} was added above` });
+          l.history.push({ date: today, change: '↓1', newPosition: `#${idx + 2}`, reason: `"${newLvl.title}" was added above` });
         });
         levels.unshift(newLvl);
       } else if (sub.type === 'record') {
@@ -1478,6 +1537,7 @@
       await saveCloudData();
       init();
       renderAdminPending();
+      alert('Submission approved successfully!');
     }
 
     async function rejectSub(id) {
@@ -1486,11 +1546,12 @@
       if(sub) sub.status = 'declined';
       await saveCloudData();
       renderAdminPending();
+      alert('Submission rejected.');
     }
 
     function startRoulette() {
       const levels = allDatabase[currentCategory].levels || [];
-      if(levels.length === 0) { alert('No levels.'); return; }
+      if(levels.length === 0) { alert('No levels available.'); return; }
       rouletteState.active = true;
       rouletteState.currentLevel = levels[Math.floor(Math.random() * levels.length)];
       rouletteState.currentPercent = 0;
@@ -1517,7 +1578,7 @@
 
     function nextRoulette() {
       rouletteState.currentPercent += 1;
-      if(rouletteState.currentPercent >= 100) { alert('Completed!'); giveupRoulette(); }
+      if(rouletteState.currentPercent >= 100) { alert('Completed roulette challenge!'); giveupRoulette(); }
       else updateRouletteUI();
     }
 
