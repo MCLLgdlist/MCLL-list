@@ -618,7 +618,6 @@
       return Math.round(500 - (index / (total - 1)) * 400);
     }
 
-    // Inteligentne wykrywanie i dodawanie graczy ze wszystkich poziomów i rekordów
     function ensurePlayerExists(cat, playerName, country = 'pl') {
       if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
       if (!allDatabase[cat].players) allDatabase[cat].players = [];
@@ -626,7 +625,6 @@
       const cleanName = playerName.trim();
       const exists = allDatabase[cat].players.find(p => p.name.toLowerCase() === cleanName.toLowerCase());
       if (!exists) {
-        // Sprawdź czy użytkownik jest w systemie users, aby pobrać jego kraj
         const sysUser = (allDatabase.users || []).find(u => u.name.toLowerCase() === cleanName.toLowerCase());
         const userCountry = sysUser ? sysUser.country : country;
         allDatabase[cat].players.push({ name: cleanName, country: userCountry, points: 0, completed: 0, verified: 0, created: 0 });
@@ -638,7 +636,6 @@
         if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
         const levels = allDatabase[cat].levels || [];
 
-        // Automatyczne zbieranie wszystkich graczy z weryfikacji i rekordów
         levels.forEach(lvl => {
           if (lvl.verifier) ensurePlayerExists(cat, lvl.verifier);
           if (lvl.creator) ensurePlayerExists(cat, lvl.creator);
@@ -647,7 +644,6 @@
           }
         });
         
-        // Zapewnij obecność szymipek
         ensurePlayerExists(cat, 'szymipek', 'pl');
 
         allDatabase[cat].players.forEach(player => {
@@ -1325,7 +1321,7 @@
       
       await saveCloudData();
       alert('Record submitted for review!');
-      document.getElementById('record-form').reset();
+      document.getElementById('record-form'].reset();
     }
 
     function renderAdminPending() {
@@ -1336,9 +1332,13 @@
         container.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding: 10px;">No pending submissions.</div>';
         return;
       }
+      const currentLevelsCount = (allDatabase[currentCategory].levels || []).length;
+
       container.innerHTML = pending.map(s => {
         let detailsHtml = '';
         let proofLink = '';
+        let extraInputHtml = '';
+
         if (s.type === 'level') {
           proofLink = s.data.video ? `<div style="margin-top: 4px;"><a href="${s.data.video}" target="_blank" class="victor-link" style="font-size:12px;">Verification Proof ↗</a></div>` : '';
           detailsHtml = `
@@ -1347,6 +1347,12 @@
             <div><strong>Verifier:</strong> ${s.data.verifier || 'N/A'}</div>
             <div><strong>Song:</strong> ${s.data.song} | <strong>ID:</strong> ${s.data.gdId}</div>
             ${proofLink}
+          `;
+          extraInputHtml = `
+            <div style="margin-top: 6px; display: flex; align-items: center; gap: 8px;">
+              <label style="font-size: 11px; color: var(--text-secondary); white-space: nowrap;">Target Position (1 - ${currentLevelsCount + 1}):</label>
+              <input type="number" id="approve-pos-${s.id}" min="1" max="${currentLevelsCount + 1}" value="1" class="move-input" style="margin-bottom:0 !important;">
+            </div>
           `;
         } else {
           proofLink = s.data.video ? `<div style="margin-top: 4px;"><a href="${s.data.video}" target="_blank" class="victor-link" style="font-size:12px;">Completion Proof ↗</a></div>` : '';
@@ -1361,6 +1367,7 @@
           <div class="submission-item">
             <div><strong>${s.type.toUpperCase()}</strong> by <span style="color:var(--accent-cyan);">${s.user}</span> in <strong>${s.category}</strong></div>
             ${detailsHtml}
+            ${extraInputHtml}
             <div class="action-row" style="margin-top: 6px;">
               <button class="btn-action btn-success" onclick="approveSub(${s.id})">Approve</button>
               <button class="btn-action btn-danger" onclick="rejectSub(${s.id})">Reject</button>
@@ -1441,7 +1448,6 @@
       allDatabase[currentCategory].levels = levels.filter(l => l.id !== lvlId);
       
       const today = new Date().toISOString().split('T')[0];
-      // Po usunięciu poziomu, wszystkie poziomy poniżej przesuwają się wyżej (są podnoszone)
       allDatabase[currentCategory].levels.forEach((lvl, idx) => {
         if (!lvl.history) lvl.history = [];
         lvl.history.push({ 
@@ -1508,6 +1514,15 @@
       if (sub.type === 'level') {
         if (!allDatabase[cat].levels) allDatabase[cat].levels = [];
         const levels = allDatabase[cat].levels;
+        
+        let targetPos = 1;
+        const posInput = document.getElementById(`approve-pos-${id}`);
+        if (posInput) {
+          const val = parseInt(posInput.value);
+          if (!isNaN(val)) targetPos = Math.max(1, Math.min(val, levels.length + 1));
+        }
+        const targetIndex = targetPos - 1;
+
         const newLvl = {
           id: 'lvl_' + Date.now(),
           title: sub.data.name,
@@ -1517,13 +1532,20 @@
           song: sub.data.song,
           gdId: sub.data.gdId,
           victors: [],
-          history: [{ date: today, change: '-', newPosition: '#1', reason: 'was placed at top' }]
+          history: [{ date: today, change: '-', newPosition: `#${targetPos}`, reason: `was placed at position #${targetPos}` }]
         };
+
+        levels.splice(targetIndex, 0, newLvl);
+
         levels.forEach((l, idx) => {
-          if(!l.history) l.history = [];
-          l.history.push({ date: today, change: '↓1', newPosition: `#${idx + 2}`, reason: `"${newLvl.title}" was added above` });
+          if (!l.history) l.history = [];
+          if (l.id !== newLvl.id) {
+            let changeSymbol = idx < targetIndex ? '↑' : '↓';
+            let reasonText = idx < targetIndex ? `moved up to #${idx + 1}` : `moved down to #${idx + 1} because "${newLvl.title}" was added`;
+            l.history.push({ date: today, change: changeSymbol, newPosition: `#${idx + 1}`, reason: reasonText });
+          }
         });
-        levels.unshift(newLvl);
+
       } else if (sub.type === 'record') {
         const lvl = (allDatabase[cat].levels || []).find(l => l.title.toLowerCase() === sub.data.level.toLowerCase());
         if (lvl) {
