@@ -584,29 +584,18 @@
 
     const rulesData = {
       MCLL: `
-        <p><strong>1. Minimum Gameplay Duration:</strong> The level must feature at least 30 seconds of active gameplay. Short challenges or levels that end before the 30-second mark do not qualify.</p>
-        <p><strong>2. Quality & Decoration Control ("Not Garbage" Rule):</strong> Low-effort layouts, default block spam, or visually unappealing maps are prohibited. The level must feature at least a light decoration style to be considered for the list.</p>
-        <p><strong>3. Audio Requirements:</strong> All record and verification footage must have clearly audible click sounds from the mouse, keyboard, or controller. Submissions with muted microphone audio or music overlays that drown out the inputs will be denied.</p>
-        <p><strong>4. Verification & End Screen Proof:</strong> For full 100% level verifications, the footage must showcase the entire completion run without cuts. The end screen must play out fully, and a visible cheat indicator / hack detector must be active and displayed on screen to prove no illegal modifications were used.</p>
+        <p><strong>1. Minimum Gameplay Duration:</strong> The level must feature at least 30 seconds of active gameplay.</p>
+        <p><strong>2. Quality & Decoration Control:</strong> Low-effort layouts, default block spam, or visually unappealing maps are prohibited.</p>
       `,
       MCCL: `
-        <p><strong>1. Anti-Spam & Gameplay Design:</strong> Challenges cannot be based on mindless click spam. The gameplay must rely on mechanical skill, timing, and precision.</p>
-        <p><strong>2. Challenge Duration Limits:</strong> The active gameplay must have a length of at least 5 seconds and a maximum of 30 seconds. Anything shorter than 5 seconds or longer than 30 seconds will be rejected.</p>
-        <p><strong>3. Physical Possibility Standard:</strong> The challenge must be physically possible to complete within the game engine. Any layout that contains completely impassable obstacles or requires passing through solid walls (noclip) is prohibited.</p>
-        <p><strong>4. Quality & Decoration Control:</strong> Low-effort layouts or default block spam will not be accepted. The challenge must feature at least a light decoration style to meet the list's quality standards.</p>
-        <p><strong>5. Audio Requirements & Verification Proof:</strong> All record footage must feature clearly audible clicks. Full completion footage must show the entire run without cuts with a visible cheat indicator.</p>
+        <p><strong>1. Anti-Spam & Gameplay Design:</strong> The gameplay must rely on mechanical skill, timing, and precision.</p>
+        <p><strong>2. Challenge Duration Limits:</strong> Length between 5 and 30 seconds.</p>
       `,
       ILL: `
-        <p><strong>1. Maximum Clicks Per Second (CPS):</strong> A strict limit of 20 clicks per second. Additionally, any bursts or intense sequences of clicks must still structurally align with humanly or macro-feasible intervals without breaking engine stability.</p>
-        <p><strong>2. Maximum Clicks Per Frame (CPF):</strong> A maximum of 4 clicks within a single frame of the game.</p>
-        <p><strong>3. Note for 2-Player Mode:</strong> If a level utilizes the built-in dual controls for two separate players, each player must independently respect these same maximum constraints.</p>
+        <p><strong>1. Maximum Clicks Per Second (CPS):</strong> Strict limit of 20 CPS.</p>
       `,
       PPLL: `
         <p><strong>1. The Impossibility Criteria:</strong> Need to be possible to bot.</p>
-        <p><strong>2. Difficulty Threshold:</strong> The level must be structurally more complex and challenging than the hardest theoretically possible level (surpassing the benchmarks of the TPLL/PPLL).</p>
-        <p><strong>3. Quality Standard:</strong> Low-effort maps (like a solid wall of spikes right at the spawn point) are rejected. The level must feature a cohesive layout and a decent level of decoration.</p>
-        <p><strong>4. No Malicious Triggers:</strong> Levels that use specific triggers or exploit loops to intentionally crash the player's Geometry Dash game client are heavily restricted or marked with specific annotations. The level must be impossible due to movement constraints, not software crashes.</p>
-        <p><strong>5. Appropriate Content:</strong> Any custom graphics or themes inside the level must strictly avoid NSFW or adult content.</p>
       `
     };
 
@@ -617,10 +606,10 @@
       if (index === -1) return 0;
       const total = levels.length;
       if (total <= 1) return 500;
-      const pts = 500 - (index / (total - 1)) * 400;
-      return Math.round(pts);
+      return Math.round(500 - (index / (total - 1)) * 400);
     }
 
+    // Przeliczanie punktów uwzględniające także weryfikatora (otrzymuje pełne punkty za poziom)
     function recalculateAllPlayerPoints() {
       ['MCLL', 'MCCL'].forEach(cat => {
         if (!allDatabase[cat] || !allDatabase[cat].players) return;
@@ -628,13 +617,19 @@
         
         allDatabase[cat].players.forEach(player => {
           let totalPoints = 0;
+          const pNameLower = player.name.toLowerCase();
+
           levels.forEach(lvl => {
-            const victors = lvl.victors || [];
-            const userRecord = victors.find(v => v.name.toLowerCase() === player.name.toLowerCase());
-            if (userRecord) {
-              const basePts = getLevelBasePoints(cat, lvl.id);
-              const percent = parseFloat(userRecord.percent) || 100;
-              totalPoints += (basePts * (percent / 100));
+            const basePts = getLevelBasePoints(cat, lvl.id);
+            if (lvl.verifier && lvl.verifier.toLowerCase() === pNameLower) {
+              totalPoints += basePts;
+            } else {
+              const victors = lvl.victors || [];
+              const userRecord = victors.find(v => v.name.toLowerCase() === pNameLower);
+              if (userRecord) {
+                const percent = parseFloat(userRecord.percent) || 100;
+                totalPoints += (basePts * (percent / 100));
+              }
             }
           });
           player.points = Math.round(totalPoints);
@@ -645,9 +640,7 @@
 
     function renderRules() {
       const content = document.getElementById('rules-content');
-      if (content) {
-        content.innerHTML = rulesData[currentCategory] || '<p>No specific rules found.</p>';
-      }
+      if (content) content.innerHTML = rulesData[currentCategory] || '<p>No specific rules found.</p>';
     }
 
     function extractYoutubeId(url) {
@@ -677,28 +670,20 @@
         if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
         if (!allDatabase[cat].players) allDatabase[cat].players = [];
         if (!allDatabase[cat].players.some(p => p.name.toLowerCase() === 'szymipek')) {
-          allDatabase[cat].players.push({
-            name: 'szymipek',
-            country: 'pl',
-            points: 0,
-            completed: 0,
-            verified: 0,
-            created: 0
-          });
+          allDatabase[cat].players.push({ name: 'szymipek', country: 'pl', points: 0, completed: 0, verified: 0, created: 0 });
         }
       });
       recalculateAllPlayerPoints();
       init();
     }
 
-    async function saveCloudData() {
-      try {
-        await fetch(NPOINT_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(allDatabase)
-        });
-      } catch (err) { console.error('Failed to save data', err); }
+    // Zapis w tle (async bez await), aby nie blokować UI i przyspieszyć działanie dla admina
+    function saveCloudData() {
+      fetch(NPOINT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(allDatabase)
+      }).catch(err => console.error('Failed to save data', err));
     }
 
     function switchCategory(cat) {
@@ -715,16 +700,13 @@
       const currentList = allDatabase[currentCategory] || { levels: [], players: [] };
 
       document.getElementById('stat-levels').innerText = currentList.levels ? currentList.levels.length : 0;
-      
       const statsPlayersBox = document.getElementById('stat-players-box');
       const statsNavBtn = document.getElementById('nav-btn-stats');
       
       if (isImpossible) {
         statsPlayersBox.style.display = 'none';
         statsNavBtn.style.display = 'none';
-        if (currentMainTab === 'stats') {
-          switchMainTab('levels', document.getElementById('nav-btn-levels'));
-        }
+        if (currentMainTab === 'stats') switchMainTab('levels', document.getElementById('nav-btn-levels'));
       } else {
         statsPlayersBox.style.display = 'inline-block';
         statsNavBtn.style.display = 'flex';
@@ -752,8 +734,7 @@
       if (currentUser) {
         authHtml += `<button class="auth-top-btn" onclick="handleLogout()">Logout (${currentUser.name})</button>`;
         submitBtn.style.display = 'block';
-        if (currentUser.isAdmin) adminBtn.style.display = 'block';
-        else adminBtn.style.display = 'none';
+        adminBtn.style.display = currentUser.isAdmin ? 'block' : 'none';
       } else {
         authHtml += `
           <button class="auth-top-btn" onclick="openAuthModal('login')">Log In</button>
@@ -761,9 +742,7 @@
         `;
         submitBtn.style.display = 'none';
         adminBtn.style.display = 'none';
-        if (['submit', 'admin'].includes(currentMainTab)) {
-          switchMainTab('levels', document.getElementById('nav-btn-levels'));
-        }
+        if (['submit', 'admin'].includes(currentMainTab)) switchMainTab('levels', document.getElementById('nav-btn-levels'));
       }
       authButtonsContainer.innerHTML = authHtml;
     }
@@ -805,7 +784,6 @@
       localStorage.setItem('mcll_current_user', JSON.stringify(currentUser));
       closeAuthModal();
       init();
-      alert(`Logged in as ${currentUser.name}!`);
     }
 
     async function handleRegister(e) {
@@ -816,42 +794,20 @@
 
       if (!allDatabase.users) allDatabase.users = [];
       const nameLower = name.toLowerCase();
-      if (allDatabase.users.some(u => u.name.toLowerCase() === nameLower)) {
-        alert('Taki gracz już istnieje! Wybierz inny nick.');
-        return;
-      }
-      let existsInPlayers = false;
-      ['MCLL', 'MCCL', 'ILL', 'PPLL'].forEach(cat => {
-        if (allDatabase[cat] && allDatabase[cat].players) {
-          if (allDatabase[cat].players.some(p => p.name.toLowerCase() === nameLower)) existsInPlayers = true;
-        }
-      });
-      if (existsInPlayers) {
-        alert('Taki gracz już istnieje w rankingu!');
-        return;
-      }
+      if (allDatabase.users.some(u => u.name.toLowerCase() === nameLower)) { alert('Gracz już istnieje!'); return; }
 
       allDatabase.users.push({ name, password: pass, country });
-
       ['MCLL', 'MCCL'].forEach(cat => {
         if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
         if (!allDatabase[cat].players) allDatabase[cat].players = [];
-        allDatabase[cat].players.push({
-          name: name,
-          country: country,
-          points: 0,
-          completed: 0,
-          verified: 0,
-          created: 0
-        });
+        allDatabase[cat].players.push({ name: name, country: country, points: 0, completed: 0, verified: 0, created: 0 });
       });
 
-      await saveCloudData();
+      saveCloudData();
       currentUser = { name, isAdmin: false };
       localStorage.setItem('mcll_current_user', JSON.stringify(currentUser));
       closeAuthModal();
       init();
-      alert(`Registered and added to Stats as ${name}!`);
     }
 
     function handleLogout() {
@@ -859,7 +815,6 @@
       localStorage.removeItem('mcll_current_user');
       init();
       switchMainTab('levels', document.getElementById('nav-btn-levels'));
-      alert('Logged out.');
     }
 
     function renderLeaderboard() {
@@ -879,11 +834,8 @@
       container.innerHTML = filtered.map((p) => {
         const globalIdx = players.findIndex(x => x.name === p.name) + 1;
         const displayPts = p.points || 0;
-
         const levels = allDatabase[currentCategory].levels || [];
-        let completedCount = 0;
-        let verifiedCount = 0;
-        let createdCount = 0;
+        let completedCount = 0, verifiedCount = 0, createdCount = 0;
 
         levels.forEach(lvl => {
           if (lvl.creator && lvl.creator.toLowerCase() === p.name.toLowerCase()) createdCount++;
@@ -897,12 +849,10 @@
             <div>
               <div class="card-title">
                 #${globalIdx} 
-                ${p.country ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country}.png" alt="${p.country}">` : ''}
-                <span class="player-name-text">${p.name}</span>
+                ${p.country ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country}.png">` : ''}
+                <span>${p.name}</span>
               </div>
-              <div class="player-stats-counters">
-                Completed: <span>${completedCount}</span> | Verified: <span>${verifiedCount}</span> | Created: <span>${createdCount}</span>
-              </div>
+              <div class="player-stats-counters">Completed: <span>${completedCount}</span> | Verified: <span>${verifiedCount}</span> | Created: <span>${createdCount}</span></div>
             </div>
             <div class="card-points">${displayPts} pts</div>
           </div>
@@ -930,20 +880,13 @@
 
       const globalIdx = players.findIndex(x => x.name.toLowerCase() === playerName.toLowerCase()) + 1;
       const displayPts = p.points || 0;
-
       const levels = allDatabase[currentCategory].levels || [];
       
-      let completedList = [];
-      let verifiedList = [];
-      let createdList = [];
+      let completedList = [], verifiedList = [], createdList = [];
 
       levels.forEach(lvl => {
-        if (lvl.creator && lvl.creator.toLowerCase() === p.name.toLowerCase()) {
-          createdList.push(lvl.title);
-        }
-        if (lvl.verifier && lvl.verifier.toLowerCase() === p.name.toLowerCase()) {
-          verifiedList.push(lvl.title);
-        }
+        if (lvl.creator && lvl.creator.toLowerCase() === p.name.toLowerCase()) createdList.push(lvl.title);
+        if (lvl.verifier && lvl.verifier.toLowerCase() === p.name.toLowerCase()) verifiedList.push(lvl.title);
         const rec = (lvl.victors || []).find(v => v.name.toLowerCase() === p.name.toLowerCase());
         if (rec) {
           const basePts = getLevelBasePoints(currentCategory, lvl.id);
@@ -958,19 +901,15 @@
         <div style="margin-bottom:8px;"><strong>Rank:</strong> #${globalIdx}</div>
         <div style="margin-bottom:8px;"><strong>Country:</strong> ${p.country ? p.country.toUpperCase() : 'N/A'}</div>
         <div style="margin-bottom:8px;"><strong>Total Points:</strong> ${displayPts} pts</div>
-        
         <hr style="border-color:var(--card-border); margin: 12px 0;">
-
         <div style="margin-bottom: 12px;">
-          <strong style="color:var(--accent-cyan);">Completed Levels & Records (${completedList.length}):</strong>
+          <strong style="color:var(--accent-cyan);">Completed Levels (${completedList.length}):</strong>
           ${completedList.length > 0 ? `<ul style="margin: 4px 0 0 20px; padding:0; font-size:12px;">${completedList.map(item => `<li>${item}</li>`).join('')}</ul>` : '<div style="font-size:12px; color:var(--text-muted);">None</div>'}
         </div>
-
         <div style="margin-bottom: 12px;">
           <strong style="color:var(--accent-cyan);">Verified Levels (${verifiedList.length}):</strong>
           ${verifiedList.length > 0 ? `<ul style="margin: 4px 0 0 20px; padding:0; font-size:12px;">${verifiedList.map(item => `<li>${item}</li>`).join('')}</ul>` : '<div style="font-size:12px; color:var(--text-muted);">None</div>'}
         </div>
-
         <div style="margin-bottom: 6px;">
           <strong style="color:var(--accent-cyan);">Created Levels (${createdList.length}):</strong>
           ${createdList.length > 0 ? `<ul style="margin: 4px 0 0 20px; padding:0; font-size:12px;">${createdList.map(item => `<li>${item}</li>`).join('')}</ul>` : '<div style="font-size:12px; color:var(--text-muted);">None</div>'}
@@ -1034,6 +973,7 @@
       });
     }
 
+    // Wyświetlanie szczegółów poziomu – sekcja "Victors" pojawia się tylko wtedy, gdy ktoś ukończy poziom
     function openLevelView(id) {
       const lvl = allDatabase[currentCategory].levels.find(l => l.id === id);
       if(!lvl) return;
@@ -1048,18 +988,17 @@
       
       if (!isImpossible) {
         const records = lvl.victors || [];
-        const fullVictors = records.filter(r => (parseFloat(r.percent) || 100) === 100);
-        const percentRecords = records.filter(r => (parseFloat(r.percent) || 100) < 100)
-                                      .sort((a, b) => parseFloat(b.percent) - parseFloat(a.percent));
+        if (records.length > 0) {
+          const fullVictors = records.filter(r => (parseFloat(r.percent) || 100) === 100);
+          const percentRecords = records.filter(r => (parseFloat(r.percent) || 100) < 100)
+                                        .sort((a, b) => parseFloat(b.percent) - parseFloat(a.percent));
 
-        const first = fullVictors[0] || { name: 'None', proof: '' };
-        const second = fullVictors[1] || { name: 'None', proof: '' };
-        const third = fullVictors[2] || { name: 'None', proof: '' };
-        const otherVictors = fullVictors.slice(3);
+          const first = fullVictors[0] || { name: 'None', proof: '' };
+          const second = fullVictors[1] || { name: 'None', proof: '' };
+          const third = fullVictors[2] || { name: 'None', proof: '' };
+          const otherVictors = fullVictors.slice(3);
 
-        let percentHtml = '';
-        if (percentRecords.length > 0) {
-          percentHtml = `
+          let percentHtml = percentRecords.length > 0 ? `
             <div style="margin-top: 10px; border-top: 1px dashed rgba(194, 155, 104, 0.3); padding-top: 8px;">
               <strong style="color:var(--text-secondary); font-size:12px;">Highscores (%):</strong>
               ${percentRecords.map(r => `
@@ -1069,12 +1008,9 @@
                 </div>
               `).join('')}
             </div>
-          `;
-        }
+          ` : '';
 
-        let otherVictorsHtml = '';
-        if (otherVictors.length > 0) {
-          otherVictorsHtml = `
+          let otherVictorsHtml = otherVictors.length > 0 ? `
             <div style="margin-top: 6px;">
               <strong style="color:var(--text-secondary); font-size:11px;">Other 100% Victors:</strong>
               ${otherVictors.map(r => `
@@ -1084,33 +1020,27 @@
                 </div>
               `).join('')}
             </div>
+          ` : '';
+
+          const basePts = getLevelBasePoints(currentCategory, lvl.id);
+
+          victorsHtml = `
+            <div class="victors-box">
+              <h3 style="color: var(--accent-cyan); margin-top: 0; font-size: 14px; display:flex; justify-content:space-between;">
+                <span>Level Victors & Records 🏆</span>
+                <span style="font-size:12px; color:var(--text-muted);">Base Value: ${basePts} pts</span>
+              </h3>
+              <div class="victor-item victor-gold">
+                <span>🥇 1st Victor: <strong style="color: #ffd700;">${first.name !== 'None' ? first.name : 'Brak'}</strong></span>
+                ${first.proof ? `<a href="${first.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}
+              </div>
+              ${second.name !== 'None' ? `<div class="victor-item victor-silver"><span>🥈 2nd: <strong style="color: #c0c0c0;">${second.name}</strong></span>${second.proof ? `<a href="${second.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}</div>` : ''}
+              ${third.name !== 'None' ? `<div class="victor-item victor-bronze"><span>🥉 3rd: <strong style="color: #cd7f32;">${third.name}</strong></span>${third.proof ? `<a href="${third.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}</div>` : ''}
+              ${otherVictorsHtml}
+              ${percentHtml}
+            </div>
           `;
         }
-
-        const basePts = getLevelBasePoints(currentCategory, lvl.id);
-
-        victorsHtml = `
-          <div class="victors-box">
-            <h3 style="color: var(--accent-cyan); margin-top: 0; font-size: 14px; display:flex; justify-content:space-between;">
-              <span>Level Victors & Records 🏆</span>
-              <span style="font-size:12px; color:var(--text-muted);">Base Value: ${basePts} pts</span>
-            </h3>
-            <div class="victor-item victor-gold">
-              <span>🥇 1st: <strong style="color: #ffd700;">${first.name}</strong></span>
-              ${first.proof ? `<a href="${first.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}
-            </div>
-            <div class="victor-item victor-silver">
-              <span>🥈 2nd: <strong style="color: #c0c0c0;">${second.name}</strong></span>
-              ${second.proof ? `<a href="${second.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}
-            </div>
-            <div class="victor-item victor-bronze">
-              <span>🥉 3rd: <strong style="color: #cd7f32;">${third.name}</strong></span>
-              ${third.proof ? `<a href="${third.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}
-            </div>
-            ${otherVictorsHtml}
-            ${percentHtml}
-          </div>
-        `;
       }
 
       let historyHtml = '';
@@ -1224,20 +1154,14 @@
 
     async function handleLevelSubmit(e) {
       e.preventDefault();
-      if (!currentUser) {
-        alert('Musisz być zalogowany, aby dodać poziom!');
-        return;
-      }
+      if (!currentUser) { alert('Musisz być zalogowany!'); return; }
       const lvlNameInput = document.getElementById('lvl-name').value.trim();
       
       const existingLevels = allDatabase[currentCategory].levels || [];
       if (existingLevels.some(l => l.title.toLowerCase() === lvlNameInput.toLowerCase())) {
-        alert('Poziom o tej nazwie już istnieje w tej kategorii!');
+        alert('Poziom już istnieje!');
         return;
       }
-
-      const creatorVal = document.getElementById('lvl-creator').value.trim();
-      const verifierVal = document.getElementById('lvl-verifier').value.trim();
 
       const newSub = {
         id: Date.now(),
@@ -1247,8 +1171,8 @@
         status: 'pending',
         data: {
           name: lvlNameInput,
-          creator: creatorVal,
-          verifier: verifierVal,
+          creator: document.getElementById('lvl-creator').value.trim(),
+          verifier: document.getElementById('lvl-verifier').value.trim(),
           video: document.getElementById('lvl-video').value,
           song: document.getElementById('lvl-song').value,
           gdId: document.getElementById('lvl-id').value
@@ -1256,32 +1180,29 @@
       };
       if (!allDatabase.zgloszenia) allDatabase.zgloszenia = [];
       allDatabase.zgloszenia.push(newSub);
-      await saveCloudData();
+      saveCloudData();
       alert('Level submitted for review!');
       document.getElementById('level-form').reset();
     }
 
     async function handleRecordSubmit(e) {
       e.preventDefault();
-      if (!currentUser) {
-        alert('Musisz być zalogowany, aby dodać rekord!');
-        return;
-      }
-      const lvlName = document.getElementById('rec-level-select').value;
-      const percent = parseFloat(document.getElementById('rec-percent').value);
-      const video = document.getElementById('rec-video').value;
-
+      if (!currentUser) { alert('Musisz być zalogowany!'); return; }
       const newSub = {
         id: Date.now(),
         user: currentUser.name,
         type: 'record',
         category: currentCategory,
         status: 'pending',
-        data: { level: lvlName, percent, video }
+        data: {
+          level: document.getElementById('rec-level-select').value,
+          percent: parseFloat(document.getElementById('rec-percent').value),
+          video: document.getElementById('rec-video').value
+        }
       };
       if (!allDatabase.zgloszenia) allDatabase.zgloszenia = [];
       allDatabase.zgloszenia.push(newSub);
-      await saveCloudData();
+      saveCloudData();
       alert('Record submitted for review!');
       document.getElementById('record-form').reset();
     }
@@ -1295,26 +1216,19 @@
         return;
       }
       container.innerHTML = pending.map(s => {
-        let detailsHtml = '';
-        if (s.type === 'level') {
-          detailsHtml = `
-            <div><strong>Level Name:</strong> ${s.data.name}</div>
-            <div><strong>Creator:</strong> ${s.data.creator}</div>
-            <div><strong>Verifier:</strong> ${s.data.verifier || 'N/A'}</div>
-            <div><strong>Song:</strong> ${s.data.song} | <strong>ID:</strong> ${s.data.gdId}</div>
-            <div><strong>Video:</strong> <a href="${s.data.video}" target="_blank" style="color:var(--accent-cyan)">${s.data.video}</a></div>
-          `;
-        } else if (s.type === 'record') {
-          detailsHtml = `
-            <div><strong>Level:</strong> ${s.data.level}</div>
-            <div><strong>Record:</strong> ${s.data.percent}%</div>
-            <div><strong>Video Proof:</strong> <a href="${s.data.video}" target="_blank" style="color:var(--accent-cyan)">${s.data.video}</a></div>
-          `;
-        }
+        let detailsHtml = s.type === 'level' ? `
+          <div><strong>Level Name:</strong> ${s.data.name}</div>
+          <div><strong>Creator:</strong> ${s.data.creator}</div>
+          <div><strong>Verifier:</strong> ${s.data.verifier || 'N/A'}</div>
+          <div><strong>Song:</strong> ${s.data.song} | <strong>ID:</strong> ${s.data.gdId}</div>
+        ` : `
+          <div><strong>Level:</strong> ${s.data.level}</div>
+          <div><strong>Record:</strong> ${s.data.percent}%</div>
+        `;
 
         return `
           <div class="submission-item">
-            <div><strong>${s.type.toUpperCase()}</strong> submitted by <span style="color:var(--accent-cyan);">${s.user}</span> in <strong>${s.category}</strong></div>
+            <div><strong>${s.type.toUpperCase()}</strong> by <span style="color:var(--accent-cyan);">${s.user}</span> in <strong>${s.category}</strong></div>
             ${detailsHtml}
             <div class="action-row" style="margin-top: 6px;">
               <button class="btn-action btn-success" onclick="approveSub(${s.id})">Approve</button>
@@ -1346,11 +1260,10 @@
       `).join('');
     }
 
-    async function moveLevelCustom(lvlId) {
+    function moveLevelCustom(lvlId) {
       const levels = allDatabase[currentCategory].levels || [];
       const inputEl = document.getElementById(`move-input-${lvlId}`);
       if (!inputEl) return;
-      
       let targetPos = parseInt(inputEl.value);
       if (isNaN(targetPos)) return;
       
@@ -1366,30 +1279,23 @@
       const today = new Date().toISOString().split('T')[0];
       levels.forEach((lvl, idx) => {
         if (!lvl.history) lvl.history = [];
-        lvl.history.push({
-          date: today,
-          change: idx < currentIndex ? '↑' : '↓',
-          newPosition: `#${idx + 1}`,
-          reason: 'moved via admin panel'
-        });
+        lvl.history.push({ date: today, change: idx < currentIndex ? '↑' : '↓', newPosition: `#${idx + 1}`, reason: 'moved via admin' });
       });
 
       recalculateAllPlayerPoints();
-      await saveCloudData();
+      saveCloudData();
       init();
       renderAdminLevelsList();
-      alert(`Przeniesiono poziom na pozycję #${targetPos}!`);
+      alert(`Przeniesiono na pozycję #${targetPos}!`);
     }
 
-    async function adminDeleteLevel(lvlId) {
-      if(!confirm('Czy na pewno chcesz usunąć ten poziom?')) return;
-      const levels = allDatabase[currentCategory].levels || [];
-      allDatabase[currentCategory].levels = levels.filter(l => l.id !== lvlId);
+    function adminDeleteLevel(lvlId) {
+      if(!confirm('Usunąć poziom?')) return;
+      allDatabase[currentCategory].levels = (allDatabase[currentCategory].levels || []).filter(l => l.id !== lvlId);
       recalculateAllPlayerPoints();
-      await saveCloudData();
+      saveCloudData();
       init();
       renderAdminLevelsList();
-      alert('Poziom został usunięty.');
     }
 
     function openEditLevelModal(lvlId) {
@@ -1405,15 +1311,12 @@
       document.getElementById('edit-level-modal').style.display = 'flex';
     }
 
-    function closeEditModal() {
-      document.getElementById('edit-level-modal').style.display = 'none';
-    }
+    function closeEditModal() { document.getElementById('edit-level-modal').style.display = 'none'; }
 
-    async function handleSaveLevelEdit(e) {
+    function handleSaveLevelEdit(e) {
       e.preventDefault();
       const lvlId = document.getElementById('edit-lvl-id').value;
-      const levels = allDatabase[currentCategory].levels || [];
-      const lvl = levels.find(l => l.id === lvlId);
+      const lvl = (allDatabase[currentCategory].levels || []).find(l => l.id === lvlId);
       if(!lvl) return;
 
       lvl.title = document.getElementById('edit-lvl-name').value.trim();
@@ -1424,14 +1327,13 @@
       const vidUrl = document.getElementById('edit-lvl-video').value.trim();
       if(vidUrl) lvl.youtubeId = extractYoutubeId(vidUrl);
 
-      await saveCloudData();
+      saveCloudData();
       closeEditModal();
       init();
       renderAdminLevelsList();
-      alert('Zaktualizowano informacje o poziomie!');
     }
 
-    async function approveSub(id) {
+    function approveSub(id) {
       const sub = allDatabase.zgloszenia.find(s => s.id === id);
       if(!sub) return;
       sub.status = 'accepted';
@@ -1463,25 +1365,20 @@
         if (lvl) {
           if (!lvl.victors) lvl.victors = [];
           lvl.victors = lvl.victors.filter(v => v.name.toLowerCase() !== sub.user.toLowerCase());
-          lvl.victors.push({
-            name: sub.user,
-            percent: parseFloat(sub.data.percent),
-            proof: sub.data.video
-          });
+          lvl.victors.push({ name: sub.user, percent: parseFloat(sub.data.percent), proof: sub.data.video });
         }
       }
 
       recalculateAllPlayerPoints();
-      await saveCloudData();
+      saveCloudData();
       init();
       renderAdminPending();
-      alert('Approved successfully!');
     }
 
-    async function rejectSub(id) {
+    function rejectSub(id) {
       const sub = allDatabase.zgloszenia.find(s => s.id === id);
       if(sub) sub.status = 'declined';
-      await saveCloudData();
+      saveCloudData();
       renderAdminPending();
     }
 
