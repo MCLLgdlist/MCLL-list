@@ -1565,9 +1565,11 @@
     async function rejectSub(id) {
       await loadData();
       const sub = (allDatabase.zgloszenia || []).find(s => s.id === id);
-      if(sub) sub.status = 'declined';
+      if(sub) {
+        sub.status = 'declined';
+      }
       await saveCloudData();
-      renderAdminPending();
+      renderAdminPending(); // <-- TUTAJ BYŁ BRAK: odświeżenie widoku od razu usuwa zgłoszenie z panelu
       alert('Submission rejected.');
     }
 
