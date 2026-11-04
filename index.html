@@ -1566,14 +1566,16 @@
     }
 
     async function rejectSub(id) {
-      await loadData();
-      const sub = (allDatabase.zgloszenia || []).find(s => s.id === id);
-      if (sub) {
-        sub.status = 'declined';
+      // 1. Natychmiast usuń zgłoszenie z lokalnej tablicy
+      if (allDatabase.zgloszenia) {
+        allDatabase.zgloszenia = allDatabase.zgloszenia.filter(s => s.id !== id);
       }
-      allDatabase.zgloszenia = allDatabase.zgloszenia.filter(s => s.id !== id);
-      await saveCloudData();
+
+      // 2. Natychmiast odśwież widok, żeby element zniknął z ekranu
       renderAdminPending();
+
+      // 3. Wyślij zmieniony stan do chmury
+      await saveCloudData();
     }
 
     function startRoulette() {
