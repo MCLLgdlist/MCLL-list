@@ -614,11 +614,9 @@
       const index = levels.findIndex(l => l.id === levelId);
       if (index === -1) return 0;
       
-      // Dynamiczny system punktacji: Top 1 zawsze daje 500 pkt, a wraz ze wzrostem liczby poziomów (np. do 100) punkty płynnie maleją do 1.
       const total = levels.length;
       if (total <= 1) return 500;
       
-      // Wzór wygaszający punkty w zależności od pozycji i całkowitej liczby poziomów
       const points = 500 * Math.pow(0.95, index);
       return Math.max(1, Math.round(points));
     }
