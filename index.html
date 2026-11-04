@@ -613,9 +613,14 @@
       const levels = allDatabase[cat].levels || [];
       const index = levels.findIndex(l => l.id === levelId);
       if (index === -1) return 0;
+      
+      // Dynamiczny system punktacji: Top 1 zawsze daje 500 pkt, a wraz ze wzrostem liczby poziomów (np. do 100) punkty płynnie maleją do 1.
       const total = levels.length;
       if (total <= 1) return 500;
-      return Math.round(500 - (index / (total - 1)) * 400);
+      
+      // Wzór wygaszający punkty w zależności od pozycji i całkowitej liczby poziomów
+      const points = 500 * Math.pow(0.95, index);
+      return Math.max(1, Math.round(points));
     }
 
     function ensurePlayerExists(cat, playerName, country = 'pl') {
@@ -1565,12 +1570,12 @@
     async function rejectSub(id) {
       await loadData();
       const sub = (allDatabase.zgloszenia || []).find(s => s.id === id);
-      if(sub) {
+      if (sub) {
         sub.status = 'declined';
       }
+      allDatabase.zgloszenia = allDatabase.zgloszenia.filter(s => s.id !== id);
       await saveCloudData();
-      renderAdminPending(); // <-- TUTAJ BYŁ BRAK: odświeżenie widoku od razu usuwa zgłoszenie z panelu
-      alert('Submission rejected.');
+      renderAdminPending();
     }
 
     function startRoulette() {
