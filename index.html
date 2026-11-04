@@ -717,13 +717,7 @@
         if (freshRes.ok) {
           const freshData = await freshRes.json();
           if (freshData && typeof freshData === 'object') {
-            const existingZgl = freshData.zgloszenia || [];
-            const localZgl = allDatabase.zgloszenia || [];
-            localZgl.forEach(lz => {
-              if (!existingZgl.some(ez => ez.id === lz.id)) existingZgl.push(lz);
-            });
-            allDatabase.zgloszenia = existingZgl;
-
+            // Zachowujemy stan zgloszen z lokalnej pamięci (nie przywracamy odrzuconych zgloszen!)
             const existingUsers = freshData.users || [];
             const localUsers = allDatabase.users || [];
             localUsers.forEach(lu => {
@@ -1509,7 +1503,10 @@
       await loadData();
       const sub = (allDatabase.zgloszenia || []).find(s => s.id === id);
       if(!sub) return;
-      sub.status = 'accepted';
+      
+      // Zgłoszenie zostało rozpatrzone -> usuwamy je z listy pending
+      allDatabase.zgloszenia = (allDatabase.zgloszenia || []).filter(s => s.id !== id);
+
       const cat = sub.category || currentCategory;
       if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
       const today = new Date().toISOString().split('T')[0];
@@ -1574,7 +1571,7 @@
       // 2. Natychmiast odśwież widok, żeby element zniknął z ekranu
       renderAdminPending();
 
-      // 3. Wyślij zmieniony stan do chmury
+      // 3. Wyślij zmieniony stan do chmury (saveCloudData zachowa usunięcie)
       await saveCloudData();
     }
 
