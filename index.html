@@ -717,7 +717,6 @@
         if (freshRes.ok) {
           const freshData = await freshRes.json();
           if (freshData && typeof freshData === 'object') {
-            // Zachowujemy stan zgloszen z lokalnej pamięci (nie przywracamy odrzuconych zgloszen!)
             const existingUsers = freshData.users || [];
             const localUsers = allDatabase.users || [];
             localUsers.forEach(lu => {
@@ -1500,18 +1499,26 @@
     }
 
     async function approveSub(id) {
-      await loadData();
-      const sub = (allDatabase.zgloszenia || []).find(s => s.id === id);
-      if(!sub) return;
-      
-      // Zgłoszenie zostało rozpatrzone -> usuwamy je z listy pending
-      allDatabase.zgloszenia = (allDatabase.zgloszenia || []).filter(s => s.id !== id);
+      // 1. Natychmiast usuń zgłoszenie lokalnie, żeby znikało od razu
+      if (allDatabase.zgloszenia) {
+        allDatabase.zgloszenia = allDatabase.zgloszenia.filter(s => s.id !== id);
+      }
+      renderAdminPending();
 
-      const cat = sub.category || currentCategory;
+      const sub = (allDatabase.zgloszenia || []).find(s => s.id === id); // Uwaga: już usunięte, pobierzmy najpierw z kopii jeśli potrzebne, ale bezpieczniej tak:
+      
+      // Poprawione pobranie danych zgłoszenia przed usunięciem:
+      await loadData();
+      const targetSub = (allDatabase.zgloszenia || []).find(s => s.id === id);
+      if(!targetSub) return;
+      
+      allDatabase.zgloszenia = allDatabase.zgloszenia.filter(s => s.id !== id);
+
+      const cat = targetSub.category || currentCategory;
       if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
       const today = new Date().toISOString().split('T')[0];
 
-      if (sub.type === 'level') {
+      if (targetSub.type === 'level') {
         if (!allDatabase[cat].levels) allDatabase[cat].levels = [];
         const levels = allDatabase[cat].levels;
         
@@ -1525,12 +1532,12 @@
 
         const newLvl = {
           id: 'lvl_' + Date.now(),
-          title: sub.data.name,
-          creator: sub.data.creator,
-          verifier: sub.data.verifier || '',
-          youtubeId: extractYoutubeId(sub.data.video),
-          song: sub.data.song,
-          gdId: sub.data.gdId,
+          title: targetSub.data.name,
+          creator: targetSub.data.creator,
+          verifier: targetSub.data.verifier || '',
+          youtubeId: extractYoutubeId(targetSub.data.video),
+          song: targetSub.data.song,
+          gdId: targetSub.data.gdId,
           victors: [],
           history: [{ date: today, change: '-', newPosition: `#${targetPos}`, reason: `was placed at position #${targetPos}` }]
         };
@@ -1546,19 +1553,19 @@
           }
         });
 
-      } else if (sub.type === 'record') {
-        const lvl = (allDatabase[cat].levels || []).find(l => l.title.toLowerCase() === sub.data.level.toLowerCase());
+      } else if (targetSub.type === 'record') {
+        const lvl = (allDatabase[cat].levels || []).find(l => l.title.toLowerCase() === targetSub.data.level.toLowerCase());
         if (lvl) {
           if (!lvl.victors) lvl.victors = [];
-          lvl.victors = lvl.victors.filter(v => v.name.toLowerCase() !== sub.user.toLowerCase());
-          lvl.victors.push({ name: sub.user, percent: parseFloat(sub.data.percent), proof: sub.data.video });
+          lvl.victors = lvl.victors.filter(v => v.name.toLowerCase() !== targetSub.user.toLowerCase());
+          lvl.victors.push({ name: targetSub.user, percent: parseFloat(targetSub.data.percent), proof: targetSub.data.video });
         }
       }
 
       recalculateAllPlayerPoints();
+      renderAdminPending();
       await saveCloudData();
       init();
-      renderAdminPending();
       alert('Submission approved successfully!');
     }
 
@@ -1571,7 +1578,7 @@
       // 2. Natychmiast odśwież widok, żeby element zniknął z ekranu
       renderAdminPending();
 
-      // 3. Wyślij zmieniony stan do chmury (saveCloudData zachowa usunięcie)
+      // 3. Wyślij zmieniony stan do chmury (zapisze brak tego elementu na stałe)
       await saveCloudData();
     }
 
