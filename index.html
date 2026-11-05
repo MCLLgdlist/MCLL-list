@@ -436,7 +436,7 @@
       <div id="roulette-target-text" style="font-size: 18px; font-weight: 800; margin: 15px 0; min-height: 40px;">Click Start to begin!</div>
       <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
         <button class="btn-roulette btn-primary" id="btn-start" onclick="startRoulette()">Start Roulette</button>
-        <button class="btn-roulette btn-success" id="btn-next" style="display:none;" onclick="nextRoulette()">Done! (+1%)</button>
+        <button class="btn-roulette btn-success" id="btn-next" style="display:none;" onclick="nextRoulette()">Done! (+%)</button>
         <button class="btn-roulette btn-danger" id="btn-giveup" style="display:none;" onclick="giveupRoulette()">Give Up</button>
       </div>
     </div>
@@ -1573,6 +1573,8 @@
     function startRoulette() {
       const levels = allDatabase[currentCategory].levels || [];
       if(levels.length === 0) { alert('No levels available.'); return; }
+      
+      // Losuje CAŁKOWICIE LOSOWY poziom z listy
       rouletteState.active = true;
       rouletteState.currentLevel = levels[Math.floor(Math.random() * levels.length)];
       // Losuje początkowy cel od 1% do 100%
@@ -1585,11 +1587,16 @@
       const btnStart = document.getElementById('btn-start');
       const btnNext = document.getElementById('btn-next');
       const btnGiveup = document.getElementById('btn-giveup');
+      
       if(rouletteState.active) {
         btnStart.style.display = 'none';
         btnNext.style.display = 'inline-block';
         btnGiveup.style.display = 'inline-block';
-        targetText.innerHTML = `Target: <strong>${rouletteState.currentLevel.title}</strong><br>Goal: <span style="color:var(--accent-cyan);">${rouletteState.currentPercent}%</span>`;
+        
+        const lvl = rouletteState.currentLevel;
+        const videoLink = lvl.youtubeId ? `<br><a href="https://youtu.be/${lvl.youtubeId}" target="_blank" class="victor-link" style="font-size:12px; display:inline-block; margin-top:6px;">🎬 Watch Verification/Gameplay Video ↗</a>` : '';
+
+        targetText.innerHTML = `Level: <strong>${lvl.title}</strong><br>Goal: <span style="color:var(--accent-cyan);">${rouletteState.currentPercent}%</span>${videoLink}`;
       } else {
         btnStart.style.display = 'inline-block';
         btnNext.style.display = 'none';
@@ -1604,6 +1611,7 @@
         giveupRoulette(); 
         return;
       }
+      
       // Losuje kolejny wyższy procent
       const minNext = rouletteState.currentPercent + 1;
       rouletteState.currentPercent = Math.floor(Math.random() * (100 - minNext + 1)) + minNext;
