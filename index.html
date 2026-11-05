@@ -480,6 +480,7 @@
       <div class="sub-nav-tabs" style="margin-bottom: 12px;">
         <button class="sub-tab-btn active" id="admin-tab-sub" onclick="switchAdminTab('sub', event)">Pending Submissions</button>
         <button class="sub-tab-btn" id="admin-tab-manage" onclick="switchAdminTab('manage', event)">Manage Levels</button>
+        <button class="sub-tab-btn" id="admin-tab-players" onclick="switchAdminTab('players', event)">Manage Players & Bans</button>
       </div>
 
       <div id="admin-sub-section">
@@ -489,6 +490,10 @@
       <div id="admin-manage-section" style="display:none;">
         <h3 style="color:var(--accent-cyan); font-size: 15px;">Edit, Move or Delete Levels</h3>
         <div id="admin-levels-manage-container"></div>
+      </div>
+      <div id="admin-players-section" style="display:none;">
+        <h3 style="color:var(--accent-cyan); font-size: 15px;">Manage Players, Flags & Bans</h3>
+        <div id="admin-players-container"></div>
       </div>
     </div>
 
@@ -539,6 +544,21 @@
     </div>
   </div>
 
+  <div class="modal" id="edit-player-modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeEditPlayerModal()">&times;</button>
+      <h3 style="color:var(--accent-cyan); margin-top:0;">Edit Player Info</h3>
+      <form onsubmit="handleSavePlayerEdit(event)">
+        <input type="hidden" id="edit-player-old-name">
+        <label style="font-size: 12px; color: var(--text-secondary);">Player Name (Nick):</label>
+        <input type="text" id="edit-player-name" required>
+        <label style="font-size: 12px; color: var(--text-secondary);">Country flag code (e.g. pl, us, de):</label>
+        <input type="text" id="edit-player-country" maxlength="2" required>
+        <button type="submit" class="btn-action btn-primary" style="margin-top: 8px;">Save Player Changes</button>
+      </form>
+    </div>
+  </div>
+
   <div class="modal" id="auth-modal">
     <div class="modal-content">
       <button class="close-modal" onclick="closeAuthModal()">&times;</button>
@@ -580,7 +600,8 @@
       ILL: { levels: [] },
       PPLL: { levels: [] },
       users: [],
-      zgloszenia: []
+      zgloszenia: [],
+      bannedPlayers: []
     };
 
     let currentUser = JSON.parse(localStorage.getItem('mcll_current_user')) || null;
@@ -608,6 +629,12 @@
       `
     };
 
+    function isPlayerBanned(playerName) {
+      if (!playerName) return false;
+      const banned = allDatabase.bannedPlayers || [];
+      return banned.some(b => b.toLowerCase() === playerName.trim().toLowerCase());
+    }
+
     function getLevelBasePoints(cat, levelId) {
       if (cat === 'ILL' || cat === 'PPLL') return 0;
       const levels = allDatabase[cat].levels || [];
@@ -626,6 +653,8 @@
       if (!allDatabase[cat].players) allDatabase[cat].players = [];
       if (!playerName) return;
       const cleanName = playerName.trim();
+      if (isPlayerBanned(cleanName)) return;
+
       const exists = allDatabase[cat].players.find(p => p.name.toLowerCase() === cleanName.toLowerCase());
       if (!exists) {
         const sysUser = (allDatabase.users || []).find(u => u.name.toLowerCase() === cleanName.toLowerCase());
@@ -635,15 +664,22 @@
     }
 
     function recalculateAllPlayerPoints() {
+      if (!allDatabase.bannedPlayers) allDatabase.bannedPlayers = [];
+
       ['MCLL', 'MCCL'].forEach(cat => {
         if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
         const levels = allDatabase[cat].levels || [];
 
+        // Oczyszczam tablicę graczy z zbanowanych
+        allDatabase[cat].players = (allDatabase[cat].players || []).filter(p => !isPlayerBanned(p.name));
+
         levels.forEach(lvl => {
-          if (lvl.verifier) ensurePlayerExists(cat, lvl.verifier);
-          if (lvl.creator) ensurePlayerExists(cat, lvl.creator);
+          if (lvl.verifier && !isPlayerBanned(lvl.verifier)) ensurePlayerExists(cat, lvl.verifier);
+          if (lvl.creator && !isPlayerBanned(lvl.creator)) ensurePlayerExists(cat, lvl.creator);
           if (lvl.victors) {
-            lvl.victors.forEach(v => ensurePlayerExists(cat, v.name));
+            lvl.victors.forEach(v => {
+              if (!isPlayerBanned(v.name)) ensurePlayerExists(cat, v.name);
+            });
           }
         });
         
@@ -655,11 +691,11 @@
 
           levels.forEach(lvl => {
             const basePts = getLevelBasePoints(cat, lvl.id);
-            if (lvl.verifier && lvl.verifier.toLowerCase() === pNameLower) {
+            if (lvl.verifier && lvl.verifier.toLowerCase() === pNameLower && !isPlayerBanned(lvl.verifier)) {
               totalPoints += basePts;
             } else {
               const victors = lvl.victors || [];
-              const userRecord = victors.find(v => v.name.toLowerCase() === pNameLower);
+              const userRecord = victors.find(v => v.name.toLowerCase() === pNameLower && !isPlayerBanned(v.name));
               if (userRecord) {
                 const percent = parseFloat(userRecord.percent) || 100;
                 totalPoints += (basePts * (percent / 100));
@@ -697,6 +733,7 @@
       
       if(!allDatabase.users) allDatabase.users = [];
       if(!allDatabase.zgloszenia) allDatabase.zgloszenia = [];
+      if(!allDatabase.bannedPlayers) allDatabase.bannedPlayers = [];
       if(allDatabase.PILL && !allDatabase.PPLL) {
         allDatabase.PPLL = allDatabase.PILL;
         delete allDatabase.PILL;
@@ -883,7 +920,7 @@
       recalculateAllPlayerPoints();
       const container = document.getElementById('stats-result-container');
       if(!container) return;
-      const players = allDatabase[currentCategory].players || [];
+      const players = (allDatabase[currentCategory].players || []).filter(p => !isPlayerBanned(p.name));
       const query = document.getElementById('stats-search-input').value.toLowerCase().trim();
       const filtered = players.filter(p => !query || p.name.toLowerCase().includes(query));
 
@@ -900,8 +937,8 @@
 
         levels.forEach(lvl => {
           if (lvl.creator && lvl.creator.toLowerCase() === p.name.toLowerCase()) createdCount++;
-          if (lvl.verifier && lvl.verifier.toLowerCase() === p.name.toLowerCase()) verifiedCount++;
-          const rec = (lvl.victors || []).find(v => v.name.toLowerCase() === p.name.toLowerCase());
+          if (lvl.verifier && lvl.verifier.toLowerCase() === p.name.toLowerCase() && !isPlayerBanned(lvl.verifier)) verifiedCount++;
+          const rec = (lvl.victors || []).find(v => v.name.toLowerCase() === p.name.toLowerCase() && !isPlayerBanned(v.name));
           if (rec && (parseFloat(rec.percent) || 100) === 100) completedCount++;
         });
 
@@ -922,9 +959,9 @@
     }
 
     function openPlayerProfile(playerName) {
-      if (currentCategory === 'ILL' || currentCategory === 'PPLL') return;
+      if (currentCategory === 'ILL' || currentCategory === 'PPLL' || isPlayerBanned(playerName)) return;
       recalculateAllPlayerPoints();
-      const players = allDatabase[currentCategory].players || [];
+      const players = (allDatabase[currentCategory].players || []).filter(p => !isPlayerBanned(p.name));
       const p = players.find(x => x.name.toLowerCase() === playerName.toLowerCase());
       if(!p) return;
 
@@ -1050,10 +1087,10 @@
         const thumbUrl = lvl.youtubeId ? `https://img.youtube.com/vi/${lvl.youtubeId}/mqdefault.jpg` : '';
         
         let userBadge = '';
-        if (currentUser) {
+        if (currentUser && !isPlayerBanned(currentUser.name)) {
           const uName = currentUser.name.toLowerCase();
           const isVerif = lvl.verifier && lvl.verifier.toLowerCase() === uName;
-          const rec = (lvl.victors || []).find(v => v.name.toLowerCase() === uName);
+          const rec = (lvl.victors || []).find(v => v.name.toLowerCase() === uName && !isPlayerBanned(v.name));
           if (isVerif || (rec && (parseFloat(rec.percent) || 100) === 100)) {
             userBadge = `<span style="color: var(--success-color); font-size:11px; margin-left: 6px;">✓ Completed</span>`;
           } else if (rec) {
@@ -1092,9 +1129,11 @@
       
       if (!isImpossible) {
         const verifierName = (lvl.verifier || '').trim().toLowerCase();
-        const records = (lvl.victors || []).filter(r => r.name.trim().toLowerCase() !== verifierName);
+        // Filtrujemy zbanowanych graczy z widoku rekordów poziomu
+        const records = (lvl.victors || []).filter(r => !isPlayerBanned(r.name) && r.name.trim().toLowerCase() !== verifierName);
+        const verifierValid = lvl.verifier && !isPlayerBanned(lvl.verifier);
 
-        if (records.length > 0 || lvl.verifier) {
+        if (records.length > 0 || verifierValid) {
           const fullVictors = records.filter(r => (parseFloat(r.percent) || 100) === 100);
           const percentRecords = records.filter(r => (parseFloat(r.percent) || 100) < 100)
                                         .sort((a, b) => parseFloat(b.percent) - parseFloat(a.percent));
@@ -1217,6 +1256,7 @@
         await loadData();
         renderAdminPending();
         renderAdminLevelsList();
+        renderAdminPlayersList();
       }
     }
 
@@ -1245,18 +1285,21 @@
     async function switchAdminTab(subTab, ev) {
       const subSec = document.getElementById('admin-sub-section');
       const manageSec = document.getElementById('admin-manage-section');
+      const playersSec = document.getElementById('admin-players-section');
       document.querySelectorAll('#admin-view .sub-nav-tabs .sub-tab-btn').forEach(b => b.classList.remove('active'));
       if(ev && ev.target) ev.target.classList.add('active');
 
+      subSec.style.display = subTab === 'sub' ? 'block' : 'none';
+      manageSec.style.display = subTab === 'manage' ? 'block' : 'none';
+      playersSec.style.display = subTab === 'players' ? 'block' : 'none';
+
       if (subTab === 'sub') {
-        subSec.style.display = 'block';
-        manageSec.style.display = 'none';
         await loadData();
         renderAdminPending();
-      } else {
-        subSec.style.display = 'none';
-        manageSec.style.display = 'block';
+      } else if (subTab === 'manage') {
         renderAdminLevelsList();
+      } else if (subTab === 'players') {
+        renderAdminPlayersList();
       }
     }
 
@@ -1394,6 +1437,144 @@
           </div>
         </div>
       `).join('');
+    }
+
+    function renderAdminPlayersList() {
+      const container = document.getElementById('admin-players-container');
+      if(!container) return;
+      const players = allDatabase[currentCategory].players || [];
+      const bannedList = allDatabase.bannedPlayers || [];
+
+      let html = '<h4 style="color:var(--accent-cyan); margin: 5px 0;">Active Players</h4>';
+      if(players.length === 0) {
+        html += '<div style="color:var(--text-muted); text-align:center; margin-bottom: 15px;">No players found.</div>';
+      } else {
+        html += players.map(p => `
+          <div class="submission-item">
+            <div style="display:flex; align-items:center; gap:8px;">
+              ${p.country ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country}.png">` : ''}
+              <strong>${p.name}</strong> (${p.points || 0} pts)
+            </div>
+            <div class="action-row">
+              <button class="btn-action btn-primary" onclick="openEditPlayerModal('${p.name}', '${p.country || ''}')">Edit Info</button>
+              <button class="btn-action btn-danger" onclick="banPlayer('${p.name}')">Ban Player</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      html += '<h4 style="color:var(--danger-color); margin: 15px 0 5px 0;">Banned Players (Unban available)</h4>';
+      if(bannedList.length === 0) {
+        html += '<div style="color:var(--text-muted); text-align:center;">No banned players.</div>';
+      } else {
+        html += bannedList.map(bName => `
+          <div class="submission-item" style="border-color: var(--danger-color);">
+            <div><strong>${bName}</strong> (Banned)</div>
+            <div class="action-row">
+              <button class="btn-action btn-success" onclick="unbanPlayer('${bName}')">Unban</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      container.innerHTML = html;
+    }
+
+    async function banPlayer(name) {
+      if(!confirm(`Are you sure you want to ban ${name}? Their records and stats will be hidden, and they will be removed from the leaderboard.`)) return;
+      await loadData();
+      if(!allDatabase.bannedPlayers) allDatabase.bannedPlayers = [];
+      if(!allDatabase.bannedPlayers.some(b => b.toLowerCase() === name.toLowerCase())) {
+        allDatabase.bannedPlayers.push(name);
+      }
+      recalculateAllPlayerPoints();
+      await saveCloudData();
+      init();
+      renderAdminPlayersList();
+      alert(`Player ${name} has been banned.`);
+    }
+
+    async function unbanPlayer(name) {
+      await loadData();
+      if(allDatabase.bannedPlayers) {
+        allDatabase.bannedPlayers = allDatabase.bannedPlayers.filter(b => b.toLowerCase() !== name.toLowerCase());
+      }
+      recalculateAllPlayerPoints();
+      await saveCloudData();
+      init();
+      renderAdminPlayersList();
+      alert(`Player ${name} has been unbanned and restored.`);
+    }
+
+    function openEditPlayerModal(oldName, country) {
+      document.getElementById('edit-player-old-name').value = oldName;
+      document.getElementById('edit-player-name').value = oldName;
+      document.getElementById('edit-player-country').value = country || '';
+      document.getElementById('edit-player-modal').style.display = 'flex';
+    }
+
+    function closeEditPlayerModal() {
+      document.getElementById('edit-player-modal').style.display = 'none';
+    }
+
+    async function handleSavePlayerEdit(e) {
+      e.preventDefault();
+      await loadData();
+      const oldName = document.getElementById('edit-player-old-name').value;
+      const newName = document.getElementById('edit-player-name').value.trim();
+      const newCountry = document.getElementById('edit-player-country').value.trim().toLowerCase();
+
+      if(!newName) return;
+
+      // Aktualizujemy dane w kategoriach graczy i rekordach poziomów
+      ['MCLL', 'MCCL'].forEach(cat => {
+        if(allDatabase[cat] && allDatabase[cat].players) {
+          allDatabase[cat].players.forEach(p => {
+            if(p.name.toLowerCase() === oldName.toLowerCase()) {
+              p.name = newName;
+              p.country = newCountry;
+            }
+          });
+        }
+        if(allDatabase[cat] && allDatabase[cat].levels) {
+          allDatabase[cat].levels.forEach(lvl => {
+            if(lvl.verifier && lvl.verifier.toLowerCase() === oldName.toLowerCase()) lvl.verifier = newName;
+            if(lvl.creator && lvl.creator.toLowerCase() === oldName.toLowerCase()) lvl.creator = newName;
+            if(lvl.victors) {
+              lvl.victors.forEach(v => {
+                if(v.name.toLowerCase() === oldName.toLowerCase()) v.name = newName;
+              });
+            }
+          });
+        }
+      });
+
+      // Aktualizacja w bazie użytkowników logowania, jeśli istnieje
+      if(allDatabase.users) {
+        allDatabase.users.forEach(u => {
+          if(u.name.toLowerCase() === oldName.toLowerCase()) {
+            u.name = newName;
+            u.country = newCountry;
+          }
+        });
+      }
+
+      // Aktualizacja zbanowanych
+      if(allDatabase.bannedPlayers) {
+        allDatabase.bannedPlayers = allDatabase.bannedPlayers.map(b => b.toLowerCase() === oldName.toLowerCase() ? newName : b);
+      }
+
+      if(currentUser && currentUser.name.toLowerCase() === oldName.toLowerCase()) {
+        currentUser.name = newName;
+        localStorage.setItem('mcll_current_user', JSON.stringify(currentUser));
+      }
+
+      recalculateAllPlayerPoints();
+      await saveCloudData();
+      closeEditPlayerModal();
+      init();
+      renderAdminPlayersList();
+      alert('Player info updated successfully!');
     }
 
     async function moveLevelCustom(lvlId) {
@@ -1547,6 +1728,7 @@
         });
 
       } else if (targetSub.type === 'record') {
+        // Poprawka: szukamy poziomu dokładnie po nazwie ze zgłoszenia (targetSub.data.level)
         const lvl = (allDatabase[cat].levels || []).find(l => l.title.toLowerCase() === targetSub.data.level.toLowerCase());
         if (lvl) {
           if (!lvl.victors) lvl.victors = [];
@@ -1581,8 +1763,8 @@
       if(levels.length === 0) { alert('No levels available.'); return; }
       
       rouletteState.active = true;
-      rouletteState.currentPercent = 1; // Startuje zawsze od 1%
-      rouletteState.currentLevel = getRandomLevel(); // Losuje poziom
+      rouletteState.currentPercent = 1;
+      rouletteState.currentLevel = getRandomLevel();
       updateRouletteUI();
     }
 
@@ -1616,9 +1798,7 @@
         return;
       }
       
-      // Zwiększa procent o +1% (np. z 1% na 2%)
       rouletteState.currentPercent += 1;
-      // Losuje NOWY poziom z listy do nowego procenta
       rouletteState.currentLevel = getRandomLevel();
       updateRouletteUI();
     }
