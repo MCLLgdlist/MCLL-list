@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html lang="en<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -586,7 +587,7 @@
     let currentUser = JSON.parse(localStorage.getItem('mcll_current_user')) || null;
     let currentMainTab = 'levels';
     let currentSubTab = 'main';
-    let rouletteState = { active: false, currentLevel: null, currentPercent: 0 };
+    let rouletteState = { active: false, currentLevel: null, currentPercent: 1 };
 
     const rulesData = {
       MCLL: `
@@ -1091,8 +1092,11 @@
       const isImpossible = (currentCategory === 'ILL' || currentCategory === 'PPLL');
       
       if (!isImpossible) {
-        const records = lvl.victors || [];
-        if (records.length > 0) {
+        // Filtrujemy victors, aby verifier nie pojawiał się w głównych victorach (jeśli tam jest)
+        const verifierName = (lvl.verifier || '').trim().toLowerCase();
+        const records = (lvl.victors || []).filter(r => r.name.trim().toLowerCase() !== verifierName);
+
+        if (records.length > 0 || lvl.verifier) {
           const fullVictors = records.filter(r => (parseFloat(r.percent) || 100) === 100);
           const percentRecords = records.filter(r => (parseFloat(r.percent) || 100) < 100)
                                         .sort((a, b) => parseFloat(b.percent) - parseFloat(a.percent));
@@ -1499,15 +1503,6 @@
     }
 
     async function approveSub(id) {
-      // 1. Natychmiast usuń zgłoszenie lokalnie, żeby znikało od razu
-      if (allDatabase.zgloszenia) {
-        allDatabase.zgloszenia = allDatabase.zgloszenia.filter(s => s.id !== id);
-      }
-      renderAdminPending();
-
-      const sub = (allDatabase.zgloszenia || []).find(s => s.id === id); // Uwaga: już usunięte, pobierzmy najpierw z kopii jeśli potrzebne, ale bezpieczniej tak:
-      
-      // Poprawione pobranie danych zgłoszenia przed usunięciem:
       await loadData();
       const targetSub = (allDatabase.zgloszenia || []).find(s => s.id === id);
       if(!targetSub) return;
@@ -1570,15 +1565,10 @@
     }
 
     async function rejectSub(id) {
-      // 1. Natychmiast usuń zgłoszenie z lokalnej tablicy
       if (allDatabase.zgloszenia) {
         allDatabase.zgloszenia = allDatabase.zgloszenia.filter(s => s.id !== id);
       }
-
-      // 2. Natychmiast odśwież widok, żeby element zniknął z ekranu
       renderAdminPending();
-
-      // 3. Wyślij zmieniony stan do chmury (zapisze brak tego elementu na stałe)
       await saveCloudData();
     }
 
@@ -1587,7 +1577,7 @@
       if(levels.length === 0) { alert('No levels available.'); return; }
       rouletteState.active = true;
       rouletteState.currentLevel = levels[Math.floor(Math.random() * levels.length)];
-      rouletteState.currentPercent = 0;
+      rouletteState.currentPercent = 1; // Zaczyna od 1%
       updateRouletteUI();
     }
 
@@ -1600,7 +1590,7 @@
         btnStart.style.display = 'none';
         btnNext.style.display = 'inline-block';
         btnGiveup.style.display = 'inline-block';
-        targetText.innerHTML = `Target: <strong>${rouletteState.currentLevel.title}</strong><br>Goal: ${rouletteState.currentPercent}%`;
+        targetText.innerHTML = `Target: <strong>${rouletteState.currentLevel.title}</strong><br>Goal: <span style="color:var(--accent-cyan);">${rouletteState.currentPercent}%</span>`;
       } else {
         btnStart.style.display = 'inline-block';
         btnNext.style.display = 'none';
@@ -1611,8 +1601,13 @@
 
     function nextRoulette() {
       rouletteState.currentPercent += 1;
-      if(rouletteState.currentPercent >= 100) { alert('Completed roulette challenge!'); giveupRoulette(); }
-      else updateRouletteUI();
+      if(rouletteState.currentPercent >= 100) { 
+        // Smaczek od nas: Efektowny komunikat ukończenia ruletki!
+        alert(`🔥 GG! Pokonałeś ruletkę do 100% na poziomie "${rouletteState.currentLevel.title}"! Legenda.`); 
+        giveupRoulette(); 
+      } else {
+        updateRouletteUI();
+      }
     }
 
     function giveupRoulette() { rouletteState.active = false; updateRouletteUI(); }
