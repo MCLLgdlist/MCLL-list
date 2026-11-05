@@ -1570,13 +1570,19 @@
       await saveCloudData();
     }
 
+    function getRandomLevel() {
+      const levels = allDatabase[currentCategory].levels || [];
+      if (levels.length === 0) return null;
+      return levels[Math.floor(Math.random() * levels.length)];
+    }
+
     function startRoulette() {
       const levels = allDatabase[currentCategory].levels || [];
       if(levels.length === 0) { alert('No levels available.'); return; }
       
       rouletteState.active = true;
-      rouletteState.currentLevel = levels[Math.floor(Math.random() * levels.length)];
-      rouletteState.currentPercent = 1; // Zawsze startuje dokładnie od 1%
+      rouletteState.currentPercent = 1; // Startuje zawsze od 1%
+      rouletteState.currentLevel = getRandomLevel(); // Losuje poziom
       updateRouletteUI();
     }
 
@@ -1592,9 +1598,9 @@
         btnGiveup.style.display = 'inline-block';
         
         const lvl = rouletteState.currentLevel;
-        const videoLink = lvl.youtubeId ? `<br><a href="https://youtu.be/${lvl.youtubeId}" target="_blank" class="victor-link" style="font-size:12px; display:inline-block; margin-top:6px;">🎬 Watch Verification Video ↗</a>` : '';
+        const videoLink = lvl && lvl.youtubeId ? `<br><a href="https://youtu.be/${lvl.youtubeId}" target="_blank" class="victor-link" style="font-size:12px; display:inline-block; margin-top:6px;">🎬 Watch Verification Video ↗</a>` : '';
 
-        targetText.innerHTML = `Level: <strong>${lvl.title}</strong><br>Goal: <span style="color:var(--accent-cyan);">${rouletteState.currentPercent}%</span>${videoLink}`;
+        targetText.innerHTML = `Level: <strong>${lvl ? lvl.title : 'Unknown'}</strong><br>Goal: <span style="color:var(--accent-cyan);">${rouletteState.currentPercent}%</span>${videoLink}`;
       } else {
         btnStart.style.display = 'inline-block';
         btnNext.style.display = 'none';
@@ -1605,13 +1611,15 @@
 
     function nextRoulette() {
       if (rouletteState.currentPercent >= 100) {
-        alert(`🔥 GG! Pokonałeś ruletkę do 100% na poziomie "${rouletteState.currentLevel.title}"! Legenda.`); 
+        alert(`🔥 GG! Pokonałeś ruletkę do 100%! Legenda.`); 
         giveupRoulette(); 
         return;
       }
       
-      // Zwiększa procent po kolei co 1 (1 -> 2 -> 3 -> ...)
+      // Zwiększa procent o +1% (np. z 1% na 2%)
       rouletteState.currentPercent += 1;
+      // Losuje NOWY poziom z listy do nowego procenta
+      rouletteState.currentLevel = getRandomLevel();
       updateRouletteUI();
     }
 
