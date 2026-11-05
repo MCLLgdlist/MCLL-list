@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html lang="en<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -1092,7 +1091,6 @@
       const isImpossible = (currentCategory === 'ILL' || currentCategory === 'PPLL');
       
       if (!isImpossible) {
-        // Filtrujemy victors, aby verifier nie pojawiał się w głównych victorach (jeśli tam jest)
         const verifierName = (lvl.verifier || '').trim().toLowerCase();
         const records = (lvl.victors || []).filter(r => r.name.trim().toLowerCase() !== verifierName);
 
@@ -1577,7 +1575,8 @@
       if(levels.length === 0) { alert('No levels available.'); return; }
       rouletteState.active = true;
       rouletteState.currentLevel = levels[Math.floor(Math.random() * levels.length)];
-      rouletteState.currentPercent = 1; // Zaczyna od 1%
+      // Losuje początkowy cel od 1% do 100%
+      rouletteState.currentPercent = Math.floor(Math.random() * 100) + 1;
       updateRouletteUI();
     }
 
@@ -1600,14 +1599,15 @@
     }
 
     function nextRoulette() {
-      rouletteState.currentPercent += 1;
-      if(rouletteState.currentPercent >= 100) { 
-        // Smaczek od nas: Efektowny komunikat ukończenia ruletki!
+      if (rouletteState.currentPercent >= 100) {
         alert(`🔥 GG! Pokonałeś ruletkę do 100% na poziomie "${rouletteState.currentLevel.title}"! Legenda.`); 
         giveupRoulette(); 
-      } else {
-        updateRouletteUI();
+        return;
       }
+      // Losuje kolejny wyższy procent
+      const minNext = rouletteState.currentPercent + 1;
+      rouletteState.currentPercent = Math.floor(Math.random() * (100 - minNext + 1)) + minNext;
+      updateRouletteUI();
     }
 
     function giveupRoulette() { rouletteState.active = false; updateRouletteUI(); }
