@@ -670,7 +670,6 @@
         if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
         const levels = allDatabase[cat].levels || [];
 
-        // Oczyszczam tablicę graczy z zbanowanych
         allDatabase[cat].players = (allDatabase[cat].players || []).filter(p => !isPlayerBanned(p.name));
 
         levels.forEach(lvl => {
@@ -1129,7 +1128,6 @@
       
       if (!isImpossible) {
         const verifierName = (lvl.verifier || '').trim().toLowerCase();
-        // Filtrujemy zbanowanych graczy z widoku rekordów poziomu
         const records = (lvl.victors || []).filter(r => !isPlayerBanned(r.name) && r.name.trim().toLowerCase() !== verifierName);
         const verifierValid = lvl.verifier && !isPlayerBanned(lvl.verifier);
 
@@ -1526,7 +1524,6 @@
 
       if(!newName) return;
 
-      // Aktualizujemy dane w kategoriach graczy i rekordach poziomów
       ['MCLL', 'MCCL'].forEach(cat => {
         if(allDatabase[cat] && allDatabase[cat].players) {
           allDatabase[cat].players.forEach(p => {
@@ -1549,7 +1546,6 @@
         }
       });
 
-      // Aktualizacja w bazie użytkowników logowania, jeśli istnieje
       if(allDatabase.users) {
         allDatabase.users.forEach(u => {
           if(u.name.toLowerCase() === oldName.toLowerCase()) {
@@ -1559,7 +1555,6 @@
         });
       }
 
-      // Aktualizacja zbanowanych
       if(allDatabase.bannedPlayers) {
         allDatabase.bannedPlayers = allDatabase.bannedPlayers.map(b => b.toLowerCase() === oldName.toLowerCase() ? newName : b);
       }
@@ -1728,12 +1723,16 @@
         });
 
       } else if (targetSub.type === 'record') {
-        // Poprawka: szukamy poziomu dokładnie po nazwie ze zgłoszenia (targetSub.data.level)
-        const lvl = (allDatabase[cat].levels || []).find(l => l.title.toLowerCase() === targetSub.data.level.toLowerCase());
+        // NAPRAWIONE: Dokładne porównanie nazw poziomów zamiast niedokładnego `includes`
+        const targetLevelName = (targetSub.data.level || '').trim().toLowerCase();
+        const lvl = (allDatabase[cat].levels || []).find(l => l.title.trim().toLowerCase() === targetLevelName);
+        
         if (lvl) {
           if (!lvl.victors) lvl.victors = [];
           lvl.victors = lvl.victors.filter(v => v.name.toLowerCase() !== targetSub.user.toLowerCase());
           lvl.victors.push({ name: targetSub.user, percent: parseFloat(targetSub.data.percent), proof: targetSub.data.video });
+        } else {
+          alert(`Błąd: Nie znaleziono poziomu o nazwie "${targetSub.data.level}" w kategorii ${cat}! Rekord nie został przypisany.`);
         }
       }
 
