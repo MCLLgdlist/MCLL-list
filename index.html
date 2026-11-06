@@ -629,6 +629,27 @@
       `
     };
 
+    function cleanInvalidRecords() {
+      // Automatyczne czyszczenie błędnych/niechcianych rekordów w chmurze (np. Huddahhudda na T R A U MA T I Z E T czy Densnames na sweeping demon)
+      ['MCLL', 'MCCL'].forEach(cat => {
+        if (allDatabase[cat] && allDatabase[cat].levels) {
+          allDatabase[cat].levels.forEach(lvl => {
+            if (lvl.title) {
+              const titleLower = lvl.title.trim().toLowerCase();
+              if (lvl.victors) {
+                lvl.victors = lvl.victors.filter(v => {
+                  const vName = v.name.toLowerCase();
+                  if (titleLower === 't r a u m a t i z e t' && vName === 'huddahhudda') return false;
+                  if (titleLower === 'sweeping demon (drageye)' && vName === 'densnames') return false;
+                  return true;
+                });
+              }
+            }
+          });
+        }
+      });
+    }
+
     function isPlayerBanned(playerName) {
       if (!playerName) return false;
       const banned = allDatabase.bannedPlayers || [];
@@ -665,6 +686,7 @@
 
     function recalculateAllPlayerPoints() {
       if (!allDatabase.bannedPlayers) allDatabase.bannedPlayers = [];
+      cleanInvalidRecords();
 
       ['MCLL', 'MCCL'].forEach(cat => {
         if (!allDatabase[cat]) allDatabase[cat] = { levels: [], players: [] };
@@ -743,6 +765,7 @@
         if (!allDatabase[cat].levels) allDatabase[cat].levels = [];
         if (!allDatabase[cat].players) allDatabase[cat].players = [];
       });
+      cleanInvalidRecords();
       recalculateAllPlayerPoints();
       init();
     }
@@ -765,6 +788,7 @@
         console.warn('Could not sync latest state before save, proceeding with local copy.', err);
       }
 
+      cleanInvalidRecords();
       return fetch(NPOINT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1127,11 +1151,9 @@
       const isImpossible = (currentCategory === 'ILL' || currentCategory === 'PPLL');
       
       if (!isImpossible) {
-        const verifierName = (lvl.verifier || '').trim().toLowerCase();
-        const records = (lvl.victors || []).filter(r => !isPlayerBanned(r.name) && r.name.trim().toLowerCase() !== verifierName);
-        const verifierValid = lvl.verifier && !isPlayerBanned(lvl.verifier);
+        const records = (lvl.victors || []).filter(r => !isPlayerBanned(r.name));
 
-        if (records.length > 0 || verifierValid) {
+        if (records.length > 0) {
           const fullVictors = records.filter(r => (parseFloat(r.percent) || 100) === 100);
           const percentRecords = records.filter(r => (parseFloat(r.percent) || 100) < 100)
                                         .sort((a, b) => parseFloat(b.percent) - parseFloat(a.percent));
@@ -1723,7 +1745,6 @@
         });
 
       } else if (targetSub.type === 'record') {
-        // NAPRAWIONE: Dokładne porównanie nazw poziomów zamiast niedokładnego `includes`
         const targetLevelName = (targetSub.data.level || '').trim().toLowerCase();
         const lvl = (allDatabase[cat].levels || []).find(l => l.title.trim().toLowerCase() === targetLevelName);
         
