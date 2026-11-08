@@ -1051,12 +1051,18 @@
       document.getElementById('search-controls').style.display = 'flex';
     }
 
-    function populateRecordLevelSelect() {
+    function populateRecordLevelSelect(selectedLevelName = '') {
       const select = document.getElementById('rec-level-select');
       if (!select) return;
       select.innerHTML = '';
       const levels = allDatabase[currentCategory].levels || [];
-      levels.forEach(lvl => select.add(new Option(lvl.title, lvl.title)));
+      levels.forEach(lvl => {
+        const opt = new Option(lvl.title, lvl.title);
+        if (selectedLevelName && lvl.title.toLowerCase() === selectedLevelName.toLowerCase()) {
+          opt.selected = true;
+        }
+        select.add(opt);
+      });
     }
 
     function setCompletionFilter(filter, ev) {
@@ -1364,6 +1370,10 @@
       e.preventDefault();
       if (!currentUser) { alert('You must be logged in!'); return; }
       
+      // Zapamiętujemy aktualnie wybrany poziom przed wysłaniem/przeładowaniem
+      const levelSelect = document.getElementById('rec-level-select');
+      const selectedLevelName = levelSelect ? levelSelect.value : '';
+
       await loadData();
 
       const newSub = {
@@ -1373,7 +1383,7 @@
         category: currentCategory,
         status: 'pending',
         data: {
-          level: document.getElementById('rec-level-select').value,
+          level: selectedLevelName,
           percent: parseFloat(document.getElementById('rec-percent').value),
           video: document.getElementById('rec-video').value
         }
@@ -1382,8 +1392,11 @@
       allDatabase.zgloszenia.push(newSub);
       
       await saveCloudData();
+      
+      // Przywracamy zapamiętany poziom w select, aby się nie resetował na Top 1
+      populateRecordLevelSelect(selectedLevelName);
+      
       alert('Record submitted for review!');
-      document.getElementById('record-form').reset();
     }
 
     function renderAdminPending() {
@@ -1471,7 +1484,6 @@
         html += '<div style="color:var(--text-muted); text-align:center; margin-bottom: 15px;">No players found.</div>';
       } else {
         html += players.map(p => {
-          // Znajdź wszystkie rekordy/ukończenia danego gracza w tej kategorii
           let playerRecordsHtml = '';
           const levels = allDatabase[currentCategory].levels || [];
           levels.forEach(lvl => {
@@ -1786,7 +1798,6 @@
         
         if (lvl) {
           if (!lvl.victors) lvl.victors = [];
-          // Usuwamy stare zgłoszenie tego gracza, aby zaktualizować na nowo zatwierdzony procent
           lvl.victors = lvl.victors.filter(v => v.name.toLowerCase() !== targetSub.user.toLowerCase());
           lvl.victors.push({ name: targetSub.user, percent: parseFloat(targetSub.data.percent), proof: targetSub.data.video });
         } else {
