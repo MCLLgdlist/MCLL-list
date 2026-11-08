@@ -492,7 +492,7 @@
         <div id="admin-levels-manage-container"></div>
       </div>
       <div id="admin-players-section" style="display:none;">
-        <h3 style="color:var(--accent-cyan); font-size: 15px;">Manage Players, Flags & Bans</h3>
+        <h3 style="color:var(--accent-cyan); font-size: 15px;">Manage Players, Flags, Records & Bans</h3>
         <div id="admin-players-container"></div>
       </div>
     </div>
@@ -630,7 +630,6 @@
     };
 
     function cleanInvalidRecords() {
-      // Automatyczne czyszczenie błędnych/niechcianych rekordów w chmurze (np. Huddahhudda na T R A U MA T I Z E T czy Densnames na sweeping demon)
       ['MCLL', 'MCCL'].forEach(cat => {
         if (allDatabase[cat] && allDatabase[cat].levels) {
           allDatabase[cat].levels.forEach(lvl => {
@@ -1153,15 +1152,17 @@
       if (!isImpossible) {
         const records = (lvl.victors || []).filter(r => !isPlayerBanned(r.name));
 
-        if (records.length > 0) {
-          const fullVictors = records.filter(r => (parseFloat(r.percent) || 100) === 100);
-          const percentRecords = records.filter(r => (parseFloat(r.percent) || 100) < 100)
-                                        .sort((a, b) => parseFloat(b.percent) - parseFloat(a.percent));
+        const fullVictors = records.filter(r => (parseFloat(r.percent) || 100) === 100);
+        const percentRecords = records.filter(r => (parseFloat(r.percent) || 100) < 100)
+                                      .sort((a, b) => parseFloat(b.percent) - parseFloat(a.percent));
 
+        if (fullVictors.length > 0 || percentRecords.length > 0) {
           const first = fullVictors[0] || { name: 'None', proof: '' };
           const second = fullVictors[1] || { name: 'None', proof: '' };
           const third = fullVictors[2] || { name: 'None', proof: '' };
           const otherVictors = fullVictors.slice(3);
+
+          let firstDisplay = first.name !== 'None' ? `<strong style="color: #ffd700;">${first.name}</strong>` : `<span style="color: var(--text-muted);">None</span>`;
 
           let percentHtml = percentRecords.length > 0 ? `
             <div style="margin-top: 10px; border-top: 1px dashed rgba(194, 155, 104, 0.3); padding-top: 8px;">
@@ -1196,11 +1197,11 @@
                 <span style="font-size:12px; color:var(--text-muted);">Base Value: ${basePts} pts</span>
               </h3>
               <div class="victor-item victor-gold">
-                <span>🥇 1st Victor: <strong style="color: #ffd700;">${first.name !== 'None' ? first.name : 'None'}</strong></span>
-                ${first.proof ? `<a href="${first.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}
+                <span>🥇 1st Victor: ${firstDisplay}</span>
+                ${first.name !== 'None' && first.proof ? `<a href="${first.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}
               </div>
-              ${second.name !== 'None' ? `<div class="victor-item victor-silver"><span>🥈 2nd: <strong style="color: #c0c0c0;">${second.name}</strong></span>${second.proof ? `<a href="${second.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}</div>` : ''}
-              ${third.name !== 'None' ? `<div class="victor-item victor-bronze"><span>🥉 3rd: <strong style="color: #cd7f32;">${third.name}</strong></span>${third.proof ? `<a href="${third.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}</div>` : ''}
+              ${fullVictors.length > 1 && second.name !== 'None' ? `<div class="victor-item victor-silver"><span>🥈 2nd: <strong style="color: #c0c0c0;">${second.name}</strong></span>${second.proof ? `<a href="${second.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}</div>` : ''}
+              ${fullVictors.length > 2 && third.name !== 'None' ? `<div class="victor-item victor-bronze"><span>🥉 3rd: <strong style="color: #cd7f32;">${third.name}</strong></span>${third.proof ? `<a href="${third.proof}" target="_blank" class="victor-link">Proof ↗</a>` : ''}</div>` : ''}
               ${otherVictorsHtml}
               ${percentHtml}
             </div>
@@ -1419,7 +1420,7 @@
           proofLink = s.data.video ? `<div style="margin-top: 4px;"><a href="${s.data.video}" target="_blank" class="victor-link" style="font-size:12px;">Completion Proof ↗</a></div>` : '';
           detailsHtml = `
             <div><strong>Level:</strong> ${s.data.level}</div>
-            <div><strong>Record:</strong> ${s.data.percent}%</div>
+            <div><strong>Record:</strong> <span style="color:var(--accent-cyan); font-weight:bold;">${s.data.percent}%</span></div>
             ${proofLink}
           `;
         }
@@ -1465,22 +1466,42 @@
       const players = allDatabase[currentCategory].players || [];
       const bannedList = allDatabase.bannedPlayers || [];
 
-      let html = '<h4 style="color:var(--accent-cyan); margin: 5px 0;">Active Players</h4>';
+      let html = '<h4 style="color:var(--accent-cyan); margin: 5px 0;">Active Players & Their Records</h4>';
       if(players.length === 0) {
         html += '<div style="color:var(--text-muted); text-align:center; margin-bottom: 15px;">No players found.</div>';
       } else {
-        html += players.map(p => `
-          <div class="submission-item">
-            <div style="display:flex; align-items:center; gap:8px;">
-              ${p.country ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country}.png">` : ''}
-              <strong>${p.name}</strong> (${p.points || 0} pts)
+        html += players.map(p => {
+          // Znajdź wszystkie rekordy/ukończenia danego gracza w tej kategorii
+          let playerRecordsHtml = '';
+          const levels = allDatabase[currentCategory].levels || [];
+          levels.forEach(lvl => {
+            const rec = (lvl.victors || []).find(v => v.name.toLowerCase() === p.name.toLowerCase());
+            if (rec) {
+              playerRecordsHtml += `
+                <div style="display: flex; justify-content: space-between; align-items: center; background: var(--input-bg); padding: 4px 8px; border-radius: 6px; margin-top: 4px; font-size: 11px;">
+                  <span>Level: <strong>${lvl.title}</strong> (${rec.percent}%)</span>
+                  <button class="btn-action btn-danger" style="padding: 2px 6px; font-size: 10px;" onclick="adminRemovePlayerRecord('${lvl.id}', '${p.name}')">Delete Record</button>
+                </div>
+              `;
+            }
+          });
+
+          return `
+            <div class="submission-item">
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  ${p.country ? `<img class="player-flag" src="https://flagcdn.com/24x18/${p.country}.png">` : ''}
+                  <strong>${p.name}</strong> (${p.points || 0} pts)
+                </div>
+                <div style="display:flex; gap: 4px;">
+                  <button class="btn-action btn-primary" style="padding: 4px 8px; font-size: 11px;" onclick="openEditPlayerModal('${p.name}', '${p.country || ''}')">Edit</button>
+                  <button class="btn-action btn-danger" style="padding: 4px 8px; font-size: 11px;" onclick="banPlayer('${p.name}')">Ban</button>
+                </div>
+              </div>
+              ${playerRecordsHtml ? `<div style="margin-top: 6px; border-top: 1px dashed var(--card-border); padding-top: 4px;"><strong style="font-size:11px; color:var(--text-secondary);">Records:</strong>${playerRecordsHtml}</div>` : ''}
             </div>
-            <div class="action-row">
-              <button class="btn-action btn-primary" onclick="openEditPlayerModal('${p.name}', '${p.country || ''}')">Edit Info</button>
-              <button class="btn-action btn-danger" onclick="banPlayer('${p.name}')">Ban Player</button>
-            </div>
-          </div>
-        `).join('');
+          `;
+        }).join('');
       }
 
       html += '<h4 style="color:var(--danger-color); margin: 15px 0 5px 0;">Banned Players (Unban available)</h4>';
@@ -1498,6 +1519,21 @@
       }
 
       container.innerHTML = html;
+    }
+
+    async function adminRemovePlayerRecord(levelId, playerName) {
+      if(!confirm(`Are you sure you want to delete the record of ${playerName} for this level?`)) return;
+      await loadData();
+      const levels = allDatabase[currentCategory].levels || [];
+      const lvl = levels.find(l => l.id === levelId);
+      if(lvl && lvl.victors) {
+        lvl.victors = lvl.victors.filter(v => v.name.toLowerCase() !== playerName.toLowerCase());
+      }
+      recalculateAllPlayerPoints();
+      await saveCloudData();
+      init();
+      renderAdminPlayersList();
+      alert('Record deleted and points recalculated successfully!');
     }
 
     async function banPlayer(name) {
@@ -1750,6 +1786,7 @@
         
         if (lvl) {
           if (!lvl.victors) lvl.victors = [];
+          // Usuwamy stare zgłoszenie tego gracza, aby zaktualizować na nowo zatwierdzony procent
           lvl.victors = lvl.victors.filter(v => v.name.toLowerCase() !== targetSub.user.toLowerCase());
           lvl.victors.push({ name: targetSub.user, percent: parseFloat(targetSub.data.percent), proof: targetSub.data.video });
         } else {
